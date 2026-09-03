@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ui.artbloom.tech/brand.schema.json",
+  "title": "Brand configuration",
+  "description": "Every user-visible product string. lib/brand.ts is the only module allowed to read this file; nothing else may hardcode the name, the domain or the npm package.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "name",
+    "shortName",
+    "wordmark",
+    "legalEntity",
+    "domain",
+    "origin",
+    "npmPackage",
+    "tagline",
+    "description",
+    "email",
+    "social"
+  ],
+  "properties": {
+    "$schema": { "type": "string" },
+    "name": {
+      "description": "Full product name, as written in prose.",
+      "type": "string",
+      "minLength": 1
+    },
+    "shortName": {
+      "description": "Bare name without the `ui.` prefix. Also the CLI bin name — must not contain a dot, because cmd.exe reads everything after the last dot as a file extension and refuses to run it.",
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]*$"
+    },
+    "wordmark": {
+      "description": "The name as it is set in the header lockup.",
+      "type": "string",
+      "minLength": 1
+    },
+    "legalEntity": {
+      "description": "Name used in the copyright line and legal pages.",
+      "type": "string",
+      "minLength": 1
+    },
+    "domain": {
+      "description": "Bare hostname, no scheme and no trailing slash.",
+      "type": "string",
+      "pattern": "^[a-z0-9.-]+\\.[a-z]{2,}$"
+    },
+    "origin": {
+      "description": "Production origin. Overridden at build time by NEXT_PUBLIC_SITE_ORIGIN when a preview deploy needs its own absolute URLs.",
+      "type": "string",
+      "format": "uri",
+      "pattern": "^https://[^/]+$"
+    },
+    "npmPackage": {
+      "description": "Published package name. This is what a user types after `npx`.",
+      "type": "string",
+      "minLength": 1
+    },
+    "tagline": { "type": "string", "minLength": 1 },
+    "description": { "type": "string", "minLength": 1 },
+    "email": { "type": "string", "format": "email" },
+    "social": {
+      "description": "Profile URLs. Every key is optional on purpose — an unclaimed handle should be absent, not present and returning 404. The footer renders only the keys it finds.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "x": { "type": "string", "format": "uri", "pattern": "^https://" },
+        "github": { "type": "string", "format": "uri", "pattern": "^https://" }
+      }
+    }
+  }
+}

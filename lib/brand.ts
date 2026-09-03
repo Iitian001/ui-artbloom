@@ -17,7 +17,12 @@ export type Brand = {
   tagline: string
   description: string
   email: string
-  social: { x: string; github: string }
+  /**
+   * Both handles are optional. `x.com/uiartbloom` and `github.com/uiartbloom`
+   * are unclaimed, and a footer link that 404s is worse than no link, so the
+   * footer renders only the keys that are actually present.
+   */
+  social: { x?: string; github?: string }
 }
 
 export const brand = brandJson as Brand

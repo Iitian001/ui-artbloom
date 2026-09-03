@@ -35,6 +35,17 @@ const COLUMNS = [
   },
 ]
 
+/**
+ * Only the handles that exist. `brand.social` keys are optional because an
+ * unclaimed handle should be absent rather than linked and returning 404.
+ */
+const SOCIAL_LINKS: Array<[string, string]> = (
+  [
+    ["X (Twitter)", brand.social.x],
+    ["GitHub", brand.social.github],
+  ] satisfies Array<[string, string | undefined]>
+).filter((entry): entry is [string, string] => Boolean(entry[1]))
+
 export function SiteFooter() {
   return (
     <footer className="border-t border-border">
@@ -68,31 +79,25 @@ export function SiteFooter() {
           </nav>
         ))}
 
-        <nav className="flex flex-col gap-3">
-          <h3 className="text-[13px] font-semibold tracking-tight">Connect</h3>
-          <ul className="flex flex-col gap-2.5">
-            <li>
-              <a
-                href={brand.social.x}
-                rel="noreferrer noopener"
-                target="_blank"
-                className="text-[13px] text-muted-foreground transition-colors hover:text-foreground"
-              >
-                X (Twitter)
-              </a>
-            </li>
-            <li>
-              <a
-                href={brand.social.github}
-                rel="noreferrer noopener"
-                target="_blank"
-                className="text-[13px] text-muted-foreground transition-colors hover:text-foreground"
-              >
-                GitHub
-              </a>
-            </li>
-          </ul>
-        </nav>
+        {SOCIAL_LINKS.length > 0 && (
+          <nav className="flex flex-col gap-3">
+            <h3 className="text-[13px] font-semibold tracking-tight">Connect</h3>
+            <ul className="flex flex-col gap-2.5">
+              {SOCIAL_LINKS.map(([label, url]) => (
+                <li key={label}>
+                  <a
+                    href={url}
+                    rel="noreferrer noopener"
+                    target="_blank"
+                    className="text-[13px] text-muted-foreground transition-colors hover:text-foreground"
+                  >
+                    {label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        )}
       </div>
 
       <div className="container-page flex flex-col gap-2 border-t border-border py-6 text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between">

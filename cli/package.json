@@ -14,6 +14,8 @@
     "shadcn"
   ],
   "homepage": "https://ui.artbloom.tech",
+  "bugs": "hey@ui.artbloom.tech",
+  "author": "Artbloom Labs",
   "license": "MIT",
   "type": "module",
   "bin": {

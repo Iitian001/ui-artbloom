@@ -562,4 +562,127 @@ export const ITEMS: RegistryItem[] = [
     previewDark: true,
     previewHeight: 420,
   },
+  {
+    name: "paper-portfolio",
+    title: "Paper Portfolio",
+    kind: "templates",
+    description:
+      "A seven-page torn-paper portfolio: hero collage, case studies, a printable capabilities page and a draggable sketchbook. All artwork is generated SVG, so it installs as pure text.",
+    categories: ["portfolio", "personal", "resume"],
+    author: AUTHORS.artbloom,
+    // A whole site, not a page. Everything lands under one folder so it cannot
+    // collide with the consumer's own routes; `BASE` in data/projects.ts is the
+    // single string to change if they want it somewhere else.
+    files: [
+      {
+        source: "templates/paper-portfolio/layout.tsx",
+        target: "app/paper-portfolio/layout.tsx",
+        type: "registry:page",
+      },
+      {
+        source: "templates/paper-portfolio/paper-portfolio.css",
+        target: "app/paper-portfolio/paper-portfolio.css",
+        type: "registry:style",
+      },
+      {
+        source: "templates/paper-portfolio/page.tsx",
+        target: "app/paper-portfolio/page.tsx",
+        type: "registry:page",
+      },
+      {
+        source: "templates/paper-portfolio/work/page.tsx",
+        target: "app/paper-portfolio/work/page.tsx",
+        type: "registry:page",
+      },
+      {
+        source: "templates/paper-portfolio/about/page.tsx",
+        target: "app/paper-portfolio/about/page.tsx",
+        type: "registry:page",
+      },
+      {
+        source: "templates/paper-portfolio/projects/page.tsx",
+        target: "app/paper-portfolio/projects/page.tsx",
+        type: "registry:page",
+      },
+      {
+        source: "templates/paper-portfolio/projects/[slug]/page.tsx",
+        target: "app/paper-portfolio/projects/[slug]/page.tsx",
+        type: "registry:page",
+      },
+      {
+        source: "templates/paper-portfolio/contact/page.tsx",
+        target: "app/paper-portfolio/contact/page.tsx",
+        type: "registry:page",
+      },
+      {
+        source: "templates/paper-portfolio/resume/page.tsx",
+        target: "app/paper-portfolio/resume/page.tsx",
+        type: "registry:page",
+      },
+      {
+        source: "templates/paper-portfolio/sketchbook/page.tsx",
+        target: "app/paper-portfolio/sketchbook/page.tsx",
+        type: "registry:page",
+      },
+      {
+        source: "templates/paper-portfolio/data/projects.ts",
+        target: "app/paper-portfolio/data/projects.ts",
+        type: "registry:lib",
+      },
+      {
+        source: "templates/paper-portfolio/components/site-header.tsx",
+        target: "app/paper-portfolio/components/site-header.tsx",
+        type: "registry:component",
+      },
+      {
+        source: "templates/paper-portfolio/components/site-footer.tsx",
+        target: "app/paper-portfolio/components/site-footer.tsx",
+        type: "registry:component",
+      },
+      {
+        source: "templates/paper-portfolio/components/page-intro.tsx",
+        target: "app/paper-portfolio/components/page-intro.tsx",
+        type: "registry:component",
+      },
+      {
+        source: "templates/paper-portfolio/components/project-card.tsx",
+        target: "app/paper-portfolio/components/project-card.tsx",
+        type: "registry:component",
+      },
+      {
+        source: "templates/paper-portfolio/components/hero-motion.tsx",
+        target: "app/paper-portfolio/components/hero-motion.tsx",
+        type: "registry:component",
+      },
+      {
+        source: "templates/paper-portfolio/components/sketch-board.tsx",
+        target: "app/paper-portfolio/components/sketch-board.tsx",
+        type: "registry:component",
+      },
+      {
+        source: "templates/paper-portfolio/components/contact-form.tsx",
+        target: "app/paper-portfolio/components/contact-form.tsx",
+        type: "registry:component",
+      },
+      {
+        source: "templates/paper-portfolio/components/print-button.tsx",
+        target: "app/paper-portfolio/components/print-button.tsx",
+        type: "registry:component",
+      },
+      {
+        // Six PNGs in the original — a photographic collage and five logo marks.
+        // Drawn from a hash instead, so there are no bytes to license, no faces to
+        // ship, and nothing to go blurry on a retina screen.
+        source: "templates/paper-portfolio/components/doodles.tsx",
+        target: "app/paper-portfolio/components/doodles.tsx",
+        type: "registry:component",
+      },
+    ],
+    createdAt: "2026-09-03",
+    installs: 0,
+    bookmarks: 0,
+    featured: true,
+    isNew: true,
+    previewHeight: 420,
+  },
 ]
