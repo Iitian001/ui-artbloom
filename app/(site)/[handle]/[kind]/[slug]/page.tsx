@@ -145,6 +145,9 @@ export default async function ItemPage({ params }: { params: Promise<Params> }) 
                 kind={item.kind}
                 height={item.previewHeight ?? (item.kind === "templates" ? 620 : 420)}
                 dark={item.previewDark}
+                // Not inside a link here, so the demo can be dragged, pressed and
+                // hovered — several animations are only legible when you touch them.
+                interactive
               />
             </div>
           }

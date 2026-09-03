@@ -9,13 +9,23 @@ import { itemHref } from "@/components/item-card"
 import { getItem } from "@/lib/registry"
 import { loadFiles } from "@/lib/registry/source"
 
-/** The item whose source anchors the landing page. */
-const SHOWCASE = "shimmer-button"
+/**
+ * The item whose source anchors the landing page.
+ *
+ * Two things this has to satisfy, both easy to break by swapping the name alone:
+ * the panel shows the item's *first* file and nothing else, so it wants an item
+ * whose opening file is the substance rather than a shell around a stylesheet;
+ * and the preview tab mounts `DEMOS[name]`, so the item needs an entry in
+ * `components/demos.tsx` or the tab reads "No demo yet".
+ */
+const SHOWCASE = "kinetic-texture-mesh"
 
 export async function CodeShowcase() {
   const item = getItem(SHOWCASE)
   if (!item) return null
-  const [file] = await loadFiles(item)
+  const files = await loadFiles(item)
+  const [file] = files
+  if (!file) return null
 
   return (
     <section className="border-b border-border py-24">
@@ -25,11 +35,16 @@ export async function CodeShowcase() {
             Real code, <em className="font-serif font-normal italic">ready to ship</em>
           </h2>
           <p className="mt-4 text-pretty leading-relaxed text-muted-foreground">
-            React and Tailwind, written to shadcn conventions. It lands in your repo as a plain
-            file you own — edit it, delete it, rename it. There is no package to keep upgrading.
+            Plain React and CSS, in the shadcn registry format. It lands in your repo as files you
+            own — edit them, delete them, rename them. There is no package to keep upgrading.
           </p>
 
           <InstallTabs itemName={item.name} className="mt-7" />
+
+          <p className="mt-2 text-xs text-muted-foreground">
+            Writes {files.length === 1 ? "one file" : `${files.length} files`} into your project.
+            The code panel shows the first.
+          </p>
 
           <div className="mt-6 flex items-center gap-4 text-sm">
             <AuthorLink author={item.author} />
@@ -47,7 +62,15 @@ export async function CodeShowcase() {
           defaultTab="code"
           preview={
             <div className="overflow-hidden rounded-xl border border-border bg-card">
-              <ItemPreview name={item.name} kind={item.kind} height={380} />
+              {/* Not inside a link here, so the demo can be dragged and pressed —
+                  the mesh is only legible once you pull on it. */}
+              <ItemPreview
+                name={item.name}
+                kind={item.kind}
+                height={380}
+                dark={item.previewDark}
+                interactive
+              />
             </div>
           }
           code={

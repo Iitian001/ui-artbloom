@@ -1,8 +1,11 @@
 /**
  * Content and routing for the paper-portfolio template.
  *
- * Everything a consumer needs to change lives here. The copy is placeholder copy
- * — replace it with your own before shipping.
+ * Everything a consumer needs to change lives here: the identity in
+ * {@link profile} and the case studies in {@link projects}. Both hold the real
+ * content of the portfolio this template was cut from — Shreyash Mishra's site
+ * — deliberately, so the preview and a fresh install read the same. Swap both
+ * objects for your own before you deploy it as yours.
  */
 
 /**
@@ -20,18 +23,30 @@ export function href(path: string): string {
   return path === "/" ? BASE || "/" : `${BASE}${path}`
 }
 
-/** Identity shown in the header, footer, hero and resume. */
+/**
+ * Identity shown in the header, footer, hero and resume.
+ *
+ * These are real: a real person, a real domain, a real inbox. If you install
+ * this template, replace every field before you publish — otherwise you ship
+ * someone else's name and portrait.
+ */
 export const profile = {
-  name: "Field Notes",
-  surname: "Studio",
-  role: "Interface design · front-end · systems",
-  location: "Remote · working worldwide",
-  studio: "Field Notes Studio",
-  site: "your-site.com",
-  siteUrl: "https://your-site.com",
-  email: "hello@your-site.com",
-  handle: "your-handle",
-  repoUrl: "https://github.com/your-handle",
+  name: "Shreyash",
+  surname: "Mishra",
+  role: "AI Engineer · Developer · Builder",
+  location: "India · working worldwide",
+  studio: "Bloom Kernel Labs",
+  site: "shreyashmishra.in",
+  siteUrl: "https://shreyashmishra.in",
+  email: "shreyash.aiml.dev@gmail.com",
+  handle: "Iitian001",
+  repoUrl: "https://github.com/Iitian001",
+  /**
+   * Portrait collage for the hero and the about page. Same asset contract as
+   * {@link Project.image}: it installs to `public/paper-portfolio/` and is
+   * served from the base URL, not from {@link BASE}.
+   */
+  portrait: "/paper-portfolio/hero-collage.png",
 } as const
 
 export type Project = {
@@ -39,6 +54,16 @@ export type Project = {
   title: string
   category: string
   year: string
+  /**
+   * Screenshot shown on the card and in the case-study header.
+   *
+   * The file lives at `assets/<name>` inside this template, the install copies
+   * it to `public/paper-portfolio/<name>`, and Next serves anything in `public`
+   * from the base URL — so the path written here is `/paper-portfolio/<name>`.
+   * It is deliberately independent of {@link BASE}: moving the routes does not
+   * move the images.
+   */
+  image: string
   /** Seed for the generated paper glyph on cards and case studies. */
   mark: string
   short: string
@@ -53,94 +78,113 @@ export type Project = {
 
 export const projects: Project[] = [
   {
-    slug: "ledger-atlas",
-    title: "Ledger Atlas",
-    category: "Finance Dashboard",
+    slug: "bloom-chat",
+    title: "Bloom Chat",
+    category: "Multimodal AI Workspace",
     year: "2026",
-    mark: "atlas",
-    short: "A reporting surface that turns twelve scattered spreadsheets into one readable page.",
+    image: "/paper-portfolio/bloom-chat.png",
+    mark: "bloom-chat",
+    short: "A multimodal AI workspace for research, memory, creation and focused work.",
     statement:
-      "Finance teams do not need another chart library. They need one page they trust enough to forward without editing it first.",
+      "I wanted an AI workspace to feel like a place you think in—not another empty prompt box.",
     challenge:
-      "Six data sources, three reconciliation rules and a monthly close that lived in someone's inbox.",
+      "Bring chat, research, image creation and persistent memory into one product without burying the user in controls.",
     solution:
-      "One canonical table, drill-downs that keep their place, and every number traceable to the row it came from.",
-    stack: ["Next.js", "PostgreSQL", "Server Actions", "Recharts", "Design system"],
-    status: "Shipped",
+      "A modular workspace with a quiet conversational core, project context, memory surfaces and deliberate tool entry points.",
+    stack: ["Next.js", "React", "AI orchestration", "Memory systems", "Multimodal UX"],
+    status: "In development",
   },
   {
-    slug: "kiln-scheduler",
-    title: "Kiln",
-    category: "Studio Scheduling",
-    year: "2025",
-    mark: "kiln",
-    short: "Booking software for shared workshops, built around the way makers actually queue for machines.",
+    slug: "artbloom",
+    title: "ArtBloom",
+    category: "AI Creative Studio",
+    year: "2026",
+    image: "/paper-portfolio/artbloom.png",
+    mark: "artbloom",
+    short:
+      "An expressive AI image studio designed to make generation feel like a creative process.",
     statement:
-      "The hard part of scheduling is not the calendar. It is telling somebody their slot moved without making them feel bumped.",
+      "The goal is to make AI image generation feel less like filling a form and more like entering a studio.",
     challenge:
-      "Overlapping resources, half-hour granularity and a membership tier system that changed twice mid-build.",
+      "Keep an advanced image workflow understandable while supporting iteration, editing and visual exploration.",
     solution:
-      "A single availability model with tiers as a policy layer on top, so pricing changes never touch the booking logic.",
-    stack: ["React", "Node", "SQLite", "Realtime sync", "Interaction design"],
-    status: "In production",
+      "A visual-first interface built around creation states, galleries, focused controls and an art-directed identity.",
+    stack: ["Next.js", "FastAPI", "FLUX", "Image pipelines", "Product design"],
+    status: "Active build",
+    external: "https://github.com/Iitian001/Art-bloom",
   },
   {
-    slug: "field-recorder",
-    title: "Field Recorder",
-    category: "Audio Tooling",
-    year: "2025",
-    mark: "recorder",
-    short: "A browser recorder for interviews that transcribes locally and never uploads the raw take.",
+    slug: "pandu-pet",
+    title: "Pandu Pet",
+    category: "Animated Desktop Companion",
+    year: "2026",
+    image: "/paper-portfolio/pandu.png",
+    mark: "pandu-pet",
+    short:
+      "A desktop companion that moves, reacts and grows into a small presence on your screen.",
     statement:
-      "Recording someone is an act of trust. The software should not quietly ship their voice to a third party.",
-    challenge: "Long sessions, low-end laptops, and transcription that had to run without a server.",
+      "Pandu started with one question: can a desktop utility have enough character that people miss it when it is gone?",
+    challenge:
+      "Blend animation, lightweight desktop behavior and expressive states without making the companion distracting.",
     solution:
-      "Chunked capture to IndexedDB with a WebAssembly transcriber, so the tab can crash and the take survives.",
-    stack: ["WebAudio", "WebAssembly", "IndexedDB", "Web Workers"],
-    status: "Beta",
+      "A state-driven pet system with reusable animation loops, interactions and room for future adaptive behavior.",
+    stack: ["Godot", "Python tooling", "Animation pipelines", "Desktop UX"],
+    status: "Prototype series",
+    external: "https://github.com/Iitian001/Pandu_pet",
   },
   {
-    slug: "paper-trail",
-    title: "Paper Trail",
-    category: "Documentation Engine",
-    year: "2024",
-    mark: "trail",
-    short: "Docs that are generated from the code they describe, so they cannot drift from it.",
+    slug: "bloom-browser",
+    title: "Bloom Browser",
+    category: "AI-native Browser",
+    year: "2026",
+    image: "/paper-portfolio/browser.png",
+    mark: "bloom-browser",
+    short:
+      "A privacy-minded browser concept that treats AI as part of the browsing workflow rather than a sidebar.",
     statement:
-      "Every documentation site rots. The only fix is making the source of truth impossible to edit separately.",
-    challenge: "Four repositories, two languages and a docs site nobody had updated in eight months.",
+      "The browser is where most digital work already happens. Bloom asks what it becomes when intelligence is native to that space.",
+    challenge:
+      "Introduce agentic capabilities without turning browsing into a noisy dashboard or compromising user control.",
     solution:
-      "A build step that reads annotations out of the source and fails CI when a documented symbol disappears.",
-    stack: ["TypeScript", "AST tooling", "MDX", "CI pipelines"],
-    status: "Maintained",
+      "A browser shell centered on intentional actions, contextual assistance and visible user control over AI behavior.",
+    stack: ["Browser architecture", "React", "Agent systems", "Privacy UX", "Product design"],
+    status: "In development",
+    external: "https://github.com/Iitian001/Bloom_browser",
   },
   {
-    slug: "signal-garden",
-    title: "Signal Garden",
-    category: "Monitoring",
-    year: "2024",
-    mark: "garden",
-    short: "An alerting layer that groups noise into incidents instead of paging on every spike.",
+    slug: "bloom-code",
+    title: "Bloom Code",
+    category: "Terminal Coding Agent",
+    year: "2026",
+    image: "/paper-portfolio/star.png",
+    mark: "bloom-code",
+    short:
+      "A terminal-first coding agent exploring reliable multi-model execution and developer workflows.",
     statement:
-      "An alert that fires forty times is not forty problems. Treating it as one is most of the work.",
-    challenge: "A team receiving hundreds of pages a week and had learned to ignore all of them.",
+      "Coding agents should feel fast and decisive, but also transparent enough that developers stay in control.",
+    challenge:
+      "Coordinate models, tools and repository context while keeping terminal interaction predictable.",
     solution:
-      "Correlation windows, a deduplication key per service, and a digest that replaced the 3am page for anything non-urgent.",
-    stack: ["Go", "Prometheus", "Event correlation", "On-call design"],
-    status: "Shipped",
+      "A compact agent loop with explicit tool states, provider fallback concepts and benchmark-driven iteration.",
+    stack: ["Node.js", "LLM APIs", "Terminal UX", "Agent orchestration"],
+    status: "Research / build",
   },
   {
-    slug: "kerning-club",
-    title: "Kerning Club",
-    category: "Type Experiment",
-    year: "2023",
-    mark: "kerning",
-    short: "A small game that teaches letter spacing by making you fix it under time pressure.",
-    statement: "You cannot explain kerning. You can only make someone stare at it until they see it.",
-    challenge: "Scoring subjective spacing without a right answer to compare against.",
-    solution: "Optical area comparison against a reference set, scored on relative error rather than pixels.",
-    stack: ["Canvas", "TypeScript", "Font metrics"],
-    status: "Weekend build",
+    slug: "bloom-call",
+    title: "Bloom Call",
+    category: "Voice AI Assistant",
+    year: "2026",
+    image: "/paper-portfolio/star.png",
+    mark: "bloom-call",
+    short: "A voice assistant concept for handling incoming and outgoing conversational calls.",
+    statement:
+      "Voice systems need to feel immediate, interruptible and human-paced rather than like a phone tree with an LLM attached.",
+    challenge:
+      "Join speech, reasoning and call state while keeping latency and failures understandable.",
+    solution:
+      "A provider-flexible voice pipeline with separated speech, reasoning and call-control layers.",
+    stack: ["Voice AI", "LLM orchestration", "Realtime systems", "FastAPI"],
+    status: "Exploration",
   },
 ]
 

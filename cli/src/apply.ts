@@ -1,13 +1,111 @@
 import { spawn } from "node:child_process"
-import { appendFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs"
+import {
+  appendFileSync,
+  existsSync,
+  mkdirSync,
+  readFileSync,
+  rmdirSync,
+  rmSync,
+  writeFileSync,
+} from "node:fs"
 import path from "node:path"
 
 import type { Plan } from "./plan.js"
 import { NAME } from "./pkg.js"
 import { CliError } from "./ui.js"
 
-export function writeFiles(plan: Plan) {
+/**
+ * What a run put on disk, so it can be taken back off.
+ *
+ * An install is not one step — source files land before the assets they point at
+ * have been fetched — so a failure halfway would otherwise leave code that
+ * compiles and 404s at runtime, in a project `add` then refuses to touch again.
+ * Only what this run created is listed: a path that was already there is either
+ * left alone or, when --overwrite replaced it, kept here to be put back.
+ */
+export type Undo = {
+  files: string[]
+  dirs: string[]
+  /** Contents of the files --overwrite replaced, as they were. */
+  replaced: Map<string, Buffer>
+}
+
+export function newUndo(): Undo {
+  return { files: [], dirs: [], replaced: new Map() }
+}
+
+/** The directories that have to be created for `dir` to exist, deepest first. */
+function missingDirs(dir: string) {
+  const missing: string[] = []
+  let current = dir
+
+  while (!existsSync(current)) {
+    missing.push(current)
+    const parent = path.dirname(current)
+    if (parent === current) break
+    current = parent
+  }
+
+  return missing
+}
+
+/**
+ * Note a path in `undo` before anything is written to it.
+ *
+ * `keepPrevious` is what makes --overwrite reversible, and it is off for assets
+ * on purpose: a registry file is text and small enough to hold, a 200MB model is
+ * not, so an overwritten asset is left out of the record entirely rather than
+ * copied into memory — and left alone by `rollback`.
+ */
+function note(undo: Undo | undefined, absolute: string, keepPrevious: boolean) {
+  if (!undo) return
+
+  for (const dir of missingDirs(path.dirname(absolute))) undo.dirs.push(dir)
+
+  if (!existsSync(absolute)) {
+    undo.files.push(absolute)
+    return
+  }
+  if (keepPrevious && !undo.replaced.has(absolute)) {
+    undo.replaced.set(absolute, readFileSync(absolute))
+  }
+}
+
+/**
+ * Run one cleanup step and swallow whatever it throws.
+ *
+ * Rollback is best-effort by design: a path the consumer's editor or dev server
+ * is holding open must not stop the rest from coming back off disk.
+ */
+function quietly(action: () => void) {
+  try {
+    action()
+  } catch {}
+}
+
+/**
+ * Undo a run: put back what it replaced, remove what it created.
+ *
+ * Directories go deepest first and never recursively — `rmdirSync` refuses one
+ * that is not empty, which is the wanted answer for a directory that has since
+ * picked up something else. A parent is always shorter than its children, so
+ * sorting on length is enough to get the order right.
+ */
+export function rollback(undo: Undo) {
+  for (const [absolute, previous] of undo.replaced) {
+    quietly(() => writeFileSync(absolute, previous))
+  }
+  for (const absolute of undo.files) {
+    quietly(() => rmSync(absolute, { force: true }))
+  }
+  for (const dir of [...undo.dirs].sort((a, b) => b.length - a.length)) {
+    quietly(() => rmdirSync(dir))
+  }
+}
+
+export function writeFiles(plan: Plan, undo?: Undo) {
   for (const file of plan.files) {
+    note(undo, file.absolute, true)
     mkdirSync(path.dirname(file.absolute), { recursive: true })
     const content = file.content.endsWith("\n") ? file.content : `${file.content}\n`
     writeFileSync(file.absolute, content, "utf8")
@@ -31,11 +129,14 @@ export function humanBytes(bytes: number) {
  * against what actually arrived, so a truncated response is an error rather than
  * a corrupt file the consumer discovers at runtime.
  *
- * `onProgress` is called before each download so the caller owns all output.
+ * `onProgress` is called before each download so the caller owns all output, and
+ * everything that lands is noted in `undo` — a failure on the tenth asset has to
+ * take the first nine, and the files that reference them, back off disk.
  */
 export async function downloadAssets(
   plan: Plan,
   onProgress?: (rel: string, bytes: number, index: number, total: number) => void,
+  undo?: Undo,
 ): Promise<number> {
   let downloaded = 0
 
@@ -63,6 +164,7 @@ export async function downloadAssets(
       )
     }
 
+    note(undo, asset.absolute, false)
     mkdirSync(path.dirname(asset.absolute), { recursive: true })
     writeFileSync(asset.absolute, body)
     downloaded += body.byteLength
@@ -75,6 +177,52 @@ export type CssResult = "written" | "nothing-to-do" | "already-there" | "no-styl
 
 const KEYFRAMES_RE = /@keyframes\s+([A-Za-z_-][\w-]*)/
 const VAR_RE = /(--[\w-]+)\s*:/g
+
+/**
+ * `VAR_RE` anchored.
+ *
+ * A name the scan above could not find again is a name every later install would
+ * append a second time, so the two shapes have to agree — and a "name" holding a
+ * colon or a brace is not a name at all.
+ */
+const VAR_NAME_RE = /^--[\w-]+$/
+
+/**
+ * What a value may not contain: a brace, a semicolon, a comment opener or
+ * closer, a line break.
+ *
+ * The payload is remote data and the `:root` block below is built by
+ * concatenation, so a value carrying `}` would close the block early and put
+ * whatever follows it at the top level of the consumer's stylesheet, and a value
+ * opening a comment would take the rest of the file with it. A value that needs
+ * any of these is not a value, so it is refused rather than escaped.
+ */
+const UNSAFE_VALUE_RE = /[{};\r\n]|\/\*|\*\//
+
+/**
+ * One cssVars entry as a declaration name, or a refusal.
+ *
+ * `value` is a string by declaration only — `registry.ts` casts `cssVars` rather
+ * than parsing it — so its type is checked here too.
+ */
+function varName(key: string, value: string, itemName: string) {
+  const name = key.startsWith("--") ? key : `--${key}`
+
+  if (!VAR_NAME_RE.test(name)) {
+    throw new CliError(
+      `Item "${itemName}" asks for a CSS variable whose name is not one: ${JSON.stringify(key)}`,
+      "Names are letters, digits, dashes, and underscores.",
+    )
+  }
+  if (typeof value !== "string" || UNSAFE_VALUE_RE.test(value)) {
+    throw new CliError(
+      `The value of ${name} in "${itemName}" cannot go inside a CSS declaration.`,
+      "Braces, semicolons, comment delimiters, and line breaks are refused.",
+    )
+  }
+
+  return name
+}
 
 /**
  * Split CSS into top-level blocks by tracking brace depth.
@@ -142,7 +290,7 @@ export function patchCss(plan: Plan): CssResult {
     const parts: string[] = []
 
     const vars = Object.entries(item.cssVars ?? {})
-      .map(([key, value]) => [key.startsWith("--") ? key : `--${key}`, value] as const)
+      .map(([key, value]) => [varName(key, value, item.name), value] as const)
       .filter(([key]) => !variables.has(key))
     if (vars.length > 0) {
       for (const [key] of vars) variables.add(key)
@@ -183,20 +331,32 @@ export function detectManager(cwd: string): Manager {
   return "npm"
 }
 
+/**
+ * The exact-save flag, per manager.
+ *
+ * Registry items pin every dependency to the one version the item was built
+ * against, and saving a caret range instead hands that decision back to whoever
+ * next regenerates the lockfile. npm and pnpm spell the flag `--save-exact`,
+ * yarn and bun spell it `--exact`.
+ */
+function exactFlag(manager: Manager) {
+  return manager === "yarn" || manager === "bun" ? "--exact" : "--save-exact"
+}
+
 export function installCommand(manager: Manager, deps: string[]) {
   const verb = manager === "npm" ? "install" : "add"
-  return `${manager} ${verb} ${deps.join(" ")}`
+  return `${manager} ${verb} ${exactFlag(manager)} ${deps.join(" ")}`
 }
 
 export function runInstall(manager: Manager, deps: string[], cwd: string): Promise<number> {
-  const args = [manager === "npm" ? "install" : "add", ...deps]
+  const args = [manager === "npm" ? "install" : "add", exactFlag(manager), ...deps]
 
   /**
    * Windows cannot exec a `.cmd` shim directly, so the package manager has to go
    * through the command interpreter. `cmd /d /s /c` is invoked explicitly rather
    * than via `shell: true` — same result, no deprecation warning, and the command
-   * string is built only from a fixed verb plus dependency specs that `plan.ts`
-   * has already restricted to a shell-inert character set.
+   * string is built only from a fixed verb and flag plus dependency specs that
+   * `plan.ts` has already restricted to a shell-inert character set.
    */
   const [command, argv] =
     process.platform === "win32"

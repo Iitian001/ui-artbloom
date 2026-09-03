@@ -15,9 +15,7 @@ import { cn } from "@/lib/utils"
 const NAV = [
   { label: "Templates", href: "/community/templates" },
   { label: "Animations", href: "/community/animations" },
-  { label: "Components", href: "/community/components" },
   { label: "Themes", href: "/themes" },
-  { label: "Pricing", href: "/pricing" },
 ]
 
 export function SiteHeader() {

@@ -6,8 +6,13 @@ import { ChevronRightIcon } from "lucide-react"
 import { CatalogTabs, type CatalogTab } from "@/components/catalog-tabs"
 import { FilterChips } from "@/components/filter-chips"
 import { ItemGrid } from "@/components/item-grid"
-import { ALL_CATEGORIES, findCategory, isKind, KIND_LABEL } from "@/lib/categories"
-import { categoryCount, itemsByCategory, populatedCategories } from "@/lib/registry"
+import { ALL_CATEGORIES, findCategory, KIND_LABEL } from "@/lib/categories"
+import {
+  categoryCount,
+  isBrowsableKind,
+  itemsByCategory,
+  populatedCategories,
+} from "@/lib/registry"
 import { formatFull } from "@/lib/utils"
 
 const TABS: CatalogTab[] = [
@@ -15,8 +20,12 @@ const TABS: CatalogTab[] = [
   { value: "popular", label: "Popular" },
 ]
 
+/** Only categories of a kind you can still browse — see `isBrowsableKind`. */
 export function generateStaticParams() {
-  return ALL_CATEGORIES.map((category) => ({ kind: category.kind, slug: category.slug }))
+  return ALL_CATEGORIES.filter((category) => isBrowsableKind(category.kind)).map((category) => ({
+    kind: category.kind,
+    slug: category.slug,
+  }))
 }
 
 export async function generateMetadata({
@@ -25,7 +34,7 @@ export async function generateMetadata({
   params: Promise<{ kind: string; slug: string }>
 }): Promise<Metadata> {
   const { kind, slug } = await params
-  if (!isKind(kind)) return {}
+  if (!isBrowsableKind(kind)) return {}
   const category = findCategory(kind, slug)
   if (!category) return {}
   const count = categoryCount(kind, slug)
@@ -45,7 +54,7 @@ export default async function CategoryPage({
   searchParams: Promise<{ tab?: string }>
 }) {
   const { kind, slug } = await params
-  if (!isKind(kind)) notFound()
+  if (!isBrowsableKind(kind)) notFound()
 
   const category = findCategory(kind, slug)
   if (!category) notFound()
@@ -102,7 +111,7 @@ export default async function CategoryPage({
       <div className="container-page py-10">
         <ItemGrid
           items={sorted}
-          emptyMessage={`No ${category.label.toLowerCase()} yet — publish the first one.`}
+          emptyMessage={`No ${category.label.toLowerCase()} in the catalogue yet.`}
         />
 
         {siblings.length > 0 && (

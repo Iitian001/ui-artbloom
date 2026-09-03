@@ -1,12 +1,31 @@
 import type { Metadata } from "next"
+import { redirect } from "next/navigation"
 
-import { AuthForm } from "@/components/auth-form"
+import { queryValue, readSession, safePath } from "../auth"
+import { AuthPanel } from "../auth-panel"
 
 export const metadata: Metadata = {
   title: "Sign in",
-  description: "Sign in to reach your lists and install history.",
+  description: "Continue with GitHub to reach your saved list.",
 }
 
-export default function LoginPage() {
-  return <AuthForm mode="login" />
+/** Query shape, inlined to match how the rest of `app/` types its pages. */
+type Search = Promise<Record<string, string | string[] | undefined>>
+
+export default async function LoginPage({ searchParams }: { searchParams: Search }) {
+  const query = await searchParams
+  const next = safePath(queryValue(query.next))
+
+  // Already signed in: there is nothing on this page to do.
+  const session = await readSession()
+  if (session.status === "signed-in") redirect(next ?? "/bookmarks")
+
+  return (
+    <AuthPanel
+      mode="login"
+      next={next}
+      error={queryValue(query.error)}
+      signedOut={queryValue(query["signed-out"]) === "1"}
+    />
+  )
 }

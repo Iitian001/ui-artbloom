@@ -14,7 +14,9 @@
     "shadcn"
   ],
   "homepage": "https://ui.artbloom.tech",
-  "bugs": "hey@ui.artbloom.tech",
+  "bugs": {
+    "email": "hey@ui.artbloom.tech"
+  },
   "author": "Artbloom Labs",
   "license": "MIT",
   "type": "module",
@@ -26,7 +28,7 @@
     "README.md"
   ],
   "engines": {
-    "node": ">=20.11"
+    "node": ">=22.12.0"
   },
   "scripts": {
     "build": "tsc -p tsconfig.json",

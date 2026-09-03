@@ -7,11 +7,11 @@ import { featuredProjects, href, profile } from "./data/projects"
 
 const TOOLS: Array<[string, string]> = [
   ["N", "Next.js"],
-  ["TS", "TypeScript"],
-  ["◇", "Design systems"],
+  ["⚡", "FastAPI"],
   ["Py", "Python"],
-  ["⚡", "Edge runtimes"],
-  ["♟", "Accessibility"],
+  ["JS", "TypeScript"],
+  ["♟", "AI Agents"],
+  ["◇", "Design Systems"],
 ]
 
 export default function PaperPortfolioHome() {
@@ -20,7 +20,7 @@ export default function PaperPortfolioHome() {
       <section className="homeHero">
         <div className="heroCopy">
           <div className="helloLine">
-            hey! we&apos;re <span aria-hidden="true">↘</span>
+            hey! I&apos;m <span aria-hidden="true">↘</span>
           </div>
           <div className="heroCrown" aria-hidden="true">
             ♔
@@ -33,20 +33,20 @@ export default function PaperPortfolioHome() {
           <h2>{profile.role}</h2>
           <span className="orangeUnderline" aria-hidden="true" />
           <p className="heroStatement">
-            We build with code,
+            I build with code,
             <br />
-            care and <em>stubbornness.</em>
+            curiosity and <em>rebellion.</em>
           </p>
           <p className="heroIntro">
-            A small studio making interfaces that hold up under real use — product surfaces,
-            developer tools and the unglamorous parts nobody screenshots.
+            I&apos;m {profile.name} {profile.surname}, an IIT student and developer from India
+            building AI tools, digital products, and handcrafted web experiences.
           </p>
           <div className="heroActions">
             <Link className="inkButton" href={href("/work")}>
-              View our work <span aria-hidden="true">→</span>
+              View My Work <span aria-hidden="true">→</span>
             </Link>
             <Link className="underLink" href={href("/resume")}>
-              Capabilities <span aria-hidden="true">↘</span>
+              View Resume <span aria-hidden="true">↘</span>
             </Link>
           </div>
         </div>
@@ -85,13 +85,13 @@ export default function PaperPortfolioHome() {
 
         <aside className="whatIDo stickyNote">
           <span className="topTape" aria-hidden="true" />
-          <h3>WHAT WE DO</h3>
+          <h3>WHAT I DO</h3>
           <ul>
-            <li>Product interfaces</li>
-            <li>Front-end architecture</li>
-            <li>Design systems</li>
-            <li>Developer tooling</li>
-            <li>Performance work</li>
+            <li>AI/ML Systems</li>
+            <li>Web Development</li>
+            <li>UI/UX Design</li>
+            <li>Automation</li>
+            <li>Product Building</li>
           </ul>
           <span className="rocketDoodle" aria-hidden="true">
             ♧
@@ -102,15 +102,15 @@ export default function PaperPortfolioHome() {
           <span className="curvedArrow" aria-hidden="true">
             ↪
           </span>
-          <h3>A BIT ABOUT US</h3>
+          <h3>A BIT ABOUT ME</h3>
           <p>
-            We like the part of a project where the idea meets the constraint. Small team, long
-            attention span, a preference for shipping the difficult version.
+            I love building things that live at the intersection of code, design and impact. From
+            LLM apps to playful experiments — I ship ideas that matter.
           </p>
           <Link className="blackNote" href={href("/about")}>
-            Still learning.
+            Always learning.
             <br />
-            Still building. <span aria-hidden="true">♡</span>
+            Always building. <span aria-hidden="true">♡</span>
           </Link>
         </aside>
       </section>
@@ -119,7 +119,7 @@ export default function PaperPortfolioHome() {
         <div className="sectionTitleLine">
           <h2>FEATURED WORK</h2>
           <span aria-hidden="true">☆</span>
-          <Link href={href("/projects")}>See the whole shelf ↘</Link>
+          <Link href={href("/projects")}>More coming soon! ↘</Link>
         </div>
         <div className="homeProjectGrid">
           {featuredProjects.map((project, index) => (
@@ -130,7 +130,7 @@ export default function PaperPortfolioHome() {
 
       <section className="homeBottomRow">
         <div className="toolsBlock">
-          <h2>TOOLS &amp; HABITS</h2>
+          <h2>TOOLS &amp; SUPERPOWERS</h2>
           <div className="toolChips">
             {TOOLS.map(([glyph, tool]) => (
               <span key={tool}>
@@ -155,11 +155,11 @@ export default function PaperPortfolioHome() {
           </div>
         </div>
         <Link className="conversationNote" href={href("/contact")}>
-          Good projects start
+          Great ideas start
           <br />
           with a conversation.
           <br />
-          <b>Start one. →</b>
+          <b>Let&apos;s do something. →</b>
         </Link>
       </section>
     </>

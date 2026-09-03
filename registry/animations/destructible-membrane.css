@@ -39,7 +39,13 @@
   display: block;
 }
 
-.membrane-control {
+/*
+ * The rebuild button is scoped like every other rule here rather than shipping
+ * `.membrane-control` as a global: it is a generic name a host app could easily
+ * own too, and the markup always nests the button inside the membrane, so the
+ * descendant selector costs nothing and keeps the sheet inert outside it.
+ */
+.destructible-membrane .membrane-control {
   position: absolute;
   left: 17px;
   bottom: 17px;
@@ -50,7 +56,7 @@
   cursor: pointer;
 }
 
-.membrane-control i:first-child {
+.destructible-membrane .membrane-control i:first-child {
   position: absolute;
   inset: 9px;
   border: 1.5px solid #d8ff43;
@@ -58,7 +64,7 @@
   border-radius: 50%;
 }
 
-.membrane-control i:last-child {
+.destructible-membrane .membrane-control i:last-child {
   position: absolute;
   left: 7px;
   top: 8px;
@@ -69,20 +75,20 @@
   transform: rotate(-16deg);
 }
 
-.membrane-control:hover {
+.destructible-membrane .membrane-control:hover {
   background: #d8ff43;
 }
 
-.membrane-control:hover i:first-child {
+.destructible-membrane .membrane-control:hover i:first-child {
   border-color: #111;
   border-left-color: transparent;
 }
 
-.membrane-control:hover i:last-child {
+.destructible-membrane .membrane-control:hover i:last-child {
   border-color: #111;
 }
 
-.membrane-control:focus-visible {
+.destructible-membrane .membrane-control:focus-visible {
   outline: 3px solid #3155e7;
   outline-offset: 3px;
 }

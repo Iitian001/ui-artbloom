@@ -9,9 +9,8 @@ export const metadata: Metadata = { title: "Projects" }
 export default function ProjectsPage() {
   return (
     <>
-      <PageIntro eyebrow="03 / project library" title="Products, tools &" accent="experiments.">
-        A growing shelf of shipped work, active builds and things we made on a weekend to find out
-        whether they were possible.
+      <PageIntro eyebrow="03 / project library" title="Products, agents &" accent="experiments.">
+        A growing shelf of shipped ideas, active builds and explorations.
       </PageIntro>
       <section className="projectLibrary">
         {projects.map((project, index) => (

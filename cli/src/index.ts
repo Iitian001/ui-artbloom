@@ -13,7 +13,7 @@ const program = new Command()
 
 program
   .name(BIN)
-  .description(`Copy templates, animations, and components into your project.`)
+  .description(`Copy templates and animations into your project.`)
   .version(VERSION, "-v, --version")
   .showHelpAfterError()
 
@@ -37,7 +37,7 @@ program
 program
   .command("list")
   .description("Print the catalogue")
-  .option("--kind <kind>", "templates, animations, or components")
+  .option("--kind <kind>", "templates or animations")
   .option("-c, --cwd <path>", "project root (default: the current directory)")
   .option("--registry <url>", "read from a different registry origin")
   .option("-s, --silent", "no output except errors")
@@ -77,9 +77,9 @@ program.addHelpText(
   `
 Examples:
   npx ${NAME} list --kind animations
-  npx ${NAME} info aurora-background
-  npx ${NAME} add aurora-background shimmer-button
-  npx ${NAME} add launch-landing --yes --overwrite
+  npx ${NAME} info marquee
+  npx ${NAME} add text-shimmer number-ticker
+  npx ${NAME} add cinematic-supercar --yes --overwrite
 
 Installed as a dependency, the command is \`${BIN}\`.
 `,

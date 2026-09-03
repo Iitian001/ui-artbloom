@@ -16,13 +16,15 @@ import { CONFIG_FILE, loadConfig, type Overrides } from "./config.js"
 import { NAME, BIN } from "./pkg.js"
 import { buildPlan, clashes, type Plan } from "./plan.js"
 import { fetchIndex, fetchItem, type Payload } from "./registry.js"
-import { c, CliError, heading, line, ok, setSilent, step, warn } from "./ui.js"
+import { reportInstalls } from "./track.js"
+import { c, CliError, heading, line, ok, restoreCursorOnExit, setSilent, step, warn } from "./ui.js"
 
 export type AddOptions = Overrides & {
   yes?: boolean
   overwrite?: boolean
   dryRun?: boolean
   deps?: boolean
+  telemetry?: boolean
   silent?: boolean
 }
 
@@ -113,6 +115,50 @@ function describe(plan: Plan, cssFileRel: string, names: string[]) {
   if (plan.dependencies.length > 0) line(`  will install ${plan.dependencies.join(", ")}`)
 }
 
+/**
+ * Refuse to prompt when there is nobody to answer.
+ *
+ * `prompts` builds a readline over whatever stdin happens to be; on a pipe it
+ * closes without ever submitting, so the promise never settles, the event loop
+ * drains, and Node exits 0 having done nothing. Assuming yes instead would write
+ * files into somebody's repo unattended, which is worse than refusing.
+ */
+function assertInteractive(hint: string) {
+  if (!process.stdin.isTTY) {
+    throw new CliError("Cannot prompt — stdin is not a terminal. Nothing was written.", hint)
+  }
+}
+
+/**
+ * Everything the printed plan promised and the run did not deliver.
+ *
+ * A shortfall does not undo what already landed: a missing stylesheet is a
+ * one-line fix, and discarding files that are already correct would only make
+ * the retry slower. But a plan that half happened must never read as success, so
+ * every shortfall collects here and is settled once — exit status stays a single
+ * decision at the end of the command rather than a flag set from four places,
+ * and each shortfall is named alongside the command that finishes it.
+ */
+class Unfinished {
+  private readonly entries: { what: string; fix: string }[] = []
+
+  note(what: string, fix: string) {
+    this.entries.push({ what, fix })
+  }
+
+  settle() {
+    const count = this.entries.length
+    if (count === 0) return
+    throw new CliError(
+      `${count} ${count === 1 ? "thing" : "things"} the plan promised did not happen.`,
+      [
+        ...this.entries.map((entry) => `${entry.what}\n      ${entry.fix}`),
+        "The rest of the plan is on disk — nothing was rolled back.",
+      ].join("\n    "),
+    )
+  }
+}
+
 export async function add(names: string[], options: AddOptions = {}) {
   setSilent(Boolean(options.silent))
   if (names.length === 0) throw new CliError(`Nothing to add.`, `Try \`${BIN} list\`.`)
@@ -136,12 +182,14 @@ export async function add(names: string[], options: AddOptions = {}) {
   const existing = clashes(plan)
   if (existing.length > 0 && !options.overwrite) {
     throw new CliError(
-      `${existing.length} ${existing.length === 1 ? "file" : "files"} already exist.`,
+      `${existing.length} ${existing.length === 1 ? "file already exists" : "files already exist"}.`,
       `Pass --overwrite to replace ${existing.length === 1 ? "it" : "them"}, or move ${existing.length === 1 ? "it" : "them"} aside first.`,
     )
   }
 
   if (!options.yes) {
+    assertInteractive("Pass --yes to answer it with the default, or run this from a terminal.")
+    restoreCursorOnExit()
     const answer = await prompts({
       type: "confirm",
       name: "proceed",
@@ -151,6 +199,8 @@ export async function add(names: string[], options: AddOptions = {}) {
     if (!answer.proceed) throw new CliError("Cancelled. Nothing was written.")
     line()
   }
+
+  const unfinished = new Unfinished()
 
   const written = writeFiles(plan)
   ok(`wrote ${written} ${written === 1 ? "file" : "files"}`)
@@ -166,11 +216,21 @@ export async function add(names: string[], options: AddOptions = {}) {
   if (css === "written") ok(`updated ${cssFileRel}`)
   if (css === "already-there") step(`${cssFileRel} already had it`)
   if (css === "no-stylesheet") {
-    warn(`no stylesheet at ${cssFileRel} — add the keyframes yourself, or pass --css <path>`)
+    warn(`no stylesheet at ${cssFileRel}`)
+    unfinished.note(
+      `${cssSummary(plan)} not appended to ${cssFileRel}`,
+      `create ${cssFileRel} — or point --css at one that exists — then re-run with --overwrite`,
+    )
   }
 
+  /**
+   * Detected once, before it is needed twice: the manager that installs the
+   * packages is the same one reported afterwards, whatever the install itself
+   * leaves lying around in the project root.
+   */
+  const manager = detectManager(config.cwd)
+
   if (plan.dependencies.length > 0) {
-    const manager = detectManager(config.cwd)
     if (options.deps === false) {
       warn(`skipped packages — run: ${installCommand(manager, plan.dependencies)}`)
     } else {
@@ -178,13 +238,36 @@ export async function add(names: string[], options: AddOptions = {}) {
       const code = await runInstall(manager, plan.dependencies, config.cwd)
       if (code !== 0) {
         warn(`${manager} exited ${code} — the files are written, the packages are not`)
-        line(`  run: ${installCommand(manager, plan.dependencies)}`)
+        unfinished.note(
+          `${plan.dependencies.join(", ")} not installed`,
+          installCommand(manager, plan.dependencies),
+        )
       } else {
         const count = plan.dependencies.length
         ok(`installed ${count} ${count === 1 ? "package" : "packages"}`)
       }
     }
   }
+
+  unfinished.settle()
+
+  /**
+   * Past this line the run succeeded: every file is on disk, the stylesheet took
+   * what it was given, and the package manager exited 0 or was never asked to
+   * run. A shortfall would have thrown above, so nothing half-finished is ever
+   * reported as an install.
+   *
+   * Only the names that were typed go out. The registry dependencies they
+   * dragged in were nobody's choice, and counting those would flatter the shared
+   * helpers and nothing else. Fire and forget: `add` does not wait for this and
+   * cannot fail because of it.
+   */
+  reportInstalls(
+    config.registry,
+    plan.items.filter((item) => names.includes(item.name)).map((item) => item.name),
+    manager,
+    options.telemetry,
+  )
 
   const seconds = ((Date.now() - started) / 1000).toFixed(1)
   line()
@@ -277,6 +360,9 @@ export async function init(options: InitOptions = {}) {
 
   let paths = config.paths
   if (!options.yes) {
+    assertInteractive("Pass --yes to accept the guessed paths, or run this from a terminal.")
+    restoreCursorOnExit()
+
     line()
     line(`  ${c.dim("Guessed from the project — press enter to keep a value.")}`)
     line()

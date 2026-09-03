@@ -11,8 +11,7 @@ export const metadata: Metadata = {
     default: `${profile.name} ${profile.surname} — ${profile.role}`,
     template: `%s — ${profile.name} ${profile.surname}`,
   },
-  description:
-    "A torn-paper portfolio: selected work, case studies, a resume and a sketchbook of unfinished thoughts.",
+  description: `Portfolio of ${profile.name} ${profile.surname} — AI engineer, developer and builder creating AI products, web experiences and experimental software.`,
 }
 
 /**

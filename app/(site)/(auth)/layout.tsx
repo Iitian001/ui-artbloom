@@ -1,5 +1,4 @@
 import type { ReactNode } from "react"
-import Link from "next/link"
 
 import { Logo } from "@/components/logo"
 import { AuroraBackground } from "@/registry/animations/aurora-background"
@@ -22,9 +21,13 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
       <div className="relative hidden overflow-hidden border-l border-border lg:block">
         <AuroraBackground className="absolute inset-0" />
         <div className="relative flex size-full flex-col justify-between p-10">
-          <Link href="/" className="w-fit">
-            <Logo />
-          </Link>
+          {/*
+            `Logo` renders its own <Link href="/">. Wrapping it in another one
+            nested an <a> inside an <a>, which the HTML parser un-nests during
+            hydration — a hydration mismatch on every /login and /signup render.
+            The className goes to the same anchor, so the layout is unchanged.
+          */}
+          <Logo className="w-fit" />
 
           <div>
             <p className="max-w-sm text-2xl leading-snug font-medium tracking-tight text-balance">

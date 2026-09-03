@@ -8,10 +8,12 @@ import { FilterChips } from "@/components/filter-chips"
 import { ItemCard } from "@/components/item-card"
 import { ItemGrid } from "@/components/item-grid"
 import { Rail } from "@/components/rail"
-import { CATEGORY_GROUPS, isKind, KIND_LABEL, type Kind } from "@/lib/categories"
+import { CATEGORY_GROUPS, KIND_LABEL, type Kind } from "@/lib/categories"
 import {
   type Author,
+  browsableKinds,
   featured,
+  isBrowsableKind,
   itemsByCategory,
   itemsByKind,
   kindCount,
@@ -31,7 +33,7 @@ const TABS: CatalogTab[] = [
 ]
 
 export function generateStaticParams() {
-  return CATEGORY_GROUPS.map((group) => ({ kind: group.kind }))
+  return browsableKinds().map((kind) => ({ kind }))
 }
 
 export async function generateMetadata({
@@ -40,7 +42,7 @@ export async function generateMetadata({
   params: Promise<{ kind: string }>
 }): Promise<Metadata> {
   const { kind } = await params
-  if (!isKind(kind)) return {}
+  if (!isBrowsableKind(kind)) return {}
   const group = CATEGORY_GROUPS.find((g) => g.kind === kind)
   return { title: KIND_LABEL[kind], description: group?.blurb }
 }
@@ -79,17 +81,9 @@ function Empty({ message }: { message: string }) {
 
 /** The default view: rails, the way a store front page reads. */
 function FeaturedView({ kind }: { kind: Kind }) {
+  // Never empty: the route 404s for a kind with nothing in it, so there is no
+  // "the first ones land soon" state to fall back to.
   const everything = reshuffled(undefined, kind)
-  if (everything.length === 0) {
-    return (
-      <div className="container-page">
-        <Empty
-          message={`No ${KIND_LABEL[kind].toLowerCase()} published yet — the first ones land soon.`}
-        />
-      </div>
-    )
-  }
-
   const spotlight = featured(8, kind)
   const fresh = newest(8, kind)
   const top = popular(8, kind)
@@ -186,7 +180,7 @@ export default async function CatalogPage({
   searchParams: Promise<{ tab?: string }>
 }) {
   const { kind } = await params
-  if (!isKind(kind)) notFound()
+  if (!isBrowsableKind(kind)) notFound()
 
   const { tab } = await searchParams
   const active = tab && TABS.some((t) => t.value === tab) ? tab : "featured"
@@ -195,7 +189,6 @@ export default async function CatalogPage({
   const total = kindCount(kind)
   const cats = populatedCategories(kind)
   const installs = itemsByKind(kind).reduce((sum, item) => sum + item.installs, 0)
-  const empty = `No ${KIND_LABEL[kind].toLowerCase()} yet.`
 
   return (
     <>
@@ -225,10 +218,8 @@ export default async function CatalogPage({
         {active === "featured" && <FeaturedView kind={kind} />}
         {active !== "featured" && (
           <div className="container-page">
-            {active === "newest" && <ItemGrid items={newest(undefined, kind)} emptyMessage={empty} />}
-            {active === "popular" && (
-              <ItemGrid items={popular(undefined, kind)} emptyMessage={empty} />
-            )}
+            {active === "newest" && <ItemGrid items={newest(undefined, kind)} />}
+            {active === "popular" && <ItemGrid items={popular(undefined, kind)} />}
             {active === "authors" && <AuthorsView kind={kind} />}
           </div>
         )}

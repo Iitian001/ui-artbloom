@@ -8,16 +8,29 @@ import { CATEGORY_GROUPS } from "@/lib/categories"
 import { categoryCount, kindCount } from "@/lib/registry"
 import { formatCount } from "@/lib/utils"
 
+/** One column per kind, so the panel never renders an empty column. */
+const COLUMNS: Record<number, string> = {
+  1: "grid-cols-1",
+  2: "grid-cols-2",
+  3: "grid-cols-3",
+}
+
 /**
  * The browse mega-panel. Counts come straight from the registry, so a category
  * with nothing in it renders greyed and unlinked rather than promising items
  * that do not exist yet.
  */
 export function CategoryPanel({ onNavigate }: { onNavigate?: () => void }) {
+  const columns = COLUMNS[CATEGORY_GROUPS.length] ?? "grid-cols-3"
+  const width = `${Math.min(24 * CATEGORY_GROUPS.length, 72)}rem`
+
   return (
-    <div className="absolute top-full left-0 z-50 mt-1.5 w-[min(72rem,calc(100vw-2rem))] origin-top animate-in fade-in-0 zoom-in-[0.98] rounded-xl border border-border bg-popover shadow-2xl duration-150">
+    <div
+      className="absolute top-full left-0 z-50 mt-1.5 origin-top animate-in fade-in-0 zoom-in-[0.98] rounded-xl border border-border bg-popover shadow-2xl duration-150"
+      style={{ width: `min(${width}, calc(100vw - 2rem))` }}
+    >
       <ScrollArea className="max-h-[min(34rem,calc(100vh-6rem))]">
-        <div className="grid grid-cols-3 divide-x divide-border">
+        <div className={`grid ${columns} divide-x divide-border`}>
           {CATEGORY_GROUPS.map((group) => (
             <div key={group.kind} className="p-5">
               <div className="mb-3 flex items-baseline justify-between gap-2">

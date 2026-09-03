@@ -10,8 +10,8 @@ export default function ContactPage() {
   return (
     <>
       <PageIntro eyebrow="04 / contact" title="Have an idea?" accent="Write on the page.">
-        For projects, collaborations, or a technical problem that sounds interesting enough to argue
-        about.
+        For projects, collaborations, product discussions or a difficult technical problem that
+        sounds interesting.
       </PageIntro>
 
       <section className="contactPageGrid">
@@ -19,7 +19,7 @@ export default function ContactPage() {
         <aside className="contactSidebar">
           <div className="stickyNote contactSticky">
             <span className="topTape" aria-hidden="true" />
-            <h2>Find us online</h2>
+            <h2>Find me online</h2>
             <a href={profile.siteUrl} target="_blank" rel="noreferrer">
               {profile.site} ↗
             </a>
@@ -29,8 +29,8 @@ export default function ContactPage() {
             <a href={profile.repoUrl} target="_blank" rel="noreferrer">
               GitHub <span aria-hidden="true">↗</span>
             </a>
-            <a href={`mailto:${profile.email}`}>
-              {profile.email} <span aria-hidden="true">↗</span>
+            <a href={profile.siteUrl} target="_blank" rel="noreferrer">
+              Website <span aria-hidden="true">↗</span>
             </a>
           </div>
         </aside>

@@ -12,7 +12,7 @@ function PillCluster({
   limit = 7,
 }: {
   heading: string
-  kind: "templates" | "animations" | "components"
+  kind: "templates" | "animations"
   limit?: number
 }) {
   const categories = populatedCategories(kind).slice(0, limit)
@@ -79,7 +79,6 @@ export function Hero() {
         <div className="mt-16 flex w-full max-w-3xl flex-col gap-3">
           <PillCluster heading="Templates:" kind="templates" />
           <PillCluster heading="Animations:" kind="animations" />
-          <PillCluster heading="Components:" kind="components" />
         </div>
       </section>
     </AuroraBackground>

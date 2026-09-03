@@ -1,11 +1,14 @@
 import type { Metadata } from "next"
+import type { ReactNode } from "react"
 import Link from "next/link"
-import { BookmarkIcon } from "lucide-react"
+import { BookmarkIcon, CloudOffIcon, LogOutIcon, TriangleAlertIcon } from "lucide-react"
 
+import { signOut } from "@/app/(site)/(auth)/actions"
+import { readSession, restSelect } from "@/app/(site)/(auth)/auth"
 import { ItemCard } from "@/components/item-card"
 import { PageHeader } from "@/components/page-shell"
 import { buttonVariants } from "@/components/ui/button"
-import { popular } from "@/lib/registry"
+import { getItem, popular, type RegistryItem } from "@/lib/registry"
 import { cn } from "@/lib/utils"
 
 export const metadata: Metadata = {
@@ -13,47 +16,241 @@ export const metadata: Metadata = {
   description: "Everything you saved, in one place.",
 }
 
-export default function BookmarksPage() {
-  const suggestions = popular(8)
+/**
+ * One row of `public.saves` (see `supabase/schema.sql`): the table stores the
+ * registry name, not a copy of the item, so a save survives the item being
+ * edited. Fields are `unknown` because they arrive from the network.
+ */
+type SaveRow = { item_name?: unknown; created_at?: unknown }
+
+/** Newest first. The limit is a page's worth, not a claim about the maximum. */
+function savesQuery(userId: string) {
+  // `user_id=eq.` is redundant — the `saves_select_own` policy in
+  // supabase/schema.sql already limits the result to `auth.uid()`. It is here as
+  // a second lock, the same way `listSaves()` in lib/analytics/saves.ts writes
+  // it: if RLS were ever disabled on the table by accident, the filter still
+  // scopes the read. The id comes from the auth service, not from the request.
+  return `saves?select=item_name,created_at&user_id=eq.${encodeURIComponent(userId)}&order=created_at.desc&limit=200`
+}
+
+function Panel({
+  icon,
+  title,
+  children,
+  actions,
+  tone = "muted",
+}: {
+  icon: ReactNode
+  title: string
+  children: ReactNode
+  actions?: ReactNode
+  tone?: "muted" | "warn"
+}) {
+  return (
+    <div
+      className={cn(
+        "flex flex-col items-center rounded-2xl border border-dashed px-6 py-20 text-center",
+        tone === "warn" ? "border-destructive/40" : "border-border",
+      )}
+    >
+      <span className="flex size-11 items-center justify-center rounded-full border border-border bg-secondary">
+        {icon}
+      </span>
+      <p className="mt-5 text-lg font-medium">{title}</p>
+      <p className="mt-2 max-w-sm text-pretty text-sm text-muted-foreground">{children}</p>
+      {actions && <div className="mt-6 flex flex-wrap justify-center gap-3">{actions}</div>}
+    </div>
+  )
+}
+
+function BrowseLinks() {
+  return (
+    <>
+      <Link href="/community/templates" className={buttonVariants()}>
+        Browse templates
+      </Link>
+      <Link href="/community/animations" className={cn(buttonVariants({ variant: "outline" }))}>
+        Browse animations
+      </Link>
+    </>
+  )
+}
+
+/**
+ * `popular()` sorts by an item's total install count, so it cannot support a
+ * "this week" or a "for you" heading. The label says what the numbers are.
+ */
+function MostInstalled() {
+  return (
+    <section className="mt-14">
+      <h2 className="text-lg font-semibold tracking-tight">Most installed</h2>
+      <p className="mt-1 text-sm text-muted-foreground">
+        Ranked by total installs across the catalogue — not a weekly chart, and not personalised.
+      </p>
+      <div className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        {popular(8).map((item) => (
+          <ItemCard key={item.name} item={item} height={200} />
+        ))}
+      </div>
+    </section>
+  )
+}
+
+function SignOutButton() {
+  return (
+    <form action={signOut} className="mt-6">
+      <button
+        type="submit"
+        className={cn(buttonVariants({ variant: "outline", size: "sm" }))}
+      >
+        <LogOutIcon className="size-4" aria-hidden />
+        Sign out
+      </button>
+    </form>
+  )
+}
+
+const SIGN_IN_HREF = "/login?next=%2Fbookmarks"
+
+/**
+ * The four ways to have no list, each said plainly. None of them is "nothing
+ * saved yet" — that is a claim about the account, and in three of these cases
+ * the account has not been read at all.
+ */
+function NoList({ status }: { status: "unconfigured" | "signed-out" | "expired" | "unreachable" }) {
+  if (status === "unconfigured") {
+    return (
+      <Panel
+        icon={<BookmarkIcon className="size-5 text-muted-foreground" aria-hidden />}
+        title="Accounts are not switched on yet"
+        actions={<BrowseLinks />}
+      >
+        This deployment has no auth keys, so there is no account to hang a list on and nothing
+        here is being stored anywhere. Every piece in the catalogue installs without one.
+      </Panel>
+    )
+  }
+
+  if (status === "unreachable") {
+    return (
+      <Panel
+        tone="warn"
+        icon={<CloudOffIcon className="size-5 text-muted-foreground" aria-hidden />}
+        title="Could not reach the account service"
+        actions={
+          <Link href="/bookmarks" className={buttonVariants()}>
+            Try again
+          </Link>
+        }
+      >
+        Your saved list lives on the server, so nothing has been lost — this page just could not
+        read it. Reloading is usually enough.
+      </Panel>
+    )
+  }
+
+  return (
+    <Panel
+      icon={<BookmarkIcon className="size-5 text-muted-foreground" aria-hidden />}
+      title={status === "expired" ? "Your session has ended" : "Sign in to see your list"}
+      actions={
+        <>
+          <Link href={SIGN_IN_HREF} className={buttonVariants()}>
+            Continue with GitHub
+          </Link>
+          <Link href="/community/templates" className={cn(buttonVariants({ variant: "outline" }))}>
+            Browse templates
+          </Link>
+        </>
+      }
+    >
+      {status === "expired"
+        ? "Signing in again brings the same list back — saves are stored on the account, not in this browser."
+        : "Bookmarks are stored on your account, so they follow you between machines. Signing in takes one click and no password."}
+    </Panel>
+  )
+}
+
+export default async function BookmarksPage() {
+  const session = await readSession()
+
+  // Not signed in for any of four different reasons. The suggestions still
+  // render, because a page with one panel on it reads as broken.
+  if (session.status !== "signed-in") {
+    return (
+      <>
+        <PageHeader eyebrow="Bookmarks" title="Saved" />
+        <div className="container-page pb-20">
+          <NoList status={session.status} />
+          <MostInstalled />
+        </div>
+      </>
+    )
+  }
+
+  // The user's own token goes on this request, so row level security decides
+  // what comes back. `null` means the read did not happen; `[]` means the
+  // account genuinely has no saves — two different things to say.
+  const rows = await restSelect<SaveRow>(savesQuery(session.user.id))
+  const names = (rows ?? [])
+    .map((row) => (typeof row.item_name === "string" ? row.item_name : null))
+    .filter((name): name is string => name !== null)
+  const saved = names
+    .map((name) => getItem(name))
+    .filter((item): item is RegistryItem => item !== undefined)
+  /** Saved names the catalogue no longer carries. Counted rather than hidden. */
+  const retired = names.length - saved.length
+  const who = session.user.handle ?? session.user.name ?? session.user.email
 
   return (
     <>
-      <PageHeader eyebrow="Bookmarks" title="Saved" />
+      <PageHeader eyebrow="Bookmarks" title="Saved" lede={who ? `Signed in as ${who}.` : undefined}>
+        <SignOutButton />
+      </PageHeader>
 
       <div className="container-page pb-20">
-        <div className="flex flex-col items-center rounded-2xl border border-dashed border-border px-6 py-20 text-center">
-          <span className="flex size-11 items-center justify-center rounded-full border border-border bg-secondary">
-            <BookmarkIcon className="size-5 text-muted-foreground" aria-hidden />
-          </span>
-          <p className="mt-5 text-lg font-medium">Nothing saved yet</p>
-          <p className="mt-2 max-w-sm text-pretty text-sm text-muted-foreground">
-            Bookmarks are stored on your account, and accounts are not switched on yet. Until then
-            nothing here persists — but every piece is installable without one.
-          </p>
-          <div className="mt-6 flex flex-wrap justify-center gap-3">
-            <Link href="/community/templates" className={buttonVariants()}>
-              Browse templates
-            </Link>
-            <Link
-              href="/community/animations"
-              className={cn(buttonVariants({ variant: "outline" }))}
+        {rows === null ? (
+          <Panel
+            tone="warn"
+            icon={<TriangleAlertIcon className="size-5 text-muted-foreground" aria-hidden />}
+            title="Could not read your saved list"
+            actions={
+              <Link href="/bookmarks" className={buttonVariants()}>
+                Try again
+              </Link>
+            }
+          >
+            You are signed in, but the list did not come back. Nothing has been deleted — this is a
+            failed read, not an empty account.
+          </Panel>
+        ) : saved.length === 0 ? (
+          <>
+            <Panel
+              icon={<BookmarkIcon className="size-5 text-muted-foreground" aria-hidden />}
+              title={retired > 0 ? "Nothing left to show" : "Nothing saved yet"}
+              actions={<BrowseLinks />}
             >
-              Browse animations
-            </Link>
-          </div>
-        </div>
-
-        <section className="mt-14">
-          <h2 className="text-lg font-semibold tracking-tight">Most installed this week</h2>
-          <p className="mt-1 text-sm text-muted-foreground">
-            A reasonable place to start a list.
-          </p>
-          <div className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {suggestions.map((item) => (
-              <ItemCard key={item.name} item={item} height={200} />
-            ))}
-          </div>
-        </section>
+              {retired > 0
+                ? `Your ${retired === 1 ? "one save is" : `${retired} saves are`} no longer in the catalogue, so there is nothing to open.`
+                : "Save anything from the catalogue and it lands here, on your account rather than in this browser."}
+            </Panel>
+            <MostInstalled />
+          </>
+        ) : (
+          <>
+            <p className="text-sm text-muted-foreground">
+              {saved.length === 1 ? "1 saved item" : `${saved.length} saved items`}
+              {retired > 0 &&
+                `, and ${retired === 1 ? "one that is" : `${retired} that are`} no longer in the catalogue`}
+              .
+            </p>
+            <div className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+              {saved.map((item) => (
+                <ItemCard key={item.name} item={item} height={200} showBookmarks />
+              ))}
+            </div>
+          </>
+        )}
       </div>
     </>
   )

@@ -49,8 +49,8 @@ export function AgentMockups() {
             Copy the command. <em className="font-serif font-normal italic">Paste it anywhere.</em>
           </h2>
           <p className="mt-4 text-pretty text-muted-foreground">
-            One registry, every agent. The files land in your repo already matched to your theme —
-            no wrapper, no runtime, nothing to import from us.
+            One registry, every agent. The files land in the paths your project already uses — no
+            wrapper, no runtime, nothing to import from us.
           </p>
         </div>
 
@@ -59,21 +59,27 @@ export function AgentMockups() {
           <Frame label="Any terminal" Icon={TerminalIcon}>
             <TitleBar>~/acme/website</TitleBar>
             <div className="flex-1 space-y-2 p-3.5 font-mono text-[12px] leading-relaxed">
+              {/*
+                A mockup, but not a fictional one: the item, both targets and the
+                line counts are what `add aurora-thread-loom` really writes. It
+                ships its own stylesheet rather than keyframes, so nothing here
+                claims to touch the project's globals.css.
+              */}
               <p>
                 <span className="text-muted-foreground">$</span> npx {brand.npmPackage} add
-                aurora-background
+                aurora-thread-loom
               </p>
               <p className="text-muted-foreground">✔ Resolved 1 item, 0 dependencies to add</p>
               <p className="text-emerald-500">
-                ✔ components/ui/aurora-background.tsx
-                <span className="text-muted-foreground"> +112</span>
+                ✔ components/ui/aurora-thread-loom.tsx
+                <span className="text-muted-foreground"> +28</span>
               </p>
               <p className="text-emerald-500">
-                ✔ app/globals.css
-                <span className="text-muted-foreground"> +4 keyframes</span>
+                ✔ components/ui/aurora-thread-loom.css
+                <span className="text-muted-foreground"> +111</span>
               </p>
               <p className="text-muted-foreground">
-                Done in 1.2s — adapted to your Tailwind theme.
+                Done in 1.2s — written to your components path.
               </p>
               <p className="pt-2">
                 <span className="text-muted-foreground">$</span>
@@ -94,16 +100,21 @@ export function AgentMockups() {
                 </span>
               </div>
               <div className="flex-1 space-y-0.5 overflow-hidden p-3.5 font-mono text-[11.5px] leading-relaxed">
+                {/*
+                  The loom paints its own surface and takes no children, so it goes
+                  in as a sibling inside a sized box — the stage fills its parent.
+                  Three lines in for one out, which is what the hunk header says.
+                */}
                 <p className="text-muted-foreground">@@ -18,7 +18,9 @@</p>
                 <p className="rounded bg-red-500/10 px-1.5 text-red-400">- &lt;OldHero /&gt;</p>
                 <p className="rounded bg-emerald-500/10 px-1.5 text-emerald-500">
-                  + &lt;AuroraBackground&gt;
+                  + &lt;div className=&quot;relative h-[32rem]&quot;&gt;
                 </p>
                 <p className="rounded bg-emerald-500/10 px-1.5 text-emerald-500">
-                  + &nbsp;&lt;AnimatedHero /&gt;
+                  + &nbsp;&lt;AuroraThreadLoom /&gt;
                 </p>
                 <p className="rounded bg-emerald-500/10 px-1.5 text-emerald-500">
-                  + &lt;/AuroraBackground&gt;
+                  + &lt;/div&gt;
                 </p>
               </div>
               <div className="flex items-center justify-between border-t border-border px-3.5 py-2.5">
@@ -124,10 +135,10 @@ export function AgentMockups() {
             <div className="flex-1 space-y-2.5 p-3.5 text-[12.5px]">
               <p className="text-muted-foreground">Worked for 14s</p>
               {[
-                "created components/ui/aurora-background.tsx",
+                "created components/ui/aurora-thread-loom.tsx",
+                "created components/ui/aurora-thread-loom.css",
                 "created components/ui/number-ticker.tsx",
                 "edited app/page.tsx",
-                "edited app/globals.css",
               ].map((line) => (
                 <p key={line} className="flex items-start gap-2 font-mono text-[11.5px]">
                   <CheckIcon className="mt-0.5 size-3 shrink-0 text-emerald-500" />

@@ -3,8 +3,8 @@ import { notFound } from "next/navigation"
 
 import { AuthorAvatar } from "@/components/author"
 import { ItemGrid } from "@/components/item-grid"
-import { CATEGORY_GROUPS, KIND_LABEL } from "@/lib/categories"
-import { allAuthors, getAuthor, itemsByAuthor } from "@/lib/registry"
+import { KIND_LABEL } from "@/lib/categories"
+import { allAuthors, browsableKinds, getAuthor, itemsByAuthor } from "@/lib/registry"
 import { formatFull } from "@/lib/utils"
 
 type Params = { handle: string }
@@ -14,6 +14,10 @@ function handleOf({ handle }: Params) {
   return handle.startsWith("@") ? null : handle
 }
 
+/**
+ * One page per author who actually has something in the catalogue — today that
+ * is exactly one. Every other handle 404s through the site's `not-found`.
+ */
 export function generateStaticParams() {
   return allAuthors().map((author) => ({ handle: author.handle }))
 }
@@ -75,13 +79,13 @@ export default async function AuthorPage({ params }: { params: Promise<Params> }
       </header>
 
       <div className="mt-12 flex flex-col gap-12">
-        {CATEGORY_GROUPS.map((group) => {
-          const owned = items.filter((item) => item.kind === group.kind)
+        {browsableKinds().map((kind) => {
+          const owned = items.filter((item) => item.kind === kind)
           if (owned.length === 0) return null
           return (
-            <section key={group.kind}>
+            <section key={kind}>
               <div className="mb-4 flex items-baseline gap-2">
-                <h2 className="text-lg font-semibold tracking-tight">{KIND_LABEL[group.kind]}</h2>
+                <h2 className="text-lg font-semibold tracking-tight">{KIND_LABEL[kind]}</h2>
                 <span className="font-mono text-xs text-muted-foreground tabular-nums">
                   {owned.length}
                 </span>

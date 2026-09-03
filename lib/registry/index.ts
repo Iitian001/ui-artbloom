@@ -1,9 +1,15 @@
-import { ALL_CATEGORIES, type Kind } from "@/lib/categories"
+import { ALL_CATEGORIES, CATEGORY_GROUPS, isKind, type Kind } from "@/lib/categories"
 
 import { ITEMS } from "./items"
 import type { Author, RegistryItem } from "./schema"
 
-export type { Author, RegistryItem, RegistryFile, RegistryPayload } from "./schema"
+export type {
+  Author,
+  RegistryAsset,
+  RegistryItem,
+  RegistryFile,
+  RegistryPayload,
+} from "./schema"
 export { ITEMS, AUTHORS } from "./items"
 
 const BY_NAME = new Map(ITEMS.map((item) => [item.name, item]))
@@ -27,6 +33,21 @@ export function categoryCount(kind: Kind, slug: string) {
 
 export function kindCount(kind: Kind) {
   return itemsByKind(kind).length
+}
+
+/**
+ * The kinds a visitor can browse, in nav order. Derived, never hand-written: a
+ * kind with nothing in it is not a catalogue with an empty state, it reads as a
+ * broken site — so `/community/{kind}` 404s until something lands in it, and
+ * comes back on its own when something does.
+ */
+export function browsableKinds(): Kind[] {
+  return CATEGORY_GROUPS.map((group) => group.kind).filter((kind) => kindCount(kind) > 0)
+}
+
+/** Route guard for `/community/{kind}` and everything under it. */
+export function isBrowsableKind(value: string): value is Kind {
+  return isKind(value) && kindCount(value) > 0
 }
 
 /** Categories in a kind that actually have items, most populated first. */

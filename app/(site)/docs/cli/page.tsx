@@ -4,6 +4,7 @@ import Link from "next/link"
 import { CodeBlock } from "@/components/code-block"
 import { PageHeader, Prose } from "@/components/page-shell"
 import { brand } from "@/lib/brand"
+import { browsableKinds } from "@/lib/registry"
 
 export const metadata: Metadata = {
   title: "CLI reference",
@@ -13,15 +14,17 @@ export const metadata: Metadata = {
 const COMMANDS = [
   {
     usage: `npx ${brand.npmPackage} add <name...>`,
-    body: "Fetch one or more pieces and write their files into the project. Names are the install names shown on every item page.",
+    body: "Fetch one or more pieces and write their files into the project. Names are the install names shown on every item page. Anything too big to inline — a template's images, models, audio — is streamed to disk alongside them.",
   },
   {
     usage: `npx ${brand.npmPackage} list [--kind <kind>]`,
-    body: "Print the catalogue: name, kind, and one-line description. Filter with templates, animations, or components.",
+    // Derived from the catalogue: a kind with nothing in it is a filter that
+    // returns an error, so it is not offered here as though it were one.
+    body: `Print the catalogue: name, kind, and one-line description. Filter with ${browsableKinds().join(" or ")}.`,
   },
   {
     usage: `npx ${brand.npmPackage} info <name>`,
-    body: "Show exactly which files a piece would write, which npm packages it needs, and what it pulls in transitively. Writes nothing.",
+    body: "Show exactly which files a piece would write, which of them your project already has, the npm packages it needs, and the size of the assets it would download. Writes nothing.",
   },
   {
     usage: `npx ${brand.npmPackage} init`,
@@ -33,7 +36,7 @@ const FLAGS = [
   ["-y, --yes", "Answer every prompt with the default. For CI."],
   ["-o, --overwrite", "Replace files that already exist. Off by default — a clash is an error."],
   ["-c, --cwd <path>", "Project root. Defaults to the current directory."],
-  ["--css <path>", "Stylesheet that receives keyframes. Default: app/globals.css."],
+  ["--css <path>", "Stylesheet that receives keyframes. Default: the global stylesheet it finds, usually app/globals.css."],
   ["--ui <path>", "Where component files land. Default: components/ui."],
   ["--registry <url>", "Read from a different registry origin. For self-hosting or a fork."],
   ["--dry-run", "Print the plan and exit. Nothing is written, nothing is installed."],
@@ -47,32 +50,36 @@ const CONFIG = `{
   "paths": {
     "ui": "components/ui",
     "pages": "app",
+    "hooks": "hooks",
     "css": "app/globals.css"
   }
 }`
 
-const SESSION = `$ npx ${brand.npmPackage} add launch-landing
+/**
+ * A real run, kept real by hand: every path, package and count below is copied
+ * from the `marquee` entry in lib/registry/items.ts. If that entry changes — or
+ * goes — this transcript is what has to change with it.
+ */
+const SESSION = `$ npx ${brand.npmPackage} add marquee
 
-  launch-landing  template by @artbloom
-  A complete product landing page — aurora hero, animated
-  stat band, feature grid, footer. Deploys as-is.
-  Pulls in 3 registry dependencies.
+  marquee  animation by @artbloom
+  Seamless infinite scroller, horizontal or vertical,
+  with edge fades and pause-on-hover.
 
   will write
-    components/ui/aurora-background.tsx
-    components/ui/number-ticker.tsx
-    components/ui/shimmer-button.tsx
-    app/(launch)/page.tsx
+    components/ui/marquee.tsx
+    lib/utils.ts
   will append 2 keyframes to app/globals.css
-  will install motion@13.2.0
+  will install clsx@2.1.1, tailwind-merge@3.6.0
 
 ? Proceed? (Y/n) y
 
-  ✓ wrote 4 files
+  ✓ wrote 2 files
   ✓ updated app/globals.css
-  ✓ installed 1 package
+  ✓ installed 2 packages
 
-  done in 10.5s`
+  done in 4.2s
+  ${brand.origin}/artbloom/animations/marquee`
 
 export default function CliDocsPage() {
   return (
@@ -130,10 +137,12 @@ export default function CliDocsPage() {
                     <code>0</code> — everything asked for was written.
                   </li>
                   <li>
-                    <code>1</code> — nothing was written. An unknown name, a file clash without{" "}
-                    <code>--overwrite</code>, an unreachable registry, or a refused prompt. The CLI
-                    plans the whole install before touching disk, so a failure leaves the project as
-                    it was.
+                    <code>1</code> — the run did not finish. An unknown name, a file clash without{" "}
+                    <code>--overwrite</code>, an unreachable registry, or a refused prompt is caught
+                    while the install is still being planned, so the project is left exactly as it
+                    was. A package manager that fails, or a missing stylesheet, exits{" "}
+                    <code>1</code> too: the files that already landed stay on disk, and the CLI
+                    prints the command that finishes the job.
                   </li>
                 </ul>
 

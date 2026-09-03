@@ -4,23 +4,23 @@ import Link from "next/link"
 import { PrintButton } from "../components/print-button"
 import { href, profile } from "../data/projects"
 
-export const metadata: Metadata = { title: "Capabilities" }
+export const metadata: Metadata = { title: "Resume" }
 
 const SELECTED = [
-  ["Ledger Atlas", "finance reporting surface"],
-  ["Kiln", "shared-workshop scheduling"],
-  ["Field Recorder", "local-first audio capture"],
-  ["Paper Trail", "documentation generated from source"],
-  ["Signal Garden", "alert correlation and on-call design"],
+  ["Bloom Chat", "multimodal AI workspace"],
+  ["ArtBloom", "AI creative studio"],
+  ["Pandu Pet", "animated desktop companion"],
+  ["Bloom Browser", "AI-native browser concept"],
+  ["Bloom Code", "terminal coding agent"],
 ]
 
 const CAPABILITIES = [
-  "Product interface design",
-  "React / Next.js architecture",
-  "Design systems & tokens",
-  "Accessibility audits",
-  "Performance budgets",
-  "Developer tooling",
+  "AI / ML systems",
+  "LLM & agent orchestration",
+  "Next.js / React",
+  "Python / FastAPI",
+  "Automation",
+  "Product & interaction design",
 ]
 
 export default function ResumePage() {
@@ -28,7 +28,7 @@ export default function ResumePage() {
     <article className="resumePage">
       <header>
         <div>
-          <span className="eyebrow">CAPABILITIES / 2026</span>
+          <span className="eyebrow">RESUME / 2026</span>
           <h1>
             {profile.name}
             <br />
@@ -38,17 +38,17 @@ export default function ResumePage() {
         </div>
         <div className="resumeContact">
           <a href={profile.siteUrl}>{profile.site}</a>
-          <a href={`mailto:${profile.email}`}>{profile.email}</a>
+          <a href={profile.repoUrl}>github.com/{profile.handle}</a>
           <span>{profile.location}</span>
         </div>
       </header>
 
       <section className="resumeColumns">
         <div>
-          <h2>Practice</h2>
+          <h2>Profile</h2>
           <p>
-            A small studio working on product interfaces, front-end architecture, design systems and
-            the tooling that keeps them honest.
+            Developer focused on AI products, agent systems, web experiences, automation and
+            experimental software.
           </p>
           <h2>Selected projects</h2>
           <ul>
@@ -67,17 +67,14 @@ export default function ResumePage() {
             ))}
           </ul>
           <h2>Current direction</h2>
-          <p>
-            Taking on interface work where the constraints are real, and publishing the reusable
-            parts as open source.
-          </p>
+          <p>Building under {profile.studio} and contributing to open-source software.</p>
         </div>
       </section>
 
       <div className="resumeActions">
         <PrintButton />
         <Link className="underLink" href={href("/contact")}>
-          Get in touch →
+          Contact me →
         </Link>
       </div>
       <p className="printNote">Tip: press Ctrl/Cmd + P to save this page as a PDF.</p>

@@ -10,17 +10,16 @@ export const metadata: Metadata = { title: "Work" }
 export default function WorkPage() {
   return (
     <>
-      <PageIntro eyebrow="01 / selected work" title="Things we have" accent="built.">
-        Projects, experiments and product systems where the engineering and the design had to agree.
+      <PageIntro eyebrow="01 / selected work" title="Things I have" accent="built.">
+        Projects, experiments and product systems where engineering and design meet.
       </PageIntro>
 
       <section className="workEditorial">
         <div className="workLeadNote">
           <span className="topTape" aria-hidden="true" />
-          <strong>How we choose work</strong>
+          <strong>How I choose work</strong>
           <p>
-            A useful problem. A clear point of view. Enough technical difficulty that we learn
-            something on the way through.
+            Useful problem. Clear point of view. Enough technical difficulty to learn something.
           </p>
           <span className="scribble" aria-hidden="true">
             → make it real

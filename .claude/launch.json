@@ -12,6 +12,13 @@
       "name": "consumer-verify",
       "url": "http://localhost:3212",
       "port": 3212
+    },
+    {
+      "name": "prod-preview",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["node_modules/next/dist/bin/next", "start", "--port", "3211"],
+      "port": 3211,
+      "autoPort": false
     }
   ]
 }
