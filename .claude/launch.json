@@ -1,0 +1,17 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "web",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["node_modules/next/dist/bin/next", "dev", "--port", "3210"],
+      "port": 3210,
+      "autoPort": false
+    },
+    {
+      "name": "consumer-verify",
+      "url": "http://localhost:3212",
+      "port": 3212
+    }
+  ]
+}

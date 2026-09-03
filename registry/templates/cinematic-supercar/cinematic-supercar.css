@@ -1,0 +1,26 @@
+/*
+ * The shell the experience is mounted in — three rules, all of them scoped.
+ *
+ * `position: fixed` rather than `100dvh`: the story is a full-bleed takeover, and
+ * this route may well be rendered inside a layout that adds a header, a max-width
+ * container, or padding. Fixing to the viewport means none of that insets it, and
+ * nothing here leaks out to the rest of the host app either — no `body` rules, no
+ * bare element selectors.
+ */
+.supercar-shell {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  background: #070707;
+  /* The page paints dark before the frame has loaded, so there is no white flash. */
+  color-scheme: dark;
+}
+
+.supercar-frame {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: #070707;
+}

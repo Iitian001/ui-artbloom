@@ -1,0 +1,117 @@
+@keyframes domino-fall {
+  0%,
+  19%,
+  91%,
+  100% {
+    transform: rotateX(0) translateY(0);
+  }
+  40%,
+  66% {
+    transform: rotateX(79deg) translateY(13px);
+  }
+  72% {
+    transform: rotateX(-8deg) translateY(-5px);
+  }
+  80% {
+    transform: rotateX(3deg);
+  }
+}
+
+/*
+ * The surface the tiles are designed to sit on. Also the positioning context
+ * for the ground shadow, and where the 3D depth comes from.
+ */
+.domino-word-stage {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  min-height: 240px;
+  container-type: inline-size;
+  overflow: hidden;
+  background: radial-gradient(circle at 50% 45%, #ff9a7c, #ff5a40 50%, #bd3027);
+  perspective: 900px;
+}
+
+.domino-word {
+  /*
+   * A tile is 70px wherever there is room for it. When there is not — a narrow
+   * stage, or a long word — the whole rack narrows instead of overflowing, so the
+   * layout box keeps fitting and the grid above can still centre it. Everything
+   * below is a ratio of `--tile`, which is how the 70px design stays intact.
+   * `--n` is the letter count; the component passes it. 1.1143 is tile + gap.
+   */
+  --tile: min(70px, calc(96cqw / (var(--n, 6) * 1.1143)));
+  display: flex;
+  align-items: flex-end;
+  gap: calc(var(--tile) * 0.1143);
+  height: calc(var(--tile) * 2.1429);
+  perspective: 900px;
+}
+
+.domino-word > span {
+  --delay: calc(var(--i) * 0.13s);
+  position: relative;
+  width: var(--tile);
+  height: calc(var(--tile) * 1.5143);
+  display: grid;
+  place-items: center;
+  transform-style: preserve-3d;
+  transform-origin: 50% 100%;
+  animation: domino-fall 4.5s var(--delay) cubic-bezier(0.65, 0, 0.2, 1) infinite;
+}
+
+.domino-word span > b {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  border: 1px solid #111;
+  border-radius: 4px;
+  background: #f0ede6;
+  font-size: calc(var(--tile) * 0.8286);
+  line-height: 1;
+  box-shadow: 8px 10px 0 rgba(17, 17, 15, 0.13);
+}
+
+.domino-word span > i {
+  position: absolute;
+  left: calc(var(--tile) * 0.0429);
+  right: calc(var(--tile) * 0.0429);
+  bottom: calc(var(--tile) * -0.1571);
+  height: calc(var(--tile) * 0.1714);
+  background: #111;
+  transform: rotateX(90deg);
+  transform-origin: top;
+}
+
+.domino-word::before {
+  content: '';
+  position: absolute;
+  width: calc(var(--n, 6) * var(--tile) * 1.0714);
+  height: calc(var(--tile) * 1.3571);
+  border-radius: 50%;
+  background: rgba(83, 12, 8, 0.22);
+  filter: blur(20px);
+  transform: translateY(85px) rotateX(70deg);
+}
+
+.domino-word > span {
+  filter: drop-shadow(0 18px 18px rgba(86, 15, 10, 0.22));
+}
+
+.domino-word span > b {
+  background: linear-gradient(135deg, #fff, #e8e3d8);
+  box-shadow:
+    inset 0 0 0 5px rgba(255, 255, 255, 0.35),
+    8px 10px 0 rgba(17, 17, 15, 0.16);
+}
+
+.domino-word > span:nth-child(3) b {
+  background: #d8ff43;
+}
+
+.domino-word > span:nth-child(5) b {
+  background: #9b6dff;
+}

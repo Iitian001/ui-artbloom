@@ -1,0 +1,220 @@
+@keyframes curtain-panel {
+  0% {
+    transform: translateX(-135%) rotateY(-92deg);
+    transform-origin: left center;
+  }
+  35%,
+  59% {
+    transform: translateX(0) rotateY(0);
+    transform-origin: left center;
+  }
+  60% {
+    transform-origin: right center;
+  }
+  100% {
+    transform: translateX(135%) rotateY(92deg);
+    transform-origin: right center;
+  }
+}
+
+@keyframes curtain-title {
+  0%,
+  24% {
+    opacity: 0;
+    transform: scale(0.72);
+    filter: blur(12px);
+    color: #f0ede6;
+  }
+  43%,
+  62% {
+    opacity: 1;
+    transform: scale(1);
+    filter: blur(0);
+    color: #111;
+  }
+  76%,
+  100% {
+    opacity: 0;
+    transform: scale(1.18);
+    filter: blur(8px);
+    color: #f0ede6;
+  }
+}
+
+@keyframes curtain-index {
+  0%,
+  28% {
+    opacity: 0.18;
+    transform: translateY(0);
+  }
+  45%,
+  66% {
+    opacity: 1;
+    transform: translateY(118px);
+    color: #111;
+  }
+  100% {
+    opacity: 0.18;
+    transform: translateY(0);
+  }
+}
+
+/*
+ * The surface the sequence is designed to sit on. `perspective` lives here as
+ * well as on the button so the panels keep their depth if the stage is reused.
+ */
+.curtain-sequence-stage {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  min-height: 240px;
+  container-type: inline-size;
+  overflow: hidden;
+  background: #0d0d0c;
+  perspective: 1100px;
+}
+
+.curtain-sequence {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border: 0;
+  background: radial-gradient(circle at 50% 46%, #2a2a27 0, #111 58%, #080807 100%);
+  color: #f0ede6;
+  perspective: 1100px;
+}
+
+.curtain-sequence::before {
+  content: '';
+  position: absolute;
+  inset: 28px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background:
+    linear-gradient(
+      90deg,
+      transparent 49.9%,
+      rgba(255, 255, 255, 0.08) 50%,
+      transparent 50.1%
+    ),
+    linear-gradient(
+      0deg,
+      transparent 49.9%,
+      rgba(255, 255, 255, 0.08) 50%,
+      transparent 50.1%
+    );
+}
+
+.curtain-sequence::after {
+  content: '12';
+  position: absolute;
+  right: 17px;
+  top: 12px;
+  color: rgba(255, 255, 255, 0.18);
+  font-size: 54px;
+  font-weight: 750;
+  letter-spacing: -0.08em;
+}
+
+.curtain-sequence > span {
+  position: absolute;
+  z-index: 9;
+  left: 17px;
+  bottom: 15px;
+  font: 8px var(--font-geist-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+.curtain-sequence > div {
+  position: absolute;
+  z-index: 4;
+  inset: 0;
+  display: flex;
+  perspective: 900px;
+  pointer-events: none;
+}
+
+.curtain-sequence > div > i {
+  --delay: calc(var(--panel) * 75ms);
+  position: relative;
+  width: 16.667%;
+  height: 100%;
+  overflow: hidden;
+  border-right: 1px solid rgba(17, 17, 15, 0.38);
+  background: #d8ff43;
+  transform: translateX(-130%) rotateY(-92deg);
+  transform-origin: left center;
+  box-shadow: 16px 0 34px rgba(0, 0, 0, 0.22);
+  backface-visibility: hidden;
+}
+
+.curtain-sequence > div > i:nth-child(2) {
+  background: #f0ede6;
+}
+
+.curtain-sequence > div > i:nth-child(3) {
+  background: #3155e7;
+}
+
+.curtain-sequence > div > i:nth-child(4) {
+  background: #ff5a40;
+}
+
+.curtain-sequence > div > i:nth-child(5) {
+  background: #9b6dff;
+}
+
+.curtain-sequence > div > i:nth-child(6) {
+  background: #111;
+  color: white;
+}
+
+.curtain-sequence i > small {
+  position: absolute;
+  left: 50%;
+  bottom: 21px;
+  font: 7px var(--font-geist-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+  transform: translateX(-50%);
+  opacity: 0.65;
+}
+
+.curtain-sequence > b {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  gap: 12px;
+  font-weight: 700;
+}
+
+.curtain-sequence b > em {
+  /* Sized from the stage, not the viewport, and divided by the letter count so
+     any label fits. `--n` is the longer of the two labels; see the component. */
+  font-size: clamp(20px, calc(135cqw / var(--n, 7)), 118px);
+  font-style: normal;
+  line-height: 0.75;
+  letter-spacing: -0.08em;
+  text-shadow: 0 22px 38px rgba(0, 0, 0, 0.55);
+}
+
+.curtain-sequence b > small {
+  font: 8px var(--font-geist-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+  letter-spacing: 0.18em;
+  color: #8f8f89;
+}
+
+.curtain-sequence.running > div > i {
+  animation: curtain-panel 2.45s var(--delay) cubic-bezier(0.76, 0, 0.24, 1) both;
+}
+
+.curtain-sequence.running > b {
+  z-index: 6;
+  animation: curtain-title 2.8s ease-in-out both;
+}
+
+.curtain-sequence.running::after {
+  animation: curtain-index 2.8s ease-in-out both;
+}

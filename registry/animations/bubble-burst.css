@@ -1,0 +1,147 @@
+@keyframes bubble-rise {
+  0% {
+    transform: translateY(90px) scale(0.15);
+    opacity: 0;
+  }
+  24% {
+    opacity: 1;
+    transform: translateY(35px) scale(1);
+  }
+  58% {
+    opacity: 1;
+    transform: translateY(-48px) scale(1);
+  }
+  68%,
+  100% {
+    opacity: 0;
+    transform: translateY(-52px) scale(0.3);
+  }
+}
+
+@keyframes drop-flight {
+  0%,
+  55% {
+    opacity: 0;
+    transform: rotate(var(--angle)) translateY(-18px) scaleY(0);
+  }
+  60% {
+    opacity: 1;
+    transform: rotate(var(--angle)) translateY(-38px) scaleY(1);
+  }
+  80%,
+  100% {
+    opacity: 0;
+    transform: rotate(var(--angle)) translateY(-64px) scaleY(0.3);
+  }
+}
+
+@keyframes bubble-ring {
+  0% {
+    scale: 0.25;
+    opacity: 0;
+  }
+  45% {
+    opacity: 0.75;
+  }
+  100% {
+    scale: 1.25;
+    opacity: 0;
+  }
+}
+
+/*
+ * The surface the loader is designed to sit on. Also the positioning context:
+ * `.bubble-burst::before` is the pool the drops fall into and is absolute.
+ */
+.bubble-burst-stage {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  min-height: 240px;
+  container-type: inline-size;
+  overflow: hidden;
+  background: radial-gradient(circle at 50% 60%, #557dff 0, #273ca4 42%, #0b1034 100%);
+  color: white;
+}
+
+.bubble-burst {
+  display: flex;
+  gap: 34px;
+  filter: drop-shadow(12px 14px 6px rgba(0, 0, 0, 0.28));
+}
+
+.bubble-burst .bubble {
+  --delay: calc(var(--b) * 0.17s);
+  position: relative;
+  width: 54px;
+  height: 54px;
+}
+
+.bubble-burst .bubble::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 32% 24%,
+    #fff 0 5%,
+    #8bc8ff 9%,
+    #5479ff 44%,
+    #2734a0 100%
+  );
+  box-shadow: inset 0 0 12px rgba(255, 255, 255, 0.55);
+  animation: bubble-rise 1.9s var(--delay) cubic-bezier(0.22, 0.75, 0.3, 1) infinite;
+}
+
+.bubble-burst .bubble-drop {
+  --angle: calc(var(--d) * 45deg);
+  position: absolute;
+  left: 26px;
+  top: 26px;
+  width: 4px;
+  height: 12px;
+  border-radius: 5px;
+  background: #a8dfff;
+  transform-origin: 2px 2px;
+  transform: rotate(var(--angle)) translateY(-38px) scaleY(0);
+  animation: drop-flight 1.9s var(--delay) ease-out infinite;
+}
+
+.bubble-burst::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 270px;
+  height: 270px;
+  border: 1px solid rgba(168, 223, 255, 0.2);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 80px rgba(118, 172, 255, 0.26);
+  animation: bubble-ring 1.9s ease-out infinite;
+}
+
+.bubble-burst .bubble::before {
+  filter: saturate(1.2);
+  box-shadow:
+    inset 7px 8px 13px rgba(255, 255, 255, 0.5),
+    inset -10px -12px 20px rgba(18, 28, 107, 0.5),
+    0 14px 25px rgba(0, 0, 0, 0.25);
+}
+
+.bubble-burst .bubble:nth-child(even) {
+  transform: translateY(18px) scale(0.8);
+}
+
+.bubble-burst .bubble-drop {
+  box-shadow: 0 0 8px #a8dfff;
+}
+
+@container (max-width: 520px) {
+  .bubble-burst {
+    gap: 14px;
+    scale: 0.82;
+  }
+}

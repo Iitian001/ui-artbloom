@@ -1,0 +1,45 @@
+{
+  "name": "ui.artbloom",
+  "version": "0.1.0",
+  "description": "Install templates, animations, and components from ui.artbloom straight into your project.",
+  "keywords": [
+    "ui",
+    "templates",
+    "animations",
+    "components",
+    "react",
+    "nextjs",
+    "tailwindcss",
+    "registry",
+    "shadcn"
+  ],
+  "homepage": "https://ui.artbloom.tech",
+  "license": "MIT",
+  "type": "module",
+  "bin": {
+    "artbloom": "dist/index.js"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=20.11"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "dev": "tsc -p tsconfig.json --watch",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "prepublishOnly": "npm run build"
+  },
+  "dependencies": {
+    "commander": "15.0.0",
+    "kleur": "4.1.5",
+    "prompts": "2.4.2"
+  },
+  "devDependencies": {
+    "@types/node": "24.10.1",
+    "@types/prompts": "2.4.9",
+    "typescript": "7.0.2"
+  }
+}

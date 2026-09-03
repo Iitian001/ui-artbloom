@@ -1,0 +1,2961 @@
+<!doctype html>
+<html lang="en" class="story-lock">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AVENTADOR SVJ — V12 Machine Story</title>
+<meta name="description" content="A polished Lamborghini Aventador SVJ-inspired cinematic product story: assembly, ignition, road, tunnel, braking and private showroom presentation.">
+<style>
+
+:root{
+  --rosso:#f0cf00;
+  --rosso2:#b89e00;
+  --yellow:#ffd400;
+  --black:#070707;
+  --cream:#f0ede5;
+  --muted:#8c8880;
+  --hair:rgba(255,255,255,.14);
+  --darkhair:rgba(0,0,0,.15);
+  --sans:'Helvetica Neue',Helvetica,Arial,sans-serif;
+  --mono:'SFMono-Regular',Consolas,'Liberation Mono',Menlo,monospace;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--black);color:var(--cream);font-family:var(--sans)}
+html{scroll-behavior:smooth}
+body{overflow-x:hidden}
+button,a{font:inherit;color:inherit}
+a{text-decoration:none}
+img{display:block;max-width:100%}
+::selection{background:var(--yellow);color:#000}
+
+.noise{
+  position:fixed;inset:-55%;z-index:9999;pointer-events:none;opacity:.032;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.94' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.65'/%3E%3C/svg%3E");
+  animation:grain .26s steps(2) infinite
+}
+@keyframes grain{0%{transform:translate(0)}25%{transform:translate(2%,-2%)}50%{transform:translate(-2%,2%)}75%{transform:translate(2%,1%)}100%{transform:translate(-1%,-2%)}}
+
+.cursor,.cursor-dot{position:fixed;z-index:10000;pointer-events:none;left:0;top:0;transform:translate(-50%,-50%);mix-blend-mode:difference}
+.cursor{width:46px;height:46px;border:1px solid #fff;border-radius:50%;opacity:.72;transition:width .2s,height .2s,background .2s}
+.cursor.hot{width:76px;height:76px;background:white}
+.cursor-dot{width:4px;height:4px;border-radius:50%;background:#fff}
+
+.entry{
+  position:fixed;inset:0;z-index:5000;background:var(--rosso);color:#fff;
+  display:grid;grid-template-rows:auto 1fr auto;padding:27px 30px;
+  clip-path:inset(0);transition:clip-path 1s cubic-bezier(.76,0,.24,1)
+}
+.entry.hide{clip-path:inset(0 0 100% 0);pointer-events:none}
+.entry-top,.entry-bottom{display:flex;justify-content:space-between;font:400 9px var(--mono);letter-spacing:.15em;text-transform:uppercase}
+.entry-center{align-self:center;justify-self:center;text-align:center}
+.entry-kicker{display:flex;justify-content:center;align-items:center;gap:11px;font:400 9px var(--mono);letter-spacing:.18em;text-transform:uppercase}
+.entry-kicker i{width:9px;height:9px;border-radius:50%;background:var(--yellow)}
+.entry-title{font-size:clamp(88px,18vw,280px);font-weight:900;line-height:.67;letter-spacing:-.105em;margin:26px 0 19px}
+.entry-sub{font:400 10px var(--mono);text-transform:uppercase;letter-spacing:.16em;opacity:.78}
+.enter{margin-top:28px;height:58px;padding:0 23px;border:1px solid white;background:white;color:#080808;cursor:pointer;font:500 9px var(--mono);letter-spacing:.13em;text-transform:uppercase;display:inline-flex;gap:32px;align-items:center}
+.enter:hover{background:#080808;color:white;border-color:#080808}
+
+.nav{
+  height:70px;padding:0 28px;position:fixed;z-index:950;top:0;left:0;right:0;
+  display:grid;grid-template-columns:1fr auto 1fr;align-items:center;
+  border-bottom:1px solid var(--hair);background:linear-gradient(to bottom,rgba(6,6,6,.9),rgba(6,6,6,.06));backdrop-filter:blur(8px)
+}
+.nav-left,.nav-right{display:flex;align-items:center;gap:25px;font:400 9px var(--mono);text-transform:uppercase;letter-spacing:.13em}.nav-right{justify-content:flex-end}
+.wordmark{font-weight:900;letter-spacing:-.055em;font-size:17px}.wordmark b{color:var(--rosso)}
+.yellow-dot{width:7px;height:7px;background:var(--yellow);border-radius:50%;box-shadow:0 0 0 4px rgba(255,212,0,.08)}
+.sound{height:30px;padding:0 11px;border:1px solid rgba(255,255,255,.23);background:rgba(0,0,0,.12);font:400 8px var(--mono);letter-spacing:.1em;text-transform:uppercase;cursor:pointer}
+.sound{transition:background .22s,color .22s,border-color .22s}.sound:hover{background:#f0ede5;color:#070707;border-color:#f0ede5}
+.nav a{position:relative}.nav a:after{content:'';position:absolute;left:0;right:100%;bottom:-6px;height:1px;background:currentColor;transition:right .28s cubic-bezier(.2,.8,.2,1)}.nav a:hover:after{right:0}
+.nav.scrolled{background:rgba(6,6,6,.82);box-shadow:0 8px 30px rgba(0,0,0,.16)}
+
+.chapter-number-rail{position:absolute;left:28px;bottom:28px;z-index:50;font:400 7px var(--mono);letter-spacing:.13em;text-transform:uppercase;color:#5f5b56;display:flex;gap:9px;align-items:center}.chapter-number-rail i{width:40px;height:1px;background:#393632;overflow:hidden;position:relative}.chapter-number-rail i:after{content:'';position:absolute;inset:0;background:var(--yellow);transform:scaleX(var(--story-progress,0));transform-origin:left}
+.assembly-note{position:absolute;z-index:49;left:28px;top:178px;display:grid;gap:5px;opacity:0;transition:opacity .35s}.assembly-note.on{opacity:1}.assembly-note span{font:400 7px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:#5f5b56}.assembly-note b{font:400 8px var(--mono);letter-spacing:.08em;color:#b8b3aa}
+.brake-tag{position:absolute;z-index:49;right:28px;bottom:204px;font:400 7px var(--mono);letter-spacing:.13em;text-transform:uppercase;color:#b66b5e;opacity:0;transition:opacity .25s}.brake-tag.on{opacity:1}
+
+
+.story{height:590vh;position:relative}
+.viewport{
+  height:100vh;min-height:700px;position:sticky;top:0;overflow:hidden;background:#070707;isolation:isolate
+}
+#scene{position:absolute;inset:0;z-index:8}
+#scene canvas{width:100%!important;height:100%!important;display:block}
+.fallback{position:absolute;inset:0;z-index:5;opacity:0;transition:opacity .35s;background:#080808}
+.fallback.on{opacity:1}
+.fallback img{width:100%;height:100%;object-fit:cover;filter:brightness(.38) saturate(.65)}
+.fallback:after{content:"";position:absolute;inset:0;background:radial-gradient(circle at 60% 50%,transparent 10%,rgba(0,0,0,.78) 82%)}
+
+.grid{
+  position:absolute;inset:70px 0 0;z-index:2;pointer-events:none;
+  background:
+    radial-gradient(ellipse at 60% 62%,rgba(255,255,255,.045),transparent 34%),
+    linear-gradient(180deg,rgba(255,255,255,.012),transparent 50%);
+  opacity:.7
+}
+.left-wash{position:absolute;z-index:20;inset:0;pointer-events:none;background:linear-gradient(90deg,rgba(0,0,0,.58),rgba(0,0,0,.08) 33%,transparent 53%)}
+.vignette{position:absolute;inset:0;z-index:21;pointer-events:none;background:radial-gradient(circle at 55% 50%,transparent 42%,rgba(0,0,0,.5) 96%)}
+.flash{position:absolute;inset:0;z-index:40;background:#fff;opacity:0;pointer-events:none}
+.scene-curtain{position:absolute;inset:0;z-index:41;background:#030303;opacity:0;pointer-events:none;will-change:opacity}
+.showroom-floor-copy{position:absolute;z-index:47;left:50%;bottom:8.5vh;transform:translateX(-50%);font:400 7px var(--mono);letter-spacing:.18em;text-transform:uppercase;color:#77736c;opacity:0;transition:opacity .4s;white-space:nowrap}
+.showroom-floor-copy.on{opacity:1}
+
+.red-flare{position:absolute;right:-9vw;top:23vh;width:32vw;height:32vw;border-radius:50%;z-index:4;pointer-events:none;background:radial-gradient(circle,rgba(240,207,0,.18),transparent 68%);filter:blur(18px)}
+.arrival-wash{
+  position:absolute;inset:0;z-index:4;pointer-events:none;opacity:0;
+  background:
+    radial-gradient(ellipse at 64% 42%,rgba(255,255,255,.09),transparent 23%),
+    linear-gradient(180deg,transparent 45%,rgba(0,0,0,.18));
+  transition:opacity .35s
+}
+.showroom-title{
+  position:absolute;z-index:47;left:50%;top:100px;transform:translateX(-50%);
+  font:400 8px var(--mono);letter-spacing:.2em;text-transform:uppercase;color:#8d8880;
+  opacity:0;transition:opacity .45s
+}
+.showroom-title.on{opacity:1}
+.showroom-detail{
+  position:absolute;z-index:47;right:28px;top:145px;width:200px;
+  font:400 8px/1.7 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:#6f6b65;
+  opacity:0;transition:opacity .45s
+}
+.showroom-detail.on{opacity:1}
+.showroom-detail b{color:#f0ede5;font-weight:400}
+
+.cross{position:absolute;z-index:48;width:11px;height:11px;opacity:.42}.cross:before,.cross:after{content:"";position:absolute;background:white}.cross:before{left:0;top:5px;width:11px;height:1px}.cross:after{top:0;left:5px;width:1px;height:11px}
+.x1{left:15px;top:90px}.x2{right:15px;top:90px}.x3{left:15px;bottom:15px}.x4{right:15px;bottom:15px}
+
+.top-id{
+  position:absolute;left:50%;top:96px;z-index:50;transform:translateX(-50%);
+  font:400 8px var(--mono);text-transform:uppercase;letter-spacing:.2em;color:#7c7872
+}
+.build{
+  position:absolute;left:28px;top:98px;z-index:52;width:230px;transition:opacity .35s
+}
+.build small{font:400 8px var(--mono);text-transform:uppercase;letter-spacing:.14em;color:#77736d}
+.build strong{font-size:31px;line-height:1;display:block;margin:8px 0 9px;font-weight:500;letter-spacing:-.055em}
+.build-track{height:1px;background:#34312e}.build-track i{height:100%;width:0;background:var(--yellow);display:block}
+.build-state{font:400 7px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:#5f5b56;margin-top:9px}
+
+.chapter{
+  position:absolute;z-index:52;left:3.3vw;top:55%;width:min(31vw,470px);
+  transform:translateY(calc(-50% + 22px));opacity:0;
+  transition:opacity .35s,transform .5s cubic-bezier(.2,.8,.2,1)
+}
+.chapter.on{opacity:1;transform:translateY(-50%)}
+.chapter-index{font:400 9px var(--mono);letter-spacing:.16em;text-transform:uppercase;color:#a29d95;display:flex;align-items:center;gap:10px}
+.chapter-index:before{content:"";width:26px;height:2px;background:var(--yellow)}
+.chapter h1{font-size:clamp(44px,4.9vw,78px);line-height:.88;letter-spacing:-.065em;text-transform:uppercase;margin:13px 0 0;font-weight:800}
+.chapter h1 em{font-style:normal;color:var(--rosso)}
+.chapter p{font-size:11px;line-height:1.65;color:#a19c94;max-width:330px;margin:16px 0 0}
+
+.telemetry{
+  position:absolute;right:28px;bottom:27px;z-index:52;width:232px;border-top:1px solid var(--hair);padding-top:11px;
+  opacity:0;transition:opacity .3s
+}
+.telemetry.on{opacity:1}
+.trow{display:flex;justify-content:space-between;font:400 7px var(--mono);text-transform:uppercase;letter-spacing:.12em;color:#6d6963;margin-bottom:7px}.trow strong{font-weight:400;color:white}
+.speed{font-size:42px;line-height:.96;text-align:right;letter-spacing:-.065em}.speed small{font:400 7px var(--mono);text-transform:uppercase;letter-spacing:.12em;color:#77736d}
+.rpm{display:flex;gap:3px;height:3px;margin-top:11px}.rpm i{flex:1;background:#34312f}.rpm i.on{background:var(--rosso)}
+
+.story-dots{position:absolute;right:12px;top:50%;z-index:54;transform:translateY(-50%);display:flex;flex-direction:column;gap:6px}.story-dots i{width:2px;height:21px;background:#373430}.story-dots i.on{background:var(--yellow)}
+.scrollcue{position:absolute;left:50%;bottom:28px;z-index:52;transform:translateX(-50%);font:400 7px var(--mono);text-transform:uppercase;letter-spacing:.14em;color:#6b6761;opacity:0;transition:.3s}.scrollcue.on{opacity:1}
+
+.speedlines{position:absolute;inset:0;z-index:6;pointer-events:none;opacity:0;overflow:hidden}
+.speedlines i{position:absolute;height:1px;width:26vw;background:linear-gradient(90deg,transparent,rgba(255,255,255,.4),transparent);animation:streak 1.1s linear infinite}
+@keyframes streak{from{transform:translateX(-34vw) scaleX(.25);opacity:0}20%{opacity:.7}to{transform:translateX(115vw) scaleX(1.4);opacity:0}}
+
+.shift{
+  position:absolute;left:50%;top:50%;z-index:50;transform:translate(-50%,-50%);
+  font-size:16vw;font-weight:900;letter-spacing:-.09em;color:rgba(255,255,255,.045);opacity:0;pointer-events:none
+}
+
+/* post story */
+.spec-band{
+  background:var(--rosso);color:white;padding:30px 4vw;display:grid;grid-template-columns:repeat(4,1fr);gap:1px
+}
+.spec{border-left:1px solid rgba(255,255,255,.28);padding:4px 23px}.spec:first-child{border-left:0}
+.spec small{font:400 8px var(--mono);text-transform:uppercase;letter-spacing:.14em;opacity:.7}
+.spec strong{display:block;margin-top:9px;font-size:30px;letter-spacing:-.05em;font-weight:600}
+
+.collection{background:var(--cream);color:#080808;padding:120px 4vw 145px}
+.collection-head{border-top:1px solid var(--darkhair);padding-top:14px;display:grid;grid-template-columns:.65fr 2fr .8fr;gap:5vw}
+.eyebrow{font:400 9px var(--mono);text-transform:uppercase;letter-spacing:.14em;color:#6a665f}
+.collection h2{font-size:clamp(58px,8vw,126px);line-height:.8;letter-spacing:-.075em;text-transform:uppercase;margin:0}
+.collection-head p{font-size:13px;line-height:1.7;color:#625e58;margin:0}
+.cars{display:grid;grid-template-columns:1.16fr .84fr;gap:12px;margin-top:88px}
+.card{height:66vh;min-height:530px;position:relative;overflow:hidden;background:#111;color:white}
+.card:nth-child(2){height:55vh;margin-top:11vh}
+.card img{width:100%;height:100%;object-fit:cover;filter:saturate(.65);transition:transform .9s cubic-bezier(.2,.8,.2,1),filter .45s}.card:hover img{transform:scale(1.045);filter:saturate(.9)}
+.card:after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.83),transparent 55%)}
+.card-no{position:absolute;left:19px;top:17px;z-index:2;font:400 8px var(--mono)}
+.card-info{position:absolute;z-index:2;left:21px;right:21px;bottom:19px;display:flex;justify-content:space-between;align-items:end}
+.card-info small{font:400 8px var(--mono);text-transform:uppercase;letter-spacing:.13em;color:#aaa69e}.card-info h3{font-size:29px;letter-spacing:-.045em;margin:6px 0 0}.card-info strong{font:400 10px var(--mono)}
+.card-link{position:absolute;right:16px;top:16px;z-index:2;width:72px;height:72px;border:1px solid rgba(255,255,255,.42);border-radius:50%;display:grid;place-items:center;text-align:center;font:400 7px var(--mono);text-transform:uppercase;transition:.3s}.card:hover .card-link{background:var(--yellow);color:#000;border-color:var(--yellow);transform:rotate(18deg)}
+.asset-credit{margin:12px 0 0;text-align:right;font:400 7px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:#77716a}
+.asset-credit a{border-bottom:1px solid currentColor}
+
+.final{
+  min-height:80vh;background:#080808;color:white;display:grid;place-items:center;text-align:center;position:relative;overflow:hidden;padding:80px 4vw
+}
+.final:before{content:"SVJ";position:absolute;font-size:38vw;font-weight:900;letter-spacing:-.12em;color:#0d0d0d}
+.final-inner{position:relative}.final small{font:400 9px var(--mono);text-transform:uppercase;letter-spacing:.15em;color:#8b867e}
+.final h2{font-size:clamp(66px,9.5vw,150px);line-height:.78;letter-spacing:-.08em;text-transform:uppercase;margin:23px 0 32px}.final h2 em{font-style:normal;color:var(--rosso)}
+.actions{display:flex;justify-content:center;gap:8px}.btn{height:55px;padding:0 22px;border:1px solid rgba(255,255,255,.28);background:transparent;color:white;cursor:pointer;font:400 9px var(--mono);text-transform:uppercase;letter-spacing:.12em}.btn.primary{background:var(--rosso);border-color:var(--rosso)}
+
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .75s ease,transform .9s cubic-bezier(.2,.8,.2,1)}.reveal.on{opacity:1;transform:none}
+
+@media(max-width:900px){
+  .cursor,.cursor-dot{display:none}
+  .entry{padding:18px}.entry-title{font-size:30vw}
+  .nav{height:62px;padding:0 15px;grid-template-columns:1fr 1fr}.nav-left{display:none}.yellow-dot{display:none}
+  .viewport{min-height:680px}.grid{inset:62px 0 0}.top-id{display:none}.build{top:80px;left:15px;width:165px}.build strong{font-size:27px}
+  .chapter{left:15px;top:auto;bottom:116px;width:calc(100vw - 30px);transform:translateY(22px)}.chapter.on{transform:none}.chapter h1{font-size:13.8vw;max-width:430px}.chapter p{display:none}
+  .telemetry{right:15px;bottom:15px;width:178px}.speed{font-size:35px}.story-dots{right:5px}.x1,.x2{top:75px}.x1,.x3{left:6px}.x2,.x4{right:6px}.x3,.x4{bottom:6px}
+  .spec-band{grid-template-columns:1fr 1fr;padding:20px 15px}.spec:nth-child(3){border-left:0;border-top:1px solid rgba(255,255,255,.25);padding-top:15px}.spec:nth-child(4){border-top:1px solid rgba(255,255,255,.25);padding-top:15px}
+  .collection{padding:85px 18px}.collection-head{grid-template-columns:1fr;gap:28px}.collection h2{font-size:15.5vw}.cars{grid-template-columns:1fr;margin-top:60px}.card,.card:nth-child(2){height:58vh;min-height:460px;margin:0}
+  .showroom-detail{display:none}.showroom-title{top:82px;font-size:7px}.chapter-number-rail{display:none}.assembly-note{left:15px;top:148px}.final{min-height:610px}.final h2{font-size:16vw}.actions{flex-direction:column}
+}
+@media(prefers-reduced-motion:reduce){*{animation-duration:.001ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important}}
+
+/* V10 state isolation ---------------------------------------------------- */
+html.story-lock, html.story-lock body{overflow:hidden!important}
+body.machine-building .nav{
+  opacity:0!important;
+  transform:translateY(-100%)!important;
+  pointer-events:none!important;
+}
+.nav{transition:opacity .48s ease,transform .58s cubic-bezier(.2,.8,.2,1),background .3s}
+
+.viewport.building .grid,
+.viewport.building .red-flare,
+.viewport.building .arrival-wash,
+.viewport.building .left-wash,
+.viewport.building .vignette,
+.viewport.building .cross,
+.viewport.building .top-id,
+.viewport.building .build,
+.viewport.building .assembly-note,
+.viewport.building .brake-tag,
+.viewport.building .chapter-number-rail,
+.viewport.building .chapter,
+.viewport.building .telemetry,
+.viewport.building .story-dots,
+.viewport.building .scrollcue,
+.viewport.building .speedlines,
+.viewport.building .shift,
+.viewport.building .showroom-title,
+.viewport.building .showroom-detail,
+.viewport.building .showroom-floor-copy{
+  opacity:0!important;
+  visibility:hidden!important;
+  pointer-events:none!important;
+}
+.viewport.building,
+.viewport.building #scene{background:#000!important}
+
+/* During the drive the road and Lamborghini are the image. Everything else retires. */
+.viewport.driving-clean .grid,
+.viewport.driving-clean .red-flare,
+.viewport.driving-clean .arrival-wash,
+.viewport.driving-clean .left-wash,
+.viewport.driving-clean .vignette,
+.viewport.driving-clean .cross,
+.viewport.driving-clean .top-id,
+.viewport.driving-clean .build,
+.viewport.driving-clean .assembly-note,
+.viewport.driving-clean .brake-tag,
+.viewport.driving-clean .chapter-number-rail,
+.viewport.driving-clean .chapter,
+.viewport.driving-clean .story-dots,
+.viewport.driving-clean .scrollcue,
+.viewport.driving-clean .showroom-title,
+.viewport.driving-clean .showroom-detail,
+.viewport.driving-clean .showroom-floor-copy{
+  opacity:0!important;
+  visibility:hidden!important;
+  pointer-events:none!important;
+}
+body.drive-mode .nav{
+  opacity:0!important;
+  transform:translateY(-100%)!important;
+  pointer-events:none!important;
+}
+.viewport.driving-clean .telemetry{
+  opacity:.82!important;
+  width:184px;
+  padding-top:8px;
+  right:22px;
+  bottom:20px;
+  border-color:rgba(255,255,255,.1);
+}
+.viewport.driving-clean .telemetry .trow{font-size:6px;margin-bottom:5px;color:#5e5e5e}
+.viewport.driving-clean .speed{font-size:34px}
+.viewport.driving-clean .speedlines{opacity:var(--drive-streak-opacity,0)!important}
+.viewport.driving-clean .shift{display:block}
+
+/* The final showcase is intentionally black. Architectural boundaries remain subdued. */
+.viewport.showcase-mode{
+  background:#000!important;
+}
+.viewport.showcase-mode .grid,
+.viewport.showcase-mode .red-flare,
+.viewport.showcase-mode .left-wash,
+.viewport.showcase-mode .cross,
+.viewport.showcase-mode .build,
+.viewport.showcase-mode .assembly-note,
+.viewport.showcase-mode .brake-tag,
+.viewport.showcase-mode .story-dots,
+.viewport.showcase-mode .speedlines,
+.viewport.showcase-mode .shift,
+.viewport.showcase-mode .scrollcue{
+  opacity:0!important;
+  visibility:hidden!important;
+}
+.viewport.showcase-mode .vignette{
+  background:radial-gradient(ellipse at 58% 55%,transparent 25%,rgba(0,0,0,.86) 79%,#000 100%);
+}
+.viewport.showcase-mode .chapter{
+  width:min(28vw,420px);
+}
+.viewport.showcase-mode .telemetry{display:none}
+.showroom-title{
+  color:#5e5b56!important;
+}
+.showroom-detail{
+  color:#484640!important;
+}
+.showroom-detail b{color:#aaa69e!important}
+
+
+/* V11 Giallo Orion calibration ------------------------------------------- */
+:root{
+  --rosso:#c85000;
+  --rosso-deep:#8f7900;
+}
+.entry{background:#c85000}
+.chapter h1 em,.final h2 em{color:#cf0000}
+.red-flare{background:radial-gradient(circle,rgba(150,0,0,.12),transparent 68%)}
+
+
+/* V12 high-speed optic-flow polish ------------------------------------- */
+.speedlines{
+  mask-image:linear-gradient(90deg,#000 0 12%,transparent 32% 68%,#000 88% 100%);
+  -webkit-mask-image:linear-gradient(90deg,#000 0 12%,transparent 32% 68%,#000 88% 100%);
+  filter:blur(.3px);
+}
+.viewport.driving-clean .speed{
+  font-variant-numeric:tabular-nums;
+  letter-spacing:-.07em;
+}
+
+
+.enter:disabled{
+  opacity:.78;
+  cursor:wait;
+}
+.enter:disabled span{
+  animation:loadingArrow .8s ease-in-out infinite alternate;
+}
+@keyframes loadingArrow{
+  from{transform:translateX(0)}
+  to{transform:translateX(6px)}
+}
+
+
+/* V14 assembly polish */
+body.machine-building .noise{opacity:0!important}
+.viewport.building canvas{filter:none!important}
+
+
+/* V16 — no presentation copy until the final showroom ------------------ */
+body:not(.showroom-copy-ready) .nav{
+  opacity:0!important;
+  transform:translateY(-100%)!important;
+  pointer-events:none!important;
+}
+body:not(.showroom-copy-ready) .chapter,
+body:not(.showroom-copy-ready) .top-id,
+body:not(.showroom-copy-ready) .scrollcue,
+body:not(.showroom-copy-ready) .story-dots,
+body:not(.showroom-copy-ready) .chapter-number-rail,
+body:not(.showroom-copy-ready) .build,
+body:not(.showroom-copy-ready) .assembly-note{
+  opacity:0!important;
+  visibility:hidden!important;
+  pointer-events:none!important;
+}
+
+/* driving telemetry is intentionally the only information visible before showroom */
+.viewport:not(.driving-clean) .telemetry{
+  opacity:0!important;
+  visibility:hidden!important;
+}
+.viewport.driving-clean .telemetry{
+  visibility:visible!important;
+}
+
+/* final copy gets a slower luxury reveal after the Lamborghini is already presented */
+body.showroom-copy-ready .showroom-title,
+body.showroom-copy-ready .showroom-detail,
+body.showroom-copy-ready .showroom-floor-copy{
+  transition-duration:.85s!important;
+}
+
+
+/* V17 interface restraint ------------------------------------------------ */
+.cursor{
+  width:34px;height:34px;
+  opacity:.58;
+  transition:width .18s,height .18s,opacity .18s,border-color .18s;
+}
+.cursor.hot{
+  width:48px;height:48px;
+  background:transparent;
+  opacity:.82;
+}
+.enter{
+  min-width:190px;
+  justify-content:center;
+  gap:0;
+  border-radius:1px;
+  letter-spacing:.16em;
+  transition:background .22s,color .22s,border-color .22s,transform .22s;
+}
+.enter:hover{transform:translateY(-1px)}
+
+.sound{
+  min-width:76px;
+  text-align:center;
+  border-radius:1px;
+}
+.card-link{
+  width:auto;height:auto;
+  right:20px;top:20px;
+  padding:10px 12px;
+  border:1px solid rgba(255,255,255,.28);
+  border-radius:0;
+  display:block;
+  line-height:1.35;
+  background:rgba(0,0,0,.22);
+  backdrop-filter:blur(5px);
+  transition:background .22s,color .22s,border-color .22s;
+}
+.card:hover .card-link{
+  background:#f0ede5;
+  color:#080808;
+  border-color:#f0ede5;
+  transform:none;
+}
+.btn{
+  min-width:190px;
+  border-radius:0;
+  transition:background .22s,color .22s,border-color .22s,transform .22s;
+}
+.btn:hover{
+  background:#f0ede5;
+  color:#080808;
+  border-color:#f0ede5;
+  transform:translateY(-1px);
+}
+.btn.primary:hover{
+  background:#f0ede5;
+  color:#080808;
+  border-color:#f0ede5;
+}
+.actions{gap:10px}
+.nav-right a,.nav-left a{transition:opacity .2s}
+.nav-right a:hover,.nav-left a:hover{opacity:.58}
+
+
+/* V18 final production polish ------------------------------------------- */
+.showroom-title{
+  letter-spacing:.17em!important;
+  color:#77736d!important;
+}
+.showroom-detail{
+  width:220px!important;
+  line-height:1.9!important;
+}
+.showroom-detail b{
+  color:#d8d3ca!important;
+}
+.showroom-floor-copy{
+  letter-spacing:.14em!important;
+  color:#5f5b55!important;
+}
+.viewport.driving-clean .telemetry{
+  backdrop-filter:none;
+  background:transparent;
+}
+.viewport.driving-clean .rpm{
+  opacity:.78;
+}
+@media(max-width:900px){
+  .viewport.driving-clean .telemetry{
+    width:150px;
+    right:12px;
+    bottom:12px;
+  }
+  .viewport.driving-clean .telemetry .trow:nth-child(3),
+  .viewport.driving-clean .telemetry .trow:nth-child(4){
+    display:none;
+  }
+}
+
+
+/* V19 showroom presentation ------------------------------------------------ */
+.viewport.showcase-mode .chapter,
+body.showroom-copy-ready .chapter{
+  display:none!important;
+}
+
+.showroom-title{
+  left:4vw!important;
+  top:15vh!important;
+  transform:none!important;
+  text-align:left!important;
+  width:auto!important;
+  max-width:420px;
+}
+.showroom-title span{
+  display:block;
+  font-family:var(--sans);
+  font-size:clamp(34px,3.9vw,64px);
+  line-height:.88;
+  letter-spacing:-.055em;
+  font-weight:700;
+  text-transform:uppercase;
+  color:#f1eee7;
+}
+.showroom-title small{
+  display:block;
+  margin-top:13px;
+  font:400 7px/1.4 var(--mono);
+  letter-spacing:.17em;
+  text-transform:uppercase;
+  color:#66625c;
+}
+
+.showroom-detail{
+  right:4vw!important;
+  top:16vh!important;
+  width:210px!important;
+  display:grid!important;
+  grid-template-columns:1fr auto;
+  gap:8px 18px;
+  line-height:1!important;
+  font-size:7px!important;
+}
+.showroom-detail span{
+  color:#5f5b55;
+  letter-spacing:.11em;
+}
+.showroom-detail b{
+  text-align:right;
+  color:#dcd7ce!important;
+  letter-spacing:.10em;
+}
+
+.showroom-floor-copy{
+  left:4vw!important;
+  bottom:5.5vh!important;
+  transform:none!important;
+  font-size:6px!important;
+  letter-spacing:.16em!important;
+  color:#4f4b46!important;
+}
+
+body.showroom-copy-ready .showroom-title{
+  animation:showroomCopyIn .9s cubic-bezier(.2,.8,.2,1) both;
+}
+body.showroom-copy-ready .showroom-detail{
+  animation:showroomCopyIn .9s .12s cubic-bezier(.2,.8,.2,1) both;
+}
+body.showroom-copy-ready .showroom-floor-copy{
+  animation:showroomCopyIn .9s .22s cubic-bezier(.2,.8,.2,1) both;
+}
+@keyframes showroomCopyIn{
+  from{opacity:0;transform:translateY(12px)}
+  to{opacity:1;transform:translateY(0)}
+}
+
+@media(max-width:900px){
+  .showroom-title{left:18px!important;top:12vh!important}
+  .showroom-title span{font-size:11.5vw}
+  .showroom-detail{display:none!important}
+  .showroom-floor-copy{left:18px!important;bottom:22px!important;white-space:normal!important;max-width:85vw}
+}
+
+
+/* V20 opening — Lamborghini editorial composition --------------------------- */
+.entry{
+  background:#c70000!important;
+  overflow:hidden;
+  isolation:isolate;
+}
+.entry:before{
+  content:"";
+  position:absolute;
+  z-index:-1;
+  top:0;right:-1px;bottom:0;
+  width:38vw;
+  min-width:420px;
+  background:#080808;
+  clip-path:polygon(24% 0,100% 0,100% 100%,0 100%);
+}
+.entry:after{
+  content:"";
+  position:absolute;
+  z-index:-1;
+  left:0;right:0;bottom:0;height:1px;
+  background:rgba(255,255,255,.22);
+}
+.entry-top,.entry-bottom{position:relative;z-index:5}
+.entry-stage{
+  position:relative;
+  min-height:0;
+  height:100%;
+}
+.entry-ghost{
+  position:absolute;
+  left:4.6vw;
+  top:50%;
+  transform:translateY(-51%);
+  font-family:var(--sans);
+  font-size:clamp(190px,31vw,590px);
+  line-height:.68;
+  font-weight:800;
+  letter-spacing:-.115em;
+  color:transparent;
+  -webkit-text-stroke:1px rgba(255,255,255,.25);
+  user-select:none;
+  opacity:.88;
+}
+.entry-index{
+  position:absolute;
+  left:4.8vw;
+  top:16%;
+  font:400 8px var(--mono);
+  letter-spacing:.22em;
+  color:rgba(255,255,255,.65);
+}
+.entry-copy{
+  position:absolute;
+  z-index:3;
+  left:10.2vw;
+  top:50%;
+  transform:translateY(-43%);
+  width:min(430px,32vw);
+  text-align:left;
+}
+.entry-copy .entry-kicker{
+  justify-content:flex-start;
+  margin-bottom:25px;
+  color:rgba(255,255,255,.84);
+}
+.entry-copy .entry-kicker i{
+  background:#ffd400;
+  box-shadow:none;
+}
+.entry-copy h1{
+  margin:0;
+  font-family:var(--sans);
+  font-weight:760;
+  font-size:clamp(64px,7vw,124px);
+  line-height:.77;
+  letter-spacing:-.075em;
+  text-transform:uppercase;
+  color:#fff;
+}
+.entry-copy h1 span{
+  display:block;
+  font-size:.44em;
+  line-height:1.15;
+  margin-top:13px;
+  letter-spacing:-.035em;
+  font-weight:560;
+}
+.entry-copy p{
+  margin:26px 0 0;
+  max-width:350px;
+  color:rgba(255,255,255,.73);
+  font-size:12px;
+  line-height:1.65;
+}
+.entry-copy .enter{
+  margin-top:34px;
+  min-width:205px;
+  height:54px;
+  justify-content:center;
+  background:#080808;
+  border-color:#080808;
+  color:#fff;
+}
+.entry-copy .enter:hover{
+  background:#fff;
+  border-color:#fff;
+  color:#080808;
+}
+.entry-specs{
+  position:absolute;
+  z-index:3;
+  right:4.4vw;
+  top:50%;
+  transform:translateY(-50%);
+  width:min(250px,20vw);
+  color:#fff;
+}
+.entry-specs:before{
+  content:"TECHNICAL / AVENTADOR";
+  display:block;
+  margin-bottom:27px;
+  padding-bottom:12px;
+  border-bottom:1px solid rgba(255,255,255,.15);
+  font:400 7px var(--mono);
+  letter-spacing:.18em;
+  color:#696969;
+}
+.entry-specs div{
+  display:flex;
+  justify-content:space-between;
+  gap:22px;
+  padding:10px 0;
+  border-bottom:1px solid rgba(255,255,255,.08);
+  font:400 8px var(--mono);
+  text-transform:uppercase;
+  letter-spacing:.12em;
+}
+.entry-specs span{color:#666}
+.entry-specs strong{font-weight:400;color:#e9e6df}
+.entry-rule{
+  position:absolute;
+  left:10.2vw;
+  bottom:15%;
+  width:13vw;
+  height:2px;
+  background:#ffd400;
+  transform-origin:left center;
+  animation:entryRule 1.15s .18s cubic-bezier(.2,.8,.2,1) both;
+}
+@keyframes entryRule{
+  from{transform:scaleX(0)}
+  to{transform:scaleX(1)}
+}
+.entry-copy,.entry-specs{
+  animation:entryContent .9s .12s cubic-bezier(.2,.8,.2,1) both;
+}
+.entry-specs{animation-delay:.25s}
+@keyframes entryContent{
+  from{opacity:0;transform:translateY(calc(-50% + 18px))}
+  to{opacity:1;transform:translateY(-50%)}
+}
+.entry-copy{animation-name:entryCopyIn}
+@keyframes entryCopyIn{
+  from{opacity:0;transform:translateY(calc(-43% + 18px))}
+  to{opacity:1;transform:translateY(-43%)}
+}
+@media(max-width:900px){
+  .entry:before{width:34vw;min-width:0;opacity:.24}
+  .entry-ghost{left:-5vw;font-size:52vw;top:42%}
+  .entry-copy{left:18px;top:53%;width:calc(100vw - 36px)}
+  .entry-copy h1{font-size:19vw}
+  .entry-copy p{font-size:11px;max-width:280px}
+  .entry-specs{display:none}
+  .entry-rule{left:18px;bottom:15%;width:28vw}
+  .entry-index{left:18px;top:13%}
+}
+
+
+.showroom-hint{
+  position:absolute;
+  z-index:56;
+  left:50%;
+  bottom:4.6vh;
+  transform:translateX(-50%) translateY(8px);
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:8px 11px;
+  border:1px solid rgba(255,255,255,.10);
+  background:rgba(0,0,0,.28);
+  backdrop-filter:blur(7px);
+  font:400 6px var(--mono);
+  text-transform:uppercase;
+  letter-spacing:.15em;
+  color:#77736c;
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .45s,transform .45s;
+}
+.showroom-hint b{font-weight:400;color:#d7d2c8}
+body.showroom-inspect-ready .showroom-hint{
+  opacity:1;
+  transform:translateX(-50%) translateY(0);
+}
+body.showroom-inspecting .showroom-hint{opacity:.32}
+body.showroom-inspect-ready #scene canvas{cursor:grab}
+body.showroom-inspecting #scene canvas{cursor:grabbing}
+@media(max-width:900px){
+  .showroom-hint{bottom:56px}
+}
+
+
+/* V21 opening — kinetic Lamborghini editorial system ----------------------- */
+:root{
+  --entry-px:0;
+  --entry-py:0;
+}
+.entry{
+  background:#c70000!important;
+  overflow:hidden;
+  isolation:isolate;
+}
+.entry:before{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:-4;
+  background:
+    linear-gradient(90deg,rgba(0,0,0,.06) 1px,transparent 1px),
+    linear-gradient(rgba(0,0,0,.045) 1px,transparent 1px);
+  background-size:9vw 9vw;
+  mask-image:linear-gradient(90deg,#000,transparent 74%);
+}
+.entry-black-blade{
+  position:absolute;
+  z-index:-2;
+  top:-12vh;right:-9vw;
+  width:44vw;height:126vh;
+  background:#070707;
+  transform:skewX(-11deg) translateX(calc(var(--entry-px)*-8px));
+  transform-origin:center;
+  animation:bladeIn 1.05s cubic-bezier(.76,0,.24,1) both;
+}
+@keyframes bladeIn{
+  from{transform:skewX(-11deg) translateX(48vw)}
+  to{transform:skewX(-11deg) translateX(calc(var(--entry-px)*-8px))}
+}
+.entry-scan{
+  position:absolute;
+  z-index:0;
+  top:-20%;bottom:-20%;
+  left:52%;
+  width:1px;
+  background:linear-gradient(transparent,rgba(255,255,255,.95),transparent);
+  box-shadow:0 0 32px rgba(255,255,255,.22);
+  opacity:.58;
+  animation:entryScan 3.4s 1.1s cubic-bezier(.2,.8,.2,1) infinite;
+}
+@keyframes entryScan{
+  0%{transform:translateX(-24vw) skewX(-8deg);opacity:0}
+  12%{opacity:.55}
+  72%{opacity:.35}
+  100%{transform:translateX(35vw) skewX(-8deg);opacity:0}
+}
+.entry-stage{
+  position:relative;
+  height:100%;
+}
+.entry-ghost{
+  position:absolute;
+  left:-2.5vw;
+  top:47%;
+  transform:
+    translate(calc(var(--entry-px)*12px),calc(-50% + var(--entry-py)*8px))
+    rotate(-4deg);
+  font-family:var(--sans);
+  font-size:clamp(260px,39vw,730px);
+  line-height:.66;
+  font-weight:800;
+  letter-spacing:-.13em;
+  color:transparent;
+  -webkit-text-stroke:1px rgba(255,255,255,.28);
+  opacity:.82;
+  pointer-events:none;
+  user-select:none;
+  transition:transform .12s linear;
+}
+.entry-ghost:after{
+  content:"SVJ";
+  position:absolute;
+  inset:0;
+  color:rgba(255,255,255,.025);
+  -webkit-text-stroke:0;
+  clip-path:polygon(0 42%,100% 30%,100% 52%,0 64%);
+  transform:translateX(1.2vw);
+}
+.entry-italia-rail{
+  position:absolute;
+  z-index:1;
+  left:-4vw;
+  bottom:14%;
+  white-space:nowrap;
+  font:600 clamp(34px,6vw,92px)/1 var(--sans);
+  letter-spacing:-.04em;
+  color:rgba(255,255,255,.055);
+  transform:rotate(-4deg);
+  animation:italiaRail 13s linear infinite;
+}
+@keyframes italiaRail{
+  from{translate:0 0}
+  to{translate:-22vw 0}
+}
+
+
+
+  to{transform:rotate(0);opacity:1}
+}
+
+
+  to{transform:rotate(42deg)}
+}
+
+
+.entry-copy{
+  position:absolute;
+  z-index:4;
+  left:9.5vw;
+  top:50%;
+  transform:translateY(-44%);
+  width:min(430px,31vw);
+}
+.entry-copy .entry-kicker{
+  justify-content:flex-start;
+  margin-bottom:24px;
+}
+.entry-copy h1{
+  margin:0;
+  color:#fff;
+  font-family:var(--sans);
+  font-weight:760;
+  font-size:clamp(72px,7.7vw,142px);
+  line-height:.73;
+  letter-spacing:-.082em;
+  text-transform:uppercase;
+}
+.entry-copy h1 span{
+  display:block;
+  margin-top:14px;
+  font-size:.41em;
+  line-height:1.1;
+  letter-spacing:-.035em;
+  font-weight:540;
+}
+.entry-copy p{
+  margin:24px 0 0;
+  max-width:330px;
+  font-size:11px;
+  line-height:1.65;
+  color:rgba(255,255,255,.72);
+}
+.entry-copy .enter{
+  margin-top:32px;
+  min-width:205px;
+  height:54px;
+  justify-content:center;
+  background:#050505;
+  border-color:#050505;
+  color:#fff;
+}
+.entry-copy .enter:hover{
+  background:#fff;
+  color:#050505;
+  border-color:#fff;
+}
+.entry-specs{
+  position:absolute;
+  z-index:4;
+  right:4vw;
+  top:50%;
+  transform:translateY(-50%);
+  width:min(250px,20vw);
+}
+.entry-specs:before{
+  content:"TECHNICAL / AVENTADOR SVJ";
+  display:block;
+  padding-bottom:13px;
+  margin-bottom:22px;
+  border-bottom:1px solid rgba(255,255,255,.16);
+  font:400 6px var(--mono);
+  letter-spacing:.18em;
+  color:#656565;
+}
+.entry-specs div{
+  display:flex;
+  justify-content:space-between;
+  gap:18px;
+  padding:11px 0;
+  border-bottom:1px solid rgba(255,255,255,.08);
+  font:400 7px var(--mono);
+  text-transform:uppercase;
+  letter-spacing:.12em;
+}
+.entry-specs span{color:#666}
+.entry-specs strong{font-weight:400;color:#eae6dd}
+.entry-bottom-line{
+  position:absolute;
+  z-index:4;
+  left:9.5vw;
+  right:4vw;
+  bottom:11.2%;
+  display:grid;
+  grid-template-columns:auto 1fr auto;
+  align-items:center;
+  gap:15px;
+  font:400 6px var(--mono);
+  letter-spacing:.16em;
+  color:rgba(255,255,255,.5);
+}
+.entry-bottom-line i{
+  height:1px;
+  background:linear-gradient(90deg,#ffd400,rgba(255,255,255,.12));
+  transform-origin:left;
+  animation:timelineDraw 1.2s .45s cubic-bezier(.2,.8,.2,1) both;
+}
+@keyframes timelineDraw{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@media(max-width:900px){
+  .entry-black-blade{width:48vw;right:-22vw;opacity:.48}
+  .entry-ghost{left:-12vw;top:42%;font-size:62vw}
+  
+  
+  
+  .entry-copy{left:18px;top:55%;width:calc(100vw - 36px)}
+  .entry-copy h1{font-size:20vw}
+  .entry-copy p{max-width:260px}
+  .entry-specs{display:none}
+  .entry-bottom-line{left:18px;right:18px;bottom:13%}
+}
+
+
+.showroom-hint{
+  border-color:rgba(255,255,255,.08)!important;
+  background:rgba(0,0,0,.20)!important;
+}
+body.showroom-inspect-ready .showroom-hint:before{
+  content:"";
+  width:28px;height:1px;
+  background:linear-gradient(90deg,transparent,#8d8982);
+  animation:turntableCue 1.8s ease-in-out infinite alternate;
+}
+@keyframes turntableCue{
+  from{transform:translateX(-4px)}
+  to{transform:translateX(4px)}
+}
+
+
+/* V22 parked showroom composition -------------------------------------- */
+.showroom-title{
+  left:3.6vw!important;
+  top:14vh!important;
+  max-width:350px!important;
+}
+.showroom-title small{
+  margin:0 0 15px!important;
+  color:#6b6760!important;
+}
+.showroom-title span{
+  font-size:clamp(38px,4.3vw,70px)!important;
+  line-height:.86!important;
+}
+.showroom-title p{
+  max-width:290px;
+  margin:18px 0 0;
+  font-size:10px;
+  line-height:1.65;
+  color:#77736c;
+}
+.showroom-detail{
+  right:3.6vw!important;
+  top:15vh!important;
+  width:220px!important;
+  gap:9px 18px!important;
+}
+.showroom-floor-copy{
+  left:50%!important;
+  bottom:4.1vh!important;
+  transform:translateX(-50%)!important;
+  text-align:center!important;
+  white-space:nowrap;
+}
+.showroom-status{
+  position:absolute;
+  z-index:56;
+  left:3.6vw;
+  bottom:7.8vh;
+  display:grid;
+  grid-template-columns:auto auto;
+  gap:4px 10px;
+  align-items:center;
+  opacity:0;
+  transform:translateY(8px);
+  transition:opacity .6s,transform .7s cubic-bezier(.2,.8,.2,1);
+  font:400 6px var(--mono);
+  text-transform:uppercase;
+  letter-spacing:.14em;
+}
+.showroom-status.on{
+  opacity:1;
+  transform:none;
+}
+.showroom-status i{
+  grid-row:1 / 3;
+  width:6px;height:6px;
+  border-radius:50%;
+  background:#ffd400;
+  box-shadow:0 0 0 4px rgba(255,212,0,.06);
+}
+.showroom-status span{color:#77736d}
+.showroom-status b{font-weight:400;color:#c7c2b9}
+.showroom-hint{
+  bottom:7.4vh!important;
+}
+@media(max-width:900px){
+  .showroom-title{left:18px!important;top:11vh!important;max-width:75vw!important}
+  .showroom-title p{display:none}
+  .showroom-status{left:18px;bottom:70px}
+  .showroom-floor-copy{display:none!important}
+}
+
+
+/* V23 opening re-balance after removing the RPM dial ------------------- */
+.entry-copy{
+  left:10.4vw!important;
+}
+.entry-ghost{
+  left:-4vw!important;
+}
+.entry-specs{
+  right:4.3vw!important;
+}
+.entry-black-blade{
+  width:41vw!important;
+}
+@media(max-width:900px){
+  .entry-black-blade{width:45vw!important}
+}
+
+
+/* V24 parked-scene lighting polish ------------------------------------ */
+.showroom-title p{
+  color:#8b867e!important;
+}
+.showroom-floor-copy{
+  color:#66615a!important;
+}
+
+
+/* V27 turntable interaction ------------------------------------------- */
+body.showroom-inspect-ready .showroom-hint{
+  transition:opacity .35s,transform .45s,border-color .35s;
+}
+body.showroom-inspecting .showroom-hint{
+  border-color:rgba(255,212,0,.18)!important;
+}
+
+/* Lamborghini SVJ art direction -------------------------------------- */
+.entry{background:#f0cf00!important;color:#070707}
+.entry:after{background:rgba(0,0,0,.22)}
+.entry-copy{width:min(650px,52vw)}
+.entry-copy h1{color:#070707;font-size:clamp(64px,6.7vw,120px)}
+.entry-copy p{color:rgba(0,0,0,.68);font-weight:500}
+.entry-copy .entry-kicker{color:rgba(0,0,0,.74)}
+.entry-copy .entry-kicker i{background:#070707}
+.entry-ghost{
+  font-size:clamp(180px,28vw,520px);
+  -webkit-text-stroke:1px rgba(0,0,0,.22);
+}
+.entry-ghost:after{color:rgba(0,0,0,.035)}
+.entry-italia-rail{color:rgba(0,0,0,.075)}
+.entry-top span:first-child,.entry-bottom span:first-child{color:#070707}
+.entry-top span:last-child,.entry-bottom span:last-child{color:#f0ede5}
+.entry-bottom-line{color:rgba(0,0,0,.58)}
+.entry-bottom-line span:last-child{color:#f0ede5}
+.entry-bottom-line i{background:linear-gradient(90deg,#070707,rgba(255,255,255,.18))}
+.entry-specs:before{content:"TECHNICAL / AVENTADOR SVJ"}
+.spec-band{color:#070707}
+.spec{border-color:rgba(0,0,0,.22)}
+.btn.primary{color:#070707;font-weight:650}
+
+@media(max-width:900px){
+  .entry-copy{width:calc(100vw - 36px)}
+  .entry-copy h1{font-size:16.5vw}
+  .entry-top span:last-child{display:none}
+  .entry-bottom span:last-child{color:#070707}
+  .entry-ghost{font-size:43vw}
+}
+
+</style>
+</head>
+<body class="machine-building">
+<div class="noise"></div><div class="cursor"></div><div class="cursor-dot"></div>
+
+<section class="entry" id="entry">
+  <div class="entry-top">
+    <span>Aventador SVJ / V12 Machine Story</span>
+    <span>V12 / Sant'Agata Bolognese / 8,500 rpm</span>
+  </div>
+
+  <div class="entry-stage">
+    <div class="entry-black-blade"></div>
+    <div class="entry-scan"></div>
+    <div class="entry-ghost" aria-hidden="true">AVENTADOR</div>
+    <div class="entry-italia-rail" aria-hidden="true">SVJ / AVENTADOR / SVJ / AVENTADOR /</div>
+
+    <div class="entry-copy">
+      <div class="entry-kicker"><i></i> Giallo Orion / Aventador SVJ</div>
+      <h1>AVENTADOR <span>SVJ</span></h1>
+      <p>Twelve cylinders. One uninterrupted machine story.</p>
+      <button class="enter" id="enter">Start the machine</button>
+    </div>
+
+    <aside class="entry-specs">
+      <div><span>Engine</span><strong>6.5L V12</strong></div>
+      <div><span>Power</span><strong>770 CV</strong></div>
+      <div><span>Redline</span><strong>8,500 rpm</strong></div>
+      <div><span>0–100</span><strong>2.8 s</strong></div>
+      <div><span>Top speed</span><strong>350+ km/h</strong></div>
+    </aside>
+
+    <div class="entry-bottom-line">
+      <span>01 / BUILD</span>
+      <i></i>
+      <span>06 / SHOWCASE</span>
+    </div>
+  </div>
+
+  <div class="entry-bottom">
+    <span>Headphones recommended</span>
+    <span>Independent concept experience</span>
+  </div>
+</section>
+
+<nav class="nav">
+  <div class="nav-left"><a href="#story">Machine story</a><a href="#collection">Collection</a></div>
+  <a href="#" class="wordmark">AVENTADOR <b>SVJ</b></a>
+  <div class="nav-right"><span class="yellow-dot"></span><button class="sound" id="sound">sound on</button><a href="#collection">Private sale</a></div>
+</nav>
+
+<main class="story" id="story">
+  <div class="viewport building" id="viewport">
+    <div class="fallback" id="fallback"><img src="/cinematic-supercar/images/aventador-svj.webp" alt="Yellow Lamborghini Aventador SVJ" decoding="async"></div>
+    <div id="scene"></div>
+    <div class="grid"></div><div class="red-flare"></div><div class="arrival-wash" id="arrivalWash"></div><div class="left-wash"></div><div class="vignette"></div><div class="flash" id="flash"></div><div class="scene-curtain" id="sceneCurtain"></div>
+    <div class="showroom-title" id="showroomTitle">
+      <small>Private collection / No. SVJ-063</small>
+      <span>Lamborghini<br>Aventador SVJ</span>
+      <p>Giallo Orion. Naturally aspirated. Presented stationary on a motorized turntable.</p>
+    </div>
+    <div class="showroom-detail" id="showroomDetail">
+      <span>Engine</span><b>6.5L V12</b>
+      <span>Power</span><b>770 CV</b>
+      <span>Redline</span><b>8,500 rpm</b>
+      <span>0–100 km/h</span><b>2.8 s</b>
+      <span>Top speed</span><b>350+ km/h</b>
+    </div>
+    <div class="showroom-floor-copy" id="showroomFloorCopy">Inspection verified &nbsp;·&nbsp; Provenance documented &nbsp;·&nbsp; Service history available &nbsp;·&nbsp; Private viewing</div>
+    <div class="showroom-status" id="showroomStatus"><i></i><span>Vehicle parked</span><b>Turntable manual</b></div>
+    <div class="showroom-hint" id="showroomHint"><span>Drag to rotate</span><b>Double-click auto</b></div>
+    <span class="cross x1"></span><span class="cross x2"></span><span class="cross x3"></span><span class="cross x4"></span>
+    <div class="top-id" id="topId">SVJ-063 / ASSEMBLY BAY</div>
+    <div class="assembly-note" id="assemblyNote"><span>Geometry map</span><b id="meshReadout">— meshes / waiting</b></div>
+    <div class="brake-tag" id="brakeTag">carbon-ceramic braking / deceleration</div>
+    <div class="chapter-number-rail"><span id="railLabel">01 / 06</span><i></i></div>
+
+    <div class="speedlines" id="speedlines">
+      <i style="top:18%;animation-delay:-.16s"></i><i style="top:34%;animation-delay:-.66s;width:34vw"></i>
+      <i style="top:61%;animation-delay:-.31s"></i><i style="top:81%;animation-delay:-.78s;width:31vw"></i>
+    </div>
+
+    <div class="build" id="buildHud">
+      <small>Vehicle assembly</small><strong><span id="buildnum">000</span>%</strong>
+      <div class="build-track"><i id="buildbar"></i></div>
+      <div class="build-state" id="buildstate">loading vehicle geometry</div>
+    </div>
+
+    <section class="chapter" id="chapter">
+      <div class="chapter-index" id="chapterIndex">01 / ASSEMBLY</div>
+      <h1 id="chapterTitle">An Aventador begins<br>as <em>parts.</em></h1>
+      <p id="chapterCopy">Visible vehicle meshes arrive on independent springs, then settle into one continuous machine.</p>
+    </section>
+
+    <aside class="telemetry" id="telemetry">
+      <div class="trow"><span>Mode</span><strong id="mode">IDLE</strong></div>
+      <div class="trow"><span>Gear</span><strong id="gear">N</strong></div>
+      <div class="trow"><span>Thrust</span><strong id="thrust">000%</strong></div>
+      <div class="trow"><span>Long. G</span><strong id="gforce">+0.00 g</strong></div>
+      <div class="trow"><span>Brake</span><strong id="brake">OFF</strong></div>
+      <div class="speed"><span id="speed">000</span><small> km/h</small></div>
+      <div class="rpm" id="rpm"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+    </aside>
+
+    <div class="shift" id="shift">3</div>
+    <div class="story-dots"><i class="on"></i><i></i><i></i><i></i><i></i><i></i></div>
+    <div class="scrollcue" id="scrollcue">Scroll to drive</div>
+  </div>
+</main>
+
+<section class="spec-band">
+  <div class="spec reveal"><small>Engine</small><strong>6.5L V12</strong></div>
+  <div class="spec reveal"><small>Power</small><strong>770 CV</strong></div>
+  <div class="spec reveal"><small>0–100 km/h</small><strong>2.8 s</strong></div>
+  <div class="spec reveal"><small>Top speed</small><strong>350+ km/h</strong></div>
+</section>
+
+<section class="collection" id="collection">
+  <div class="collection-head">
+    <div class="eyebrow reveal">07 / AVAILABLE NOW</div>
+    <h2 class="reveal">One car.<br>No theatre.</h2>
+    <p class="reveal">The film stops here. What remains is the car: condition, service history, specification, inspection and provenance presented without marketplace noise.</p>
+  </div>
+  <div class="cars">
+    <article class="card reveal">
+      <img src="/cinematic-supercar/images/aventador-svj.webp" alt="Yellow Lamborghini Aventador SVJ" loading="lazy" decoding="async">
+      <span class="card-no">SVJ / 063</span><span class="card-link">View<br>dossier</span>
+      <div class="card-info"><div><small>Giallo Orion / 6.5L V12 / Collector</small><h3>Aventador SVJ</h3></div><strong>Private sale</strong></div>
+    </article>
+    <article class="card reveal" style="background:#0b0b0b;color:#f0ede5">
+      <div style="position:absolute;inset:0;padding:32px;display:flex;flex-direction:column;justify-content:space-between;background:radial-gradient(circle at 80% 20%,rgba(240,207,0,.22),transparent 30%)">
+        <div style="display:flex;justify-content:space-between;font:400 8px var(--mono);letter-spacing:.13em;text-transform:uppercase;color:#77736d"><span>Private sourcing</span><span>01 / brief</span></div>
+        <div>
+          <div style="font-size:clamp(52px,6vw,92px);line-height:.82;letter-spacing:-.075em;font-weight:800;text-transform:uppercase">Find the<br><span style="color:var(--rosso)">right one.</span></div>
+          <p style="max-width:330px;color:#918c84;font-size:12px;line-height:1.65;margin:24px 0">Specify year, mileage, colour, market and ownership history. We source the car before we source the marketing.</p>
+          <button class="btn" style="border-color:rgba(255,255,255,.3)">Start a private brief</button>
+        </div>
+      </div>
+    </article>
+  </div>
+  <p class="asset-credit">Photography: <a href="https://commons.wikimedia.org/wiki/File:Lamborghini_Aventador_SVJ_Yellow.jpg" target="_blank" rel="noreferrer">Blue0ne87</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noreferrer">CC BY-SA 4.0</a> · resized and compressed</p>
+</section>
+
+<section class="final">
+  <div class="final-inner reveal">
+    <small>Private acquisition / sourcing</small>
+    <h2>See the car.<br>Know <em>the car.</em></h2>
+    <div class="actions"><button class="btn primary">Request private viewing</button><button class="btn">Speak to a specialist</button></div>
+  </div>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/DRACOLoader.js"></script>
+<script>
+(function(){
+'use strict';
+const MODEL='/cinematic-supercar/models/aventador/aventador.gltf';
+
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const entry=$('#entry'), enter=$('#enter'), sound=$('#sound'), viewport=$('#viewport'), story=$('#story'), sceneMount=$('#scene'), fallback=$('#fallback');
+const buildHud=$('#buildHud'), buildnum=$('#buildnum'), buildbar=$('#buildbar'), buildstate=$('#buildstate');
+const chapter=$('#chapter'), chapterIndex=$('#chapterIndex'), chapterTitle=$('#chapterTitle'), chapterCopy=$('#chapterCopy'), telemetry=$('#telemetry');
+const modeEl=$('#mode'), gearEl=$('#gear'), speedEl=$('#speed'), thrustEl=$('#thrust'), gforceEl=$('#gforce'), brakeEl=$('#brake'), rpm=$$('#rpm i'), dots=$$('.story-dots i'), speedlines=$('#speedlines'), flash=$('#flash'), shift=$('#shift'), scrollcue=$('#scrollcue'), topId=$('#topId'), arrivalWash=$('#arrivalWash'), showroomTitle=$('#showroomTitle'), showroomDetail=$('#showroomDetail'), showroomFloorCopy=$('#showroomFloorCopy'), sceneCurtain=$('#sceneCurtain'), assemblyNote=$('#assemblyNote'), meshReadout=$('#meshReadout'), brakeTag=$('#brakeTag'), railLabel=$('#railLabel'), nav=$('.nav');
+const cursor=$('.cursor'), cursorDot=$('.cursor-dot');
+
+const clamp=(v,a=0,b=1)=>Math.max(a,Math.min(b,v));
+const range=(v,a,b)=>clamp((v-a)/(b-a));
+const smooth=t=>t*t*(3-2*t);
+const mix=(a,b,t)=>a+(b-a)*t;
+const hash=i=>{const x=Math.sin((i+1)*127.1)*43758.5453;return x-Math.floor(x)};
+
+class Spring{
+  constructor(x=0,k=75,c=14){this.x=x;this.v=0;this.target=x;this.k=k;this.c=c}
+  step(dt){const a=this.k*(this.target-this.x)-this.c*this.v;this.v+=a*dt;this.x+=this.v*dt;return this.x}
+}
+
+let mx=innerWidth/2,my=innerHeight/2,cx=mx,cy=my;
+addEventListener('pointermove',e=>{
+  mx=e.clientX;my=e.clientY;
+  const nx=(e.clientX/Math.max(1,innerWidth)-.5)*2;
+  const ny=(e.clientY/Math.max(1,innerHeight)-.5)*2;
+  document.documentElement.style.setProperty('--entry-px',nx.toFixed(3));
+  document.documentElement.style.setProperty('--entry-py',ny.toFixed(3));
+});
+$$('a,button,.card').forEach(el=>{el.addEventListener('mouseenter',()=>cursor.classList.add('hot'));el.addEventListener('mouseleave',()=>cursor.classList.remove('hot'))});
+
+const REAL_ENGINE_URL='/cinematic-supercar/audio/lamborghini-v12-engine.mp3';
+const REAL_IGNITION_URL='/cinematic-supercar/audio/aventador-svj-ignition-exhaust.mp3';
+let audioCtx,audioEnabled=true,noiseBuffer=null;
+let audioMaster=null,engineBus=null,engineTone=null,shiftDuck=null;
+let engineBuffer=null,ignitionBuffer=null,audioLoadPromise=null;
+let engineLow=null,engineHigh=null,engineLowGain=null,engineHighGain=null;
+let engineLowFilter=null,engineHighFilter=null,ignitionSource=null,ignitionGain=null,ignitionPlayed=false;
+let wind=null,windGain=null,windFilter=null;
+let roadNoise=null,roadGain=null,roadFilter=null;
+let audioLastSpeed=0,audioLastTime=0,audioWasActive=false;
+
+function makeNoiseBuffer(ctx,seconds=4){
+  const b=ctx.createBuffer(1,ctx.sampleRate*seconds,ctx.sampleRate);
+  const d=b.getChannelData(0);
+  let last=0;
+  for(let i=0;i<d.length;i++){
+    const white=Math.random()*2-1;
+    last=last*.82+white*.18;
+    d[i]=white*.72+last*.28;
+  }
+  return b;
+}
+
+function softClipCurve(amount=8){
+  const n=2048,curve=new Float32Array(n);
+  for(let i=0;i<n;i++){
+    const x=i*2/n-1;
+    curve[i]=Math.tanh(x*amount)/Math.tanh(amount);
+  }
+  return curve;
+}
+
+async function decodeRecordedAudio(url){
+  const response=await fetch(url,{cache:'force-cache'});
+  if(!response.ok)throw new Error('audio asset '+response.status);
+  const bytes=await response.arrayBuffer();
+  return audioCtx.decodeAudioData(bytes);
+}
+
+function startRecordedEngine(){
+  if(!audioCtx||!engineBuffer||engineLow||engineHigh)return;
+
+  // Two authentic regions from the same Lamborghini V12 recording:
+  // a long stable idle/load bed and a naturally revving high-load bed.
+  engineLow=audioCtx.createBufferSource();
+  engineLow.buffer=engineBuffer;
+  engineLow.loop=true;
+  engineLow.loopStart=10.4;
+  engineLow.loopEnd=32.0;
+  engineLow.playbackRate.value=.88;
+
+  engineHigh=audioCtx.createBufferSource();
+  engineHigh.buffer=engineBuffer;
+  engineHigh.loop=true;
+  engineHigh.loopStart=35.1;
+  engineHigh.loopEnd=52.2;
+  engineHigh.playbackRate.value=.86;
+
+  engineLowFilter=audioCtx.createBiquadFilter();
+  engineLowFilter.type='lowpass';
+  engineLowFilter.frequency.value=3200;
+  engineLowFilter.Q.value=.35;
+
+  engineHighFilter=audioCtx.createBiquadFilter();
+  engineHighFilter.type='highpass';
+  engineHighFilter.frequency.value=105;
+  engineHighFilter.Q.value=.28;
+
+  engineLowGain=audioCtx.createGain();
+  engineHighGain=audioCtx.createGain();
+  engineLowGain.gain.value=.0001;
+  engineHighGain.gain.value=.0001;
+
+  engineLow.connect(engineLowFilter);
+  engineLowFilter.connect(engineLowGain);
+  engineLowGain.connect(engineBus);
+  engineHigh.connect(engineHighFilter);
+  engineHighFilter.connect(engineHighGain);
+  engineHighGain.connect(engineBus);
+
+  engineLow.start(0,12.4);
+  engineHigh.start(0,36.2);
+}
+
+function playRecordedIgnition(){
+  if(!audioCtx||!ignitionBuffer||ignitionPlayed||!audioEnabled)return;
+  ignitionPlayed=true;
+
+  ignitionSource=audioCtx.createBufferSource();
+  ignitionSource.buffer=ignitionBuffer;
+  ignitionGain=audioCtx.createGain();
+  ignitionGain.gain.value=.52;
+  ignitionSource.connect(ignitionGain);
+  ignitionGain.connect(audioMaster);
+  ignitionSource.onended=()=>{ignitionSource=null;ignitionGain=null};
+  ignitionSource.start();
+}
+
+function initAudio(){
+  if(audioCtx)return;
+  try{
+    audioCtx=new (window.AudioContext||window.webkitAudioContext)();
+
+    const compressor=audioCtx.createDynamicsCompressor();
+    compressor.threshold.value=-18;
+    compressor.knee.value=18;
+    compressor.ratio.value=4;
+    compressor.attack.value=.004;
+    compressor.release.value=.16;
+
+    audioMaster=audioCtx.createGain();
+    audioMaster.gain.value=.0001;
+    audioMaster.connect(compressor);
+    compressor.connect(audioCtx.destination);
+
+    engineBus=audioCtx.createGain();
+    engineBus.gain.value=.92;
+
+    engineTone=audioCtx.createBiquadFilter();
+    engineTone.type='lowpass';
+    engineTone.frequency.value=3600;
+    engineTone.Q.value=.32;
+
+    const engineSaturator=audioCtx.createWaveShaper();
+    engineSaturator.curve=softClipCurve(1.22);
+    engineSaturator.oversample='2x';
+
+    shiftDuck=audioCtx.createGain();
+    shiftDuck.gain.value=1;
+
+    engineBus.connect(engineTone);
+    engineTone.connect(engineSaturator);
+    engineSaturator.connect(shiftDuck);
+    shiftDuck.connect(audioMaster);
+
+    noiseBuffer=makeNoiseBuffer(audioCtx,4);
+
+    // Aerodynamic wind.
+    wind=audioCtx.createBufferSource();
+    wind.buffer=noiseBuffer;
+    wind.loop=true;
+    windFilter=audioCtx.createBiquadFilter();
+    windFilter.type='bandpass';
+    windFilter.frequency.value=1500;
+    windFilter.Q.value=.48;
+    windGain=audioCtx.createGain();
+    windGain.gain.value=.0001;
+    wind.connect(windFilter);
+    windFilter.connect(windGain);
+    windGain.connect(audioMaster);
+
+    // Tyre/road bed: lower and wider than wind.
+    roadNoise=audioCtx.createBufferSource();
+    roadNoise.buffer=noiseBuffer;
+    roadNoise.loop=true;
+    roadFilter=audioCtx.createBiquadFilter();
+    roadFilter.type='bandpass';
+    roadFilter.frequency.value=430;
+    roadFilter.Q.value=.52;
+    roadGain=audioCtx.createGain();
+    roadGain.gain.value=.0001;
+    roadNoise.connect(roadFilter);
+    roadFilter.connect(roadGain);
+    roadGain.connect(audioMaster);
+
+    wind.start();
+    roadNoise.start();
+
+    audioLastTime=audioCtx.currentTime;
+    audioLoadPromise=Promise.all([
+      decodeRecordedAudio(REAL_ENGINE_URL),
+      decodeRecordedAudio(REAL_IGNITION_URL)
+    ]).then(buffers=>{
+      engineBuffer=buffers[0];
+      ignitionBuffer=buffers[1];
+      startRecordedEngine();
+      if(audioWasActive)playRecordedIgnition();
+    }).catch(e=>console.warn('Recorded Lamborghini audio unavailable',e));
+  }catch(e){
+    console.warn('Audio unavailable',e);
+  }
+}
+
+function rpmForSpeed(speed){
+  if(speed<3)return 1050;
+
+  // Visual gear ratios matched to the UI thresholds.
+  const ranges=[
+    [0,55],
+    [55,105],
+    [105,155],
+    [155,210],
+    [210,260],
+    [260,350]
+  ];
+
+  let idx=0;
+  for(let i=0;i<ranges.length;i++){
+    if(speed>=ranges[i][0])idx=i;
+  }
+
+  const low=ranges[idx][0],high=ranges[idx][1];
+  const t=clamp((speed-low)/Math.max(1,high-low));
+
+  // First gear starts lower; later gears re-enter around 4300 RPM after a shift.
+  const minRpm=idx===0?1500:4250;
+  return mix(minRpm,8400,smooth(t));
+}
+
+function updateAudio(speed,active){
+  if(!audioCtx||!audioMaster)return;
+
+  const now=audioCtx.currentTime;
+  const dt=Math.max(.016,now-audioLastTime);
+  const accel=(speed-audioLastSpeed)/dt;
+  audioLastSpeed=speed;
+  audioLastTime=now;
+
+  if(active&&!audioWasActive)playRecordedIgnition();
+  audioWasActive=active;
+
+  const rpm=rpmForSpeed(speed);
+  const rpmNorm=clamp((rpm-1000)/7400);
+  const speedNorm=clamp(speed/350);
+  const accelLoad=clamp(accel/150,0,1);
+  const load=clamp(.28+speedNorm*.34+accelLoad*.48);
+
+  windFilter.frequency.setTargetAtTime(1050+speedNorm*1650,now,.12);
+  roadFilter.frequency.setTargetAtTime(300+speedNorm*520,now,.12);
+
+  const on=audioEnabled&&active;
+  const masterTarget=on?.78:.0001;
+  audioMaster.gain.setTargetAtTime(masterTarget,now,on?.09:.06);
+
+  if(engineLow&&engineHigh&&engineLowGain&&engineHighGain){
+    const highBlend=smooth(range(rpmNorm,.16,.78));
+    engineLow.playbackRate.setTargetAtTime(.88+rpmNorm*.48,now,.075);
+    engineHigh.playbackRate.setTargetAtTime(.84+rpmNorm*.34,now,.065);
+    engineLowGain.gain.setTargetAtTime(on?(.34*(1-highBlend*.72)+load*.045):.0001,now,.09);
+    engineHighGain.gain.setTargetAtTime(on?(.018+highBlend*.43*load):.0001,now,.075);
+    engineLowFilter.frequency.setTargetAtTime(2500+rpmNorm*3100,now,.10);
+    engineHighFilter.frequency.setTargetAtTime(90+speedNorm*85,now,.12);
+    engineTone.frequency.setTargetAtTime(3200+rpmNorm*7200,now,.085);
+  }
+
+  // Wind rises quadratically. Road noise arrives earlier and stays below the engine.
+  windGain.gain.setTargetAtTime(on?(Math.pow(speedNorm,2.05)*.020):.0001,now,.16);
+  roadGain.gain.setTargetAtTime(on?(Math.pow(speedNorm,.92)*.0105):.0001,now,.12);
+}
+
+function shiftSound(){
+  if(!audioCtx||!audioEnabled||!noiseBuffer||!shiftDuck)return;
+
+  const now=audioCtx.currentTime;
+
+  // Torque cut: engine drops for ~90ms, then snaps back.
+  shiftDuck.gain.cancelScheduledValues(now);
+  shiftDuck.gain.setValueAtTime(Math.max(.75,shiftDuck.gain.value),now);
+  shiftDuck.gain.linearRampToValueAtTime(.16,now+.025);
+  shiftDuck.gain.exponentialRampToValueAtTime(1,now+.13);
+
+  // Mechanical drivetrain thump.
+  const kick=audioCtx.createOscillator();
+  const kg=audioCtx.createGain();
+  kick.type='sine';
+  kick.frequency.setValueAtTime(72,now);
+  kick.frequency.exponentialRampToValueAtTime(46,now+.09);
+  kg.gain.setValueAtTime(.11,now);
+  kg.gain.exponentialRampToValueAtTime(.0001,now+.095);
+  kick.connect(kg);kg.connect(audioMaster);
+  kick.start(now);kick.stop(now+.105);
+
+  // Short exhaust cut/rasp transient.
+  const n=audioCtx.createBufferSource();
+  const f=audioCtx.createBiquadFilter();
+  const g=audioCtx.createGain();
+  n.buffer=noiseBuffer;
+  f.type='bandpass';
+  f.frequency.value=1650;
+  f.Q.value=.72;
+  g.gain.setValueAtTime(.026,now);
+  g.gain.exponentialRampToValueAtTime(.0001,now+.075);
+  n.connect(f);f.connect(g);g.connect(audioMaster);
+  n.start(now);n.stop(now+.08);
+}
+
+sound.setAttribute('aria-pressed','true');
+sound.addEventListener('click',()=>{
+  initAudio();
+  audioEnabled=!audioEnabled;
+  sound.textContent=audioEnabled?'sound on':'sound off';
+  sound.setAttribute('aria-pressed',String(audioEnabled));
+  if(audioCtx&&audioCtx.state==='suspended')audioCtx.resume();
+  if(audioMaster){
+    audioMaster.gain.setTargetAtTime(audioEnabled?.55:.0001,audioCtx.currentTime,.05);
+  }
+  if(audioEnabled&&audioWasActive)playRecordedIgnition();
+});
+
+let scene,renderer,camera,carRig,carRoot,garage,road,tunnel,showroom,hemiLight,keyLight,rimLight,yellowLight,showroomLights=[],assemblySweepLight=null,showroomSweepLight=null,showroomSweepLight2=null,showroomBoundaryMats=[],showroomTurntable=null,showroomOverheadLight=null,showroomFillLight=null,showroomRimLight=null,showroomAmbientLight=null;
+let roadTexture=null,streetLights=[],rings=[],roadFlowMarkers=[],wheels=[],wheelAxis=null,wheelSpinQ=null,assembly=[],assemblyGroups=[],assemblyContactLights=[],carBaseYaw=0;
+let ready=false,assemblyDone=false,assemblyStart=0,storyP=0,currentChapter=-1,last=performance.now(),storyVisible=true,lastGear='N',lastAssemblyStage=-1,qualityClock=0,frameAccum=0,frameSamples=0,currentDpr=innerWidth<900?.85:Math.min(devicePixelRatio,1.05);
+const speedSpring=new Spring(0,50,10),camX=new Spring(4.2,46,10),camY=new Spring(1.75,46,10),camZ=new Spring(6.2,46,10),camRoll=new Spring(0,65,13),targetX=new Spring(0,58,12),fov=new Spring(34,48,10),bodyRoll=new Spring(0,70,13),bodyPitch=new Spring(0,72,13),carShift=new Spring(.55,60,12),carSurge=new Spring(0,68,13),carYawSpring=new Spring(0,52,11),thrustKick=new Spring(0,95,17);
+let assemblyYaw=0,driveYaw=0,showroomYaw=0,previousSpeed=0,displayG=0,flashPulse=0,flashTimer=0,showroomPhaseState=0,curtainOpacityState=0,inspectYaw=0,inspectYawVel=0,inspectDragging=false,inspectLastX=0,inspectLastTime=0,inspectLastInteraction=0,inspectAuto=false,inspectAutoDir=1,inspectAutoSpeed=.072;
+
+const chapters=[
+ ['01 / ASSEMBLY','Born from<br><em>components.</em>','Nothing surrounds the car. Wheels, structure, body, glass and trim hand motion into one another continuously, then settle under a final paint-light sweep.'],
+ ['02 / REVEAL','Complete.<br><em>Now breathe.</em>','Only after the final lock do the identity, navigation and next instruction enter the frame.'],
+ ['03 / ALIGNMENT','Turn toward<br><em>the road.</em>','The stationary Aventador rotates from its build profile into the drive direction before velocity begins.'],
+ ['04 / ACCELERATION','Road.<br><em>Nothing else.</em>','The interface retires. Asphalt, markings, speed and thrust carry the sequence.'],
+ ['05 / BRAKING','Bring 350<br><em>back to zero.</em>','The road remains uninterrupted until the car is completely stopped.'],
+ ['06 / SHOWCASE','Aventador SVJ.<br><em>Presented properly.</em>','The road is gone. The car is stationary, side-profiled and isolated inside a black showcase under Lamborghini-only light.']
+];
+function setChapter(i){
+  if(i===currentChapter)return;currentChapter=i;chapter.classList.remove('on');
+  setTimeout(()=>{chapterIndex.textContent=chapters[i][0];chapterTitle.innerHTML=chapters[i][1];chapterCopy.textContent=chapters[i][2];chapter.classList.add('on')},90);
+  dots.forEach((d,n)=>d.classList.toggle('on',n<=i))
+}
+setChapter(0);
+
+function fallbackMode(msg){
+  fallback.classList.add('on');
+  buildstate.textContent=msg||'3D fallback active';
+  ready=false;
+  assemblyDone=true;
+
+  viewport.classList.remove('building');
+  document.body.classList.remove('machine-building');
+  document.documentElement.classList.remove('story-lock');
+
+  entry.classList.add('hide');
+
+  if(carRoot){
+    carRoot.traverse(o=>{
+      // Never reveal the alternate wheel design over the selected rim.
+      if(o.isMesh&&!/^Obj_Rim_T0B_/.test(o.name||''))o.visible=true;
+    });
+  }
+
+  chapter.classList.remove('on');
+  scrollcue.classList.remove('on');
+  meshReadout.textContent='cinematic fallback / 3D unavailable';
+}
+
+function roadCanvas(){
+  const c=document.createElement('canvas');c.width=512;c.height=1024;const g=c.getContext('2d');
+  g.fillStyle='#171717';g.fillRect(0,0,c.width,c.height);
+  for(let i=0;i<12000;i++){const v=19+Math.floor(Math.random()*22);g.fillStyle=`rgb(${v},${v},${v})`;g.fillRect(Math.random()*512,Math.random()*1024,1,1)}
+  g.strokeStyle='rgba(245,242,232,.76)';g.lineWidth=4;
+  g.beginPath();g.moveTo(58,0);g.lineTo(58,1024);g.moveTo(454,0);g.lineTo(454,1024);g.stroke();
+  g.lineWidth=6;for(let y=0;y<1024;y+=150){g.beginPath();g.moveTo(256,y);g.lineTo(256,y+70);g.stroke()}
+  const t=new THREE.CanvasTexture(c);t.wrapS=t.wrapT=THREE.RepeatWrapping;t.repeat.set(1,10);return t
+}
+
+function createGarage(){
+  // V10: the assembly scene is deliberately empty.
+  // No floor, no wall, no softbox geometry, no architecture — only the Lamborghini in black.
+  garage=new THREE.Group();
+  scene.add(garage);
+  garage.userData.doors=[];
+}
+
+function createRoad(){
+  road=new THREE.Group();
+  road.visible=false;
+  scene.add(road);
+  roadFlowMarkers=[];
+
+  roadTexture=roadCanvas();
+
+  const asphaltMat=new THREE.MeshStandardMaterial({
+    map:roadTexture,
+    color:0x747474,
+    roughness:.985,
+    metalness:.005
+  });
+  const asphalt=new THREE.Mesh(new THREE.PlaneGeometry(8.4,210),asphaltMat);
+  asphalt.rotation.x=-Math.PI/2;
+  asphalt.position.set(0,-1.23,-96);
+  road.add(asphalt);
+
+  const shoulderMat=new THREE.MeshStandardMaterial({
+    color:0x020202,
+    roughness:1,
+    metalness:0
+  });
+  [-5.45,5.45].forEach(x=>{
+    const shoulder=new THREE.Mesh(new THREE.PlaneGeometry(2.65,210),shoulderMat);
+    shoulder.rotation.x=-Math.PI/2;
+    shoulder.position.set(x,-1.225,-96);
+    road.add(shoulder);
+  });
+
+  const edgeMat=new THREE.MeshBasicMaterial({color:0x303030});
+  [-4.27,4.27].forEach(x=>{
+    const edge=new THREE.Mesh(new THREE.BoxGeometry(.055,.045,202),edgeMat);
+    edge.position.set(x,-1.17,-92);
+    road.add(edge);
+  });
+
+  // Physical centre-lane dashes. These move through world space,
+  // giving the eye a real distance/time reference at 150–350 km/h.
+  const laneMat=new THREE.MeshBasicMaterial({color:0xe8e5dc});
+  for(let i=0;i<20;i++){
+    const dash=new THREE.Mesh(new THREE.BoxGeometry(.085,.018,2.15),laneMat);
+    dash.position.set(0,-1.165,-5-i*6.25);
+    dash.userData.kind='dash';
+    road.add(dash);
+    roadFlowMarkers.push(dash);
+  }
+
+  // Edge reflectors are tiny, cheap, and extremely effective for peripheral optic flow.
+  const reflectorMat=new THREE.MeshBasicMaterial({color:0xdad7ce});
+  for(let i=0;i<18;i++){
+    [-3.92,3.92].forEach((x,side)=>{
+      const marker=new THREE.Mesh(new THREE.BoxGeometry(.055,.035,.32),reflectorMat);
+      marker.position.set(x,-1.135,-3-i*7.0-(side*.22));
+      marker.userData.kind='reflector';
+      road.add(marker);
+      roadFlowMarkers.push(marker);
+    });
+  }
+
+  streetLights=[];
+  const postMat=new THREE.MeshBasicMaterial({color:0x8f8a7b,transparent:true,opacity:.42});
+  const lampMat=new THREE.MeshBasicMaterial({color:0xffe2a1,transparent:true,opacity:.72});
+  for(let i=0;i<14;i++){
+    [-4.62,4.62].forEach((x,side)=>{
+      const roadside=new THREE.Group();
+      const post=new THREE.Mesh(new THREE.BoxGeometry(.035,1.28,.035),postMat);
+      post.position.y=.64;
+      const lamp=new THREE.Mesh(new THREE.BoxGeometry(.075,.035,.42),lampMat);
+      lamp.position.set(side?-.12:.12,1.27,0);
+      roadside.add(post,lamp);
+      roadside.position.set(x,-1.19,-8-i*9.35-(side*.34));
+      road.add(roadside);
+      streetLights.push(roadside);
+    });
+  }
+}
+
+function createTunnel(){
+  tunnel=new THREE.Group();
+  tunnel.visible=false;
+  scene.add(tunnel);
+  rings=[];
+
+  // Repeating physical hoops provide stable parallax at very high speed.
+  const ringMat=new THREE.MeshBasicMaterial({
+    color:0x8d897c,
+    transparent:true,
+    opacity:.19,
+    depthWrite:false
+  });
+  const bladeMat=new THREE.MeshBasicMaterial({
+    color:0xffdc82,
+    transparent:true,
+    opacity:.30,
+    depthWrite:false
+  });
+  for(let i=0;i<18;i++){
+    const hoop=new THREE.Group();
+    const ring=new THREE.Mesh(new THREE.TorusGeometry(5.05,.025,6,72),ringMat);
+    ring.position.y=.72;
+    const leftBlade=new THREE.Mesh(new THREE.BoxGeometry(.035,2.25,.035),bladeMat);
+    const rightBlade=leftBlade.clone();
+    leftBlade.position.set(-4.36,.72,0);
+    rightBlade.position.set(4.36,.72,0);
+    hoop.add(ring,leftBlade,rightBlade);
+    hoop.position.z=-7-i*7.15;
+    tunnel.add(hoop);
+    rings.push(hoop);
+  }
+}
+
+function createShowroom(){
+  // V19: real black presentation zone, not a tall debug-looking cage.
+  showroom=new THREE.Group();
+  showroom.visible=false;
+  scene.add(showroom);
+  showroomLights=[];
+  showroomBoundaryMats=[];
+
+  // Rotating presentation unit. Plinth + perimeter move together.
+  showroomTurntable=new THREE.Group();
+  showroom.add(showroomTurntable);
+
+  const floorMat=new THREE.MeshStandardMaterial({
+    color:0x030303,
+    roughness:.30,
+    metalness:.12
+  });
+  const floor=new THREE.Mesh(new THREE.PlaneGeometry(24,16),floorMat);
+  floor.rotation.x=-Math.PI/2;
+  floor.position.set(0,-1.23,-.5);
+  showroom.add(floor);
+
+  // Low elliptical plinth.
+  const plinthMat=new THREE.MeshStandardMaterial({
+    color:0x0a0a0a,
+    roughness:.20,
+    metalness:.34
+  });
+  const plinth=new THREE.Mesh(
+    new THREE.CylinderGeometry(3.72,3.80,.06,96),
+    plinthMat
+  );
+  plinth.position.set(0,-1.18,0);
+  showroomTurntable.add(plinth);
+
+  // Subtle perimeter light: low, elliptical, never becomes a bright cage.
+  const ringMat=new THREE.MeshBasicMaterial({
+    color:0xbfbab2,
+    transparent:true,
+    opacity:0
+  });
+  showroomBoundaryMats.push(ringMat);
+  const ring=new THREE.Mesh(
+    new THREE.TorusGeometry(3.78,.012,5,128),
+    ringMat
+  );
+  ring.rotation.x=Math.PI/2;
+  ring.position.set(0,-1.135,0);
+  showroomTurntable.add(ring);
+
+  // Four very low boundary markers suggest a protected display zone without enclosing it.
+  const markerMat=new THREE.MeshBasicMaterial({
+    color:0x8d8982,
+    transparent:true,
+    opacity:0
+  });
+  showroomBoundaryMats.push(markerMat);
+
+  [[-3.78,0],[3.78,0],[0,-3.78],[0,3.78]].forEach(p=>{
+    const m=new THREE.Mesh(new THREE.BoxGeometry(.028,.22,.028),markerMat);
+    m.position.set(p[0],-1.03,p[1]);
+    showroomTurntable.add(m);
+  });
+
+  // Focused Lamborghini-only lighting.
+  function addSpot(intensity,pos,angle,penumbra,decay=1.5){
+    const l=new THREE.SpotLight(0xffffff,0,18,angle,penumbra,decay);
+    l.position.set(pos[0],pos[1],pos[2]);
+    l.target.position.set(0,-.24,0);
+    l.layers.set(1);
+    l.userData.targetIntensity=intensity;
+    showroom.add(l,l.target);
+    showroomLights.push(l);
+  }
+
+  // Steady lighting has enough output to reveal the body without lighting the room.
+  addSpot(1.65,[2.9,7.4,4.4],Math.PI*.13,.44,1.45);
+  addSpot(.95,[-3.3,5.2,3.8],Math.PI*.16,.56,1.5);
+  addSpot(.62,[4.4,2.8,-3.0],Math.PI*.17,.62,1.55);
+  addSpot(.48,[-4.2,2.6,-2.4],Math.PI*.18,.66,1.55);
+
+  // Broad overhead Lamborghini-only key.
+  // Strong enough to visibly reveal the parked car while the room stays black.
+  showroomOverheadLight=new THREE.SpotLight(
+    0xffffff,
+    0,
+    18,
+    Math.PI*.31,
+    .90,
+    1.35
+  );
+  showroomOverheadLight.layers.set(1);
+  showroomOverheadLight.position.set(0,9.6,1.0);
+  showroomOverheadLight.target.position.set(0,-.18,0);
+  showroomOverheadLight.userData.targetIntensity=2.65;
+  showroom.add(showroomOverheadLight,showroomOverheadLight.target);
+
+  // Soft front-quarter fill to reveal the hood, front fender, glass edge and side surface.
+  showroomFillLight=new THREE.SpotLight(
+    0xffffff,
+    0,
+    17,
+    Math.PI*.25,
+    .90,
+    1.45
+  );
+  showroomFillLight.layers.set(1);
+  showroomFillLight.position.set(-5.2,4.3,5.8);
+  showroomFillLight.target.position.set(-.25,-.30,.35);
+  showroomFillLight.userData.targetIntensity=.95;
+  showroom.add(showroomFillLight,showroomFillLight.target);
+
+  // Very soft rear rim so the roof/rear shoulder does not disappear into black.
+  showroomRimLight=new THREE.DirectionalLight(0xffffff,0);
+  showroomRimLight.layers.set(1);
+  showroomRimLight.position.set(4.8,5.2,-5.6);
+  showroomRimLight.target.position.set(.25,-.05,0);
+  showroomRimLight.userData.targetIntensity=.48;
+  showroom.add(showroomRimLight,showroomRimLight.target);
+
+  // Low Lamborghini-only ambient base keeps deep shadow regions readable.
+  showroomAmbientLight=new THREE.AmbientLight(0xffffff,0);
+  showroomAmbientLight.layers.set(1);
+  showroomAmbientLight.userData.targetIntensity=.34;
+  showroom.add(showroomAmbientLight);
+
+  // Extraordinary reveal: two narrow car-only light blades cross the Lamborghini sequentially.
+  showroomSweepLight=new THREE.SpotLight(0xffffff,0,11,Math.PI*.075,.38,1.65);
+  showroomSweepLight.layers.set(1);
+  showroomSweepLight.position.set(-4.2,4.5,4.2);
+  showroomSweepLight.target.position.set(-1.7,-.18,0);
+  showroom.add(showroomSweepLight,showroomSweepLight.target);
+
+  showroomSweepLight2=new THREE.SpotLight(0xffffff,0,10,Math.PI*.065,.34,1.7);
+  showroomSweepLight2.layers.set(1);
+  showroomSweepLight2.position.set(4.4,3.6,3.1);
+  showroomSweepLight2.target.position.set(2.2,-.18,0);
+  showroom.add(showroomSweepLight2,showroomSweepLight2.target);
+}
+
+function detectForwardYaw(model){
+  let fl=null,fr=null,rl=null,rr=null;
+  model.traverse(o=>{
+    const name=(o.name||'').toLowerCase();
+    if(!fl&&/(?:tyre|wheelhub|rim).*_fl$/.test(name))fl=o;
+    if(!fr&&/(?:tyre|wheelhub|rim).*_fr$/.test(name))fr=o;
+    if(!rl&&/(?:tyre|wheelhub|rim).*_rl$/.test(name))rl=o;
+    if(!rr&&/(?:tyre|wheelhub|rim).*_rr$/.test(name))rr=o;
+  });
+  if(!(fl&&fr&&rl&&rr))return 0;
+  model.updateMatrixWorld(true);
+  const f=new THREE.Vector3(),r=new THREE.Vector3(),tmp=new THREE.Vector3();
+  fl.getWorldPosition(f);fr.getWorldPosition(tmp);f.add(tmp).multiplyScalar(.5);
+  rl.getWorldPosition(r);rr.getWorldPosition(tmp);r.add(tmp).multiplyScalar(.5);
+  const v=f.sub(r);
+  if(Math.abs(v.x)>Math.abs(v.z))return v.x>0?Math.PI/2:-Math.PI/2;
+  return v.z>0?Math.PI:0;
+}
+
+
+function normaliseCar(model){
+  model.updateMatrixWorld(true);
+  let box=new THREE.Box3().setFromObject(model),size=box.getSize(new THREE.Vector3());
+  const scale=4.65/Math.max(size.x,size.z);model.scale.multiplyScalar(scale);model.updateMatrixWorld(true);
+  box=new THREE.Box3().setFromObject(model);const center=box.getCenter(new THREE.Vector3());
+  // Put the tyre contact patch on the road plane instead of floating above it.
+  model.position.x-=center.x;model.position.z-=center.z;model.position.y+=-1.225-box.min.y;model.updateMatrixWorld(true)
+}
+
+function setupWheelKinematics(){
+  wheels=[];
+  wheelAxis=new THREE.Vector3(0,0,1);
+  wheelSpinQ=new THREE.Quaternion();
+
+  ['FL','FR','RL','RR'].forEach(code=>{
+    const hub=carRoot.getObjectByName('Obj_WheelHub_'+code);
+    const rotor=carRoot.getObjectByName('Obj_DiscRotor_'+code);
+    const tyre=carRoot.getObjectByName('Obj_Tyre_'+code);
+    const selectedRim=carRoot.getObjectByName('Obj_Rim_T0A_'+code);
+    const alternateRim=carRoot.getObjectByName('Obj_Rim_T0B_'+code);
+
+    if(selectedRim)selectedRim.visible=true;
+    if(alternateRim)alternateRim.visible=false;
+    if(!(hub&&rotor&&tyre))return;
+
+    wheels.push({
+      node:rotor,
+      baseQuaternion:rotor.quaternion.clone(),
+      angle:0,
+      // The right hubs are mirrored 180 degrees around Y, so their local spin sign reverses.
+      sign:code.endsWith('R')?-1:1,
+      // Aventador rolling radii: front and rear tyres are deliberately not treated as identical.
+      radiusMeters:code.startsWith('F')?.331:.355
+    });
+  });
+}
+
+function updateWheelKinematics(speedKmh,dt){
+  if(!assemblyDone||!wheelAxis||!wheelSpinQ)return;
+  const speedMps=Math.max(0,speedKmh)/3.6;
+  wheels.forEach(w=>{
+    // omega = linear velocity / rolling radius; integrate by real frame time.
+    w.angle=(w.angle+(speedMps/w.radiusMeters)*dt)%(Math.PI*2);
+    wheelSpinQ.setFromAxisAngle(wheelAxis,w.angle*w.sign);
+    w.node.quaternion.copy(w.baseQuaternion).multiply(wheelSpinQ);
+  });
+}
+
+function createAssemblyStates(){
+  assembly=[];
+  assemblyGroups=[];
+  assemblyContactLights=[];
+
+  carRig.updateMatrixWorld(true);
+
+  const carBox=new THREE.Box3().setFromObject(carRig);
+  const carCenter=carBox.getCenter(new THREE.Vector3());
+  const carSize=carBox.getSize(new THREE.Vector3());
+
+  const meshes=[];
+  carRoot.traverse(o=>{
+    if(o.isMesh&&o.geometry&&o.visible){
+      meshes.push(o);
+
+      // Future assembly parts must NOT be visible before their phase.
+      o.visible=false;
+
+      // Layer 1 is reserved for Lamborghini-only lighting.
+      // The mesh remains on layer 0 too, so the camera still renders it normally.
+      o.layers.enable(1);
+    }
+  });
+
+  // Real product-film choreography:
+  // every phase overlaps the next one, so nothing finishes and waits in dead space.
+  const groups={
+    wheels:{
+      name:'wheels / hubs',
+      start:.018,end:.32,
+      offsetScale:1,
+      spring:new Spring(1,72,14.8),
+      entries:[]
+    },
+    structure:{
+      name:'lower structure',
+      start:.12,end:.42,
+      offsetScale:1,
+      spring:new Spring(1,68,14.4),
+      entries:[]
+    },
+    body:{
+      name:'body shell',
+      start:.23,end:.57,
+      offsetScale:1,
+      spring:new Spring(1,64,14.2),
+      entries:[]
+    },
+    glass:{
+      name:'glass / canopy',
+      start:.43,end:.69,
+      offsetScale:1,
+      spring:new Spring(1,70,14.5),
+      entries:[]
+    },
+    details:{
+      name:'trim / final details',
+      start:.57,end:.81,
+      offsetScale:1,
+      spring:new Spring(1,76,15.0),
+      entries:[]
+    }
+  };
+
+  function categoryFor(o,center){
+    const name=(o.name||'').toLowerCase();
+
+    if(/wheel|tire|tyre|rim/.test(name))return 'wheels';
+    if(/glass|window|windscreen|windshield/.test(name))return 'glass';
+    if(/trim|light|lamp|badge|grill|grille/.test(name))return 'details';
+    if(/body|door|hood|bonnet|fender|bumper|spoiler/.test(name))return 'body';
+
+    // Unknown lower geometry behaves as chassis/structure.
+    // Unknown upper geometry follows the body shell.
+    const relY=(center.y-carCenter.y)/Math.max(.1,carSize.y);
+    return relY>-.02?'body':'structure';
+  }
+
+  function worldOffsetFor(cat,center){
+    const side=center.x>=carCenter.x?1:-1;
+
+    // Shorter, believable mechanical travel — no exploded cloud.
+    if(cat==='wheels')return new THREE.Vector3(side*1.05,-.12,0);
+    if(cat==='structure')return new THREE.Vector3(0,-.72,0);
+    if(cat==='body')return new THREE.Vector3(0,1.05,0);
+    if(cat==='glass')return new THREE.Vector3(.02,.72,0);
+    if(cat==='details')return new THREE.Vector3(side*.46,.08,0);
+
+    return new THREE.Vector3(0,.5,0);
+  }
+
+  const groupCenters={};
+
+  meshes.forEach((o,i)=>{
+    o.updateMatrixWorld(true);
+
+    const box=new THREE.Box3().setFromObject(o);
+    const center=box.getCenter(new THREE.Vector3());
+    const cat=categoryFor(o,center);
+    const group=groups[cat];
+    const worldOffset=worldOffsetFor(cat,center);
+
+    const parent=o.parent;
+    const localStart=parent.worldToLocal(center.clone());
+    const localEnd=parent.worldToLocal(center.clone().add(worldOffset));
+    const localOffset=localEnd.sub(localStart);
+
+    // Minimal deterministic mechanical rotation.
+    let rot=new THREE.Vector3(0,0,0);
+    if(cat==='wheels')rot.set(.0,0,sideSign(center.x-carCenter.x)*.16);
+    if(cat==='body')rot.set(0,0,.014);
+    if(cat==='glass')rot.set(.012,0,0);
+    if(cat==='details')rot.set(0,.018*sideSign(center.x-carCenter.x),0);
+
+    const entry={
+      o,
+      category:cat,
+      basePos:o.position.clone(),
+      baseQ:o.quaternion.clone(),
+      baseScale:o.scale.clone(),
+      offset:localOffset,
+      rot,
+      revealed:false
+    };
+
+    assembly.push(entry);
+    group.entries.push(entry);
+
+    if(!groupCenters[cat])groupCenters[cat]=new THREE.Vector3();
+    groupCenters[cat].add(center);
+  });
+
+  function sideSign(v){return v>=0?1:-1}
+
+  assemblyGroups=Object.values(groups);
+
+  // Tiny lock lights attached to the actual car region, not the background.
+  Object.keys(groups).forEach(cat=>{
+    const group=groups[cat];
+    if(!group.entries.length)return;
+
+    const c=groupCenters[cat].multiplyScalar(1/group.entries.length);
+    const local=carRig.worldToLocal(c.clone());
+
+    const light=new THREE.PointLight(
+      0xffffff,
+      0,
+      cat==='body'?3.2:2.2
+    );
+    light.position.copy(local);
+    light.layers.set(1);
+    light.userData.group=cat;
+    light.userData.end=group.end;
+    carRig.add(light);
+    assemblyContactLights.push(light);
+  });
+
+  // One moving white spotlight creates an actual paint-light sweep across the body.
+  assemblySweepLight=new THREE.SpotLight(0xffffff,0,9,Math.PI*.12,.62,1.65);
+  assemblySweepLight.layers.set(1);
+  assemblySweepLight.position.set(-3.8,3.5,4.0);
+  assemblySweepLight.target.position.set(0,-.15,0);
+  carRig.add(assemblySweepLight,assemblySweepLight.target);
+
+  buildstate.textContent='cinematic assembly sequence armed';
+  meshReadout.textContent=meshes.length+' meshes / continuous five-stage build';
+  assemblyNote.classList.add('on');
+}
+
+function init3D(){
+  if(!window.THREE||!THREE.GLTFLoader){fallbackMode('3D runtime unavailable');return}
+  try{
+    scene=new THREE.Scene();scene.background=new THREE.Color(0x000000);scene.fog=new THREE.FogExp2(0x070707,.022);
+    camera=new THREE.PerspectiveCamera(34,innerWidth/innerHeight,.05,140);
+    // V26 critical fix: render the Lamborghini-only lighting layer as well as normal layer 0.
+    // Without this, every light using layers.set(1) is ignored by Three.js.
+    camera.layers.enable(1);
+    camera.position.set(4.2,1.75,6.2);
+    renderer=new THREE.WebGLRenderer({antialias:innerWidth>1100,alpha:true,powerPreference:'high-performance'});
+    renderer.setSize(innerWidth,innerHeight);
+    renderer.setPixelRatio(innerWidth<900?.85:Math.min(devicePixelRatio,1.05));
+    renderer.outputEncoding=THREE.sRGBEncoding;renderer.toneMapping=THREE.LinearToneMapping;renderer.toneMappingExposure=.68;
+    renderer.shadowMap.enabled=false;sceneMount.appendChild(renderer.domElement);
+
+    // Neutral studio illumination preserves Giallo Orion instead of pushing it toward orange.
+    hemiLight=new THREE.HemisphereLight(0xffffff,0x020202,.52);scene.add(hemiLight);
+    keyLight=new THREE.DirectionalLight(0xffffff,1.55);keyLight.position.set(4.2,7.3,5.3);scene.add(keyLight);
+    rimLight=new THREE.DirectionalLight(0xffffff,.62);rimLight.position.set(-5.2,2.4,-3.4);scene.add(rimLight);
+    yellowLight=new THREE.PointLight(0xffffff,.06,7);yellowLight.position.set(3,1,-2);scene.add(yellowLight);
+
+    createGarage();createRoad();createTunnel();createShowroom();
+
+    carRig=new THREE.Group();scene.add(carRig);
+    const draco=new THREE.DRACOLoader();draco.setDecoderPath('https://www.gstatic.com/draco/versioned/decoders/1.5.6/');
+    const loader=new THREE.GLTFLoader();loader.setDRACOLoader(draco);
+    loader.load(MODEL,gltf=>{
+      carRoot=gltf.scene;carRig.add(carRoot);
+      normaliseCar(carRoot);
+      carBaseYaw=detectForwardYaw(carRoot);
+      driveYaw=carBaseYaw;
+      // Side profile first: rotate 90° from the road-facing yaw.
+      assemblyYaw=carBaseYaw + Math.PI/2;
+      showroomYaw=assemblyYaw;
+      carYawSpring.x=assemblyYaw;carYawSpring.target=assemblyYaw;
+      carRig.rotation.y=assemblyYaw;
+      carRig.position.x=.88;
+      carRig.updateMatrixWorld(true);
+
+      const gialloOrion=new THREE.Color(0xf0cf00);
+      gialloOrion.convertSRGBToLinear();
+      const tunedMaterials=new Set();
+      carRoot.traverse(o=>{
+        if(!o.isMesh||!o.material)return;
+        const materials=Array.isArray(o.material)?o.material:[o.material];
+        materials.forEach(material=>{
+          if(!material||tunedMaterials.has(material))return;
+          tunedMaterials.add(material);
+          const name=(material.name||'').toLowerCase();
+          if(name==='mt_body'){
+            material.color.copy(gialloOrion);
+            material.metalness=.06;
+            material.roughness=.21;
+            material.needsUpdate=true;
+          }
+          if(/glass_translucent|windscreens/.test(name)){
+            material.color.set(0x10171a);
+            material.transparent=true;
+            material.opacity=name.includes('windscreens')?.58:.42;
+            material.roughness=.05;
+            material.depthWrite=false;
+            material.needsUpdate=true;
+          }
+          if(name==='mt_alloywheels'){
+            material.color.set(0x202124);
+            material.metalness=.86;
+            material.roughness=.24;
+            material.needsUpdate=true;
+          }
+          if(name==='mt_tyres'){
+            material.color.set(0x2b2b29);
+            material.metalness=0;
+            material.roughness=.86;
+            material.needsUpdate=true;
+          }
+        });
+      });
+      setupWheelKinematics();
+
+      createAssemblyStates();
+      ready=true;
+      assemblyStart=performance.now()+220;
+      chapter.classList.remove('on');
+
+      // Only reveal the black assembly scene after the Lamborghini is actually loaded.
+      requestAnimationFrame(()=>{
+        entry.classList.add('hide');
+      })
+    },xhr=>{
+      if(xhr.total){const p=Math.min(96,Math.round(xhr.loaded/xhr.total*100));buildnum.textContent=String(p).padStart(3,'0');buildbar.style.width=p+'%'}
+    },()=>fallbackMode('vehicle model failed — fallback active'));
+
+    renderer.domElement.style.touchAction='pan-y';
+
+    renderer.domElement.addEventListener('pointerdown',e=>{
+      if(storyP<.93||showroomPhaseState<.82)return;
+
+      inspectDragging=true;
+      inspectLastX=e.clientX;
+      inspectLastTime=performance.now();
+      inspectYawVel=0;
+      inspectLastInteraction=performance.now();
+
+      // Once the user begins rotating the podium, auto mode is armed.
+      // It pauses while the pointer is held and resumes after release.
+      inspectAuto=true;
+
+      document.body.classList.add('showroom-inspecting');
+      if(renderer.domElement.setPointerCapture)renderer.domElement.setPointerCapture(e.pointerId);
+      e.preventDefault();
+    });
+
+    renderer.domElement.addEventListener('pointermove',e=>{
+      if(!inspectDragging)return;
+      const now=performance.now();
+      const dx=e.clientX-inspectLastX;
+      const dtMs=Math.max(8,now-inspectLastTime);
+
+      inspectYaw+=dx*.0052;
+      inspectYawVel=(dx/dtMs)*1.20;
+
+      if(Math.abs(dx)>.4){
+        inspectAutoDir=dx>=0?1:-1;
+      }
+
+      inspectLastX=e.clientX;
+      inspectLastTime=now;
+      inspectLastInteraction=now;
+      e.preventDefault();
+    });
+
+    const endInspect=e=>{
+      if(!inspectDragging)return;
+      inspectDragging=false;
+      inspectLastInteraction=performance.now();
+
+      // Dragging the turntable activates continuous presentation rotation.
+      inspectAuto=true;
+      if(Math.abs(inspectYawVel)>.015){
+        inspectAutoDir=inspectYawVel>=0?1:-1;
+      }
+
+      document.body.classList.remove('showroom-inspecting');
+      if(e&&renderer.domElement.releasePointerCapture){
+        try{renderer.domElement.releasePointerCapture(e.pointerId)}catch(_){}
+      }
+    };
+    renderer.domElement.addEventListener('pointerup',endInspect);
+    renderer.domElement.addEventListener('pointercancel',endInspect);
+    renderer.domElement.addEventListener('lostpointercapture',endInspect);
+
+    renderer.domElement.addEventListener('dblclick',e=>{
+      if(storyP<.93||showroomPhaseState<.82)return;
+
+      inspectAuto=!inspectAuto;
+      inspectLastInteraction=performance.now();
+
+      if(inspectAuto){
+        // If there is release momentum, respect that direction.
+        if(Math.abs(inspectYawVel)>.012){
+          inspectAutoDir=inspectYawVel>=0?1:-1;
+        }
+      }else{
+        inspectYawVel=0;
+      }
+
+      if(showroomHint){
+        const label=showroomHint.querySelector('b');
+        if(label)label.textContent=inspectAuto?'Auto rotation on':'Double-click auto';
+      }
+      if(showroomStatus){
+        const state=showroomStatus.querySelector('b');
+        if(state)state.textContent=inspectAuto?'Turntable automatic':'Turntable manual';
+      }
+
+      e.preventDefault();
+    });
+
+    addEventListener('resize',()=>{if(!renderer||!camera)return;camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);renderer.setPixelRatio(innerWidth<900?.85:Math.min(devicePixelRatio,1.05))})
+  }catch(e){fallbackMode('WebGL unavailable — fallback active')}
+}
+
+function assemblyFrame(now,dt){
+  if(!ready||assemblyDone)return;
+
+  const raw=clamp((now-assemblyStart)/5600);
+  // Brief pure-black hold before the first physical component enters.
+  const p=raw<.085?0:clamp((raw-.085)/.915);
+
+  buildnum.textContent=String(Math.round(p*100)).padStart(3,'0');
+  buildbar.style.width=(p*100)+'%';
+
+  buildstate.textContent=
+    p<.018?'black / waiting for first component':
+    p<.28?'wheels + chassis':
+    p<.47?'body shell':
+    p<.63?'glass seating':
+    p<.79?'trim + details':
+    'final tolerance / light sweep';
+
+  let allSettled=true;
+
+  assemblyGroups.forEach(group=>{
+    const active=p>=group.start;
+
+    // Before this phase begins, absolutely nothing from this group exists on-screen.
+    group.entries.forEach(a=>{
+      if(!active){
+        a.o.visible=false;
+        a.revealed=false;
+      }else if(!a.revealed){
+        // First visible frame starts at the mechanical entry position, never at final position.
+        a.o.position.copy(a.basePos).add(a.offset);
+        a.o.quaternion.copy(a.baseQ);
+        a.o.scale.copy(a.baseScale);
+        a.o.visible=true;
+        a.revealed=true;
+      }
+    });
+
+    if(!active){
+      group.spring.x=1;
+      group.spring.v=0;
+      group.spring.target=1;
+      allSettled=false;
+      return;
+    }
+
+    const local=smooth(range(p,group.start,group.end));
+
+    // Every phase overlaps the next, but unseen future groups remain completely hidden.
+    let desired=1-local;
+
+    // Small mechanical compression only near each group's own contact.
+    const contact=Math.sin(clamp(range(p,group.end-.045,group.end))*Math.PI);
+    desired-=contact*.016;
+
+    group.spring.target=desired;
+    const e=group.spring.step(dt);
+
+    group.entries.forEach(a=>{
+      a.o.position.copy(a.basePos).addScaledVector(a.offset,e);
+
+      const q=new THREE.Quaternion().setFromEuler(
+        new THREE.Euler(a.rot.x*e,a.rot.y*e,a.rot.z*e)
+      );
+      a.o.quaternion.copy(a.baseQ).multiply(q);
+      a.o.scale.copy(a.baseScale);
+    });
+
+    if(p<group.end||Math.abs(group.spring.x)>.0045||Math.abs(group.spring.v)>.028){
+      allSettled=false;
+    }
+  });
+
+  // Contact pulses: quick and physically tied to each phase lock.
+  assemblyContactLights.forEach(light=>{
+    const end=light.userData.end;
+    const pulse=Math.sin(clamp(range(p,end-.025,end+.025))*Math.PI);
+    light.intensity=pulse*(light.userData.group==='body'?.72:.46);
+  });
+
+  // Final paint-light sweep after all physical parts are essentially seated.
+  const sweep=smooth(range(p,.80,.985));
+  if(keyLight){
+    keyLight.intensity=1.55;
+    rimLight.intensity=.62;
+  }
+  if(assemblySweepLight){
+    const sweepPulse=Math.sin(sweep*Math.PI);
+    assemblySweepLight.intensity=sweepPulse*1.25;
+    assemblySweepLight.position.x=mix(-3.4,4.1,sweep);
+    assemblySweepLight.position.y=3.1+Math.sin(sweep*Math.PI)*.45;
+    assemblySweepLight.target.position.x=mix(-1.8,2.0,sweep);
+  }
+
+  if(p>=1&&allSettled){
+    assemblyDone=true;
+    buildstate.textContent='assembly complete';
+
+    assembly.forEach(a=>{
+      a.o.visible=true;
+      a.o.position.copy(a.basePos);
+      a.o.quaternion.copy(a.baseQ);
+      a.o.scale.copy(a.baseScale);
+    });
+
+    assemblyContactLights.forEach(l=>l.intensity=0);
+    if(assemblySweepLight)assemblySweepLight.intensity=0;
+    keyLight.intensity=1.55;
+    rimLight.intensity=.62;
+
+    setTimeout(()=>{
+      viewport.classList.remove('building');
+      document.body.classList.remove('machine-building');
+      document.documentElement.classList.remove('story-lock');
+
+      // V16: scrolling unlocks silently.
+      // Presentation copy does not appear until the Lamborghini is inside the showroom.
+      chapter.classList.remove('on');
+      scrollcue.classList.remove('on');
+    },620);
+  }
+}
+
+function gearFor(s){return s<4?'N':s<55?'1':s<105?'2':s<155?'3':s<210?'4':s<260?'5':'6'}
+function showShift(g){
+  if(g===lastGear||g==='N')return;lastGear=g;shift.textContent=g;shift.style.transition='none';shift.style.opacity='.65';shift.style.transform='translate(-50%,-50%) scale(.8)';
+  requestAnimationFrame(()=>{shift.style.transition='.34s';shift.style.opacity='0';shift.style.transform='translate(-50%,-50%) scale(1.18)'});
+  thrustKick.v-=1.8;
+  shiftSound()
+}
+
+function updateStory(){
+  const r=story.getBoundingClientRect(),total=story.offsetHeight-innerHeight;
+  storyP=clamp(-r.top/Math.max(1,total));
+  if(!assemblyDone)storyP=0;
+
+  let c=0;
+  if(storyP>.085)c=1;
+  if(storyP>.23)c=2;
+  if(storyP>.43)c=3;
+  if(storyP>.64)c=4;
+  if(storyP>.84)c=5;
+  setChapter(c);
+
+  // The car is completely stopped BEFORE the showroom transition starts.
+  let s=0;
+  if(storyP<.23)s=0;
+  else if(storyP<.43)s=mix(0,175,smooth(range(storyP,.23,.43)));
+  else if(storyP<.61)s=mix(175,350,smooth(range(storyP,.43,.61)));
+  else if(storyP<.71)s=mix(350,248,smooth(range(storyP,.61,.71)));
+  else if(storyP<.82)s=mix(248,0,smooth(range(storyP,.71,.82)));
+  else s=0;
+  speedSpring.target=s;
+
+  const ignite=range(storyP,.085,.125);
+  const turn=smooth(range(storyP,.11,.22));
+  const release=smooth(range(storyP,.22,.31));
+  const corner=smooth(range(storyP,.62,.74));
+  const braking=smooth(range(storyP,.71,.82));
+
+  // Film-cut transition: road disappears behind black, showroom swaps in, car rotates while hidden.
+  const curtainIn=smooth(range(storyP,.805,.84));
+  const curtainOut=smooth(range(storyP,.865,.905));
+  const curtainOpacity=storyP<.855?curtainIn:1-curtainOut;
+  sceneCurtain.style.opacity=clamp(curtainOpacity);
+  const showroomPhase=smooth(range(storyP,.84,.96));
+  const showroomTurn=smooth(range(storyP,.835,.885));
+
+  const ignitionFlash=ignite>0&&ignite<1?Math.sin(ignite*Math.PI)*.16:0;
+  buildHud.style.opacity=0;assemblyNote.style.opacity=0;scrollcue.style.opacity=0;
+  telemetry.classList.toggle('on',storyP>.225&&storyP<.835);
+  const driveStreak=clamp((s-115)/171)*.34*(1-braking);
+  viewport.style.setProperty('--drive-streak-opacity',driveStreak.toFixed(3));
+  speedlines.style.opacity=driveStreak;
+  topId.textContent=storyP<.085?'SVJ-063 / COMPLETE':storyP<.23?'SVJ-063 / ALIGNMENT':storyP<.835?'SVJ-063 / ROAD':'SVJ-063 / SHOWCASE';
+
+  // V10 state isolation.
+  const driving=storyP>.23&&storyP<.835;
+  const showcasing=storyP>.84;
+
+  viewport.classList.toggle('driving-clean',driving);
+  viewport.classList.toggle('showcase-mode',showcasing);
+  document.body.classList.toggle('drive-mode',driving);
+  if(!showcasing){
+    document.body.classList.remove('showroom-inspect-ready','showroom-inspecting');
+    inspectDragging=false;
+    inspectAuto=false;
+    inspectYawVel=0;
+
+    if(showroomHint){
+      const label=showroomHint.querySelector('b');
+      if(label)label.textContent='Double-click auto';
+    }
+    if(showroomStatus){
+      const state=showroomStatus.querySelector('b');
+      if(state)state.textContent='Turntable active';
+    }
+
+    if(showroomTurntable)showroomTurntable.rotation.y=0;
+  }
+
+  if(garage)garage.visible=storyP<.23;
+  if(road)road.visible=storyP>.215&&storyP<.84;
+  if(tunnel)tunnel.visible=storyP>.47&&storyP<.69;
+  if(showroom)showroom.visible=showcasing;
+
+  // build side-on -> align for road -> rotate back to side profile only behind blackout.
+  const roadYaw=mix(assemblyYaw,driveYaw,turn);
+  carYawSpring.target=mix(roadYaw,showroomYaw,showroomTurn);
+  carShift.target=storyP<.22?.72:0;
+  bodyRoll.target=corner*-.035*(1-range(storyP,.73,.80));
+  camRoll.target=corner*.027*(1-range(storyP,.73,.80));
+  targetX.target=corner*.16*(1-range(storyP,.73,.81));
+
+  const speedNorm=clamp(s/350);
+  const accelPhase=range(storyP,.23,.43)*(1-range(storyP,.43,.50));
+  const brakePhase=range(storyP,.70,.82);
+  bodyPitch.target=accelPhase*.030-brakePhase*.032;
+  carSurge.target=driving?(-accelPhase*.14+brakePhase*.08):0;
+  fov.target=34+speedNorm*12.5+showroomPhase*1.2;
+
+  const targetThrust=storyP<.23?0:Math.round(clamp(accelPhase*.9+speedNorm*.35-brakePhase*.42)*100);
+  thrustEl.textContent=String(Math.max(0,targetThrust)).padStart(3,'0')+'%';
+  brakeEl.textContent=brakePhase>.08?Math.round(brakePhase*100)+'%':'OFF';
+  brakeEl.style.color=brakePhase>.08?'#ff7a62':'white';
+  brakeTag.classList.toggle('on',brakePhase>.10&&storyP<.835);
+  railLabel.textContent=String(c+1).padStart(2,'0')+' / 06';
+  viewport.style.setProperty('--story-progress',storyP.toFixed(3));
+  arrivalWash.style.opacity=showroomPhase*.35;
+  showroomPhaseState=showroomPhase;
+  curtainOpacityState=curtainOpacity;
+
+  // The physical render loop decides when text may appear.
+  // Scroll position alone is not enough; yaw/position/speed must actually settle.
+  document.body.classList.remove('showroom-copy-ready');
+  showroomTitle.classList.remove('on');
+  showroomDetail.classList.remove('on');
+  showroomFloorCopy.classList.remove('on');
+  chapter.classList.remove('on');
+
+  // Lighting states. In the showcase, kill global illumination and fade only focused car lights up.
+  if(hemiLight){
+    hemiLight.intensity=mix(.52,.035,showroomPhase);
+    keyLight.intensity=mix(1.55,.085,showroomPhase);
+    rimLight.intensity=mix(.62,.045,showroomPhase);
+    yellowLight.intensity=mix(.06,0,showroomPhase);
+  }
+  // Keep LinearToneMapping, but raise neutral exposure once we are in the showcase.
+  // This brightens the red without shifting it toward orange.
+  if(renderer){
+    renderer.toneMappingExposure=mix(.68,.96,smooth(range(showroomPhase,.46,.86)));
+  }
+
+  const visibleFactor=1-clamp(curtainOpacity);
+
+  // First light blade: nose -> tail.
+  if(showroomSweepLight){
+    const sw=smooth(range(showroomPhase,.54,.72));
+    const pulse=Math.sin(sw*Math.PI)*visibleFactor;
+    showroomSweepLight.intensity=pulse*2.8;
+    showroomSweepLight.position.x=mix(-4.1,4.25,sw);
+    showroomSweepLight.target.position.x=mix(-1.9,2.35,sw);
+  }
+
+  // Second, narrower counter-sweep catches the shoulder/wheel surfaces.
+  if(showroomSweepLight2){
+    const sw2=smooth(range(showroomPhase,.66,.80));
+    const pulse2=Math.sin(sw2*Math.PI)*visibleFactor;
+    showroomSweepLight2.intensity=pulse2*1.7;
+    showroomSweepLight2.position.x=mix(4.2,-2.8,sw2);
+    showroomSweepLight2.target.position.x=mix(2.25,-1.15,sw2);
+  }
+
+  // Presentation boundary catches light only after the first sweep.
+  const boundaryRise=smooth(range(showroomPhase,.70,.84))*visibleFactor;
+  showroomBoundaryMats.forEach((m,i)=>{
+    m.opacity=boundaryRise*(i===0?.38:.26);
+  });
+
+  // Strong top key: this is the main readable parked-car illumination.
+  if(showroomOverheadLight){
+    const topRise=smooth(range(showroomPhase,.60,.78))*visibleFactor;
+    showroomOverheadLight.intensity=(showroomOverheadLight.userData.targetIntensity||0)*topRise;
+  }
+
+  // Front-quarter fill gives the body volume instead of leaving only a silhouette.
+  if(showroomFillLight){
+    const fillRise=smooth(range(showroomPhase,.66,.82))*visibleFactor;
+    showroomFillLight.intensity=(showroomFillLight.userData.targetIntensity||0)*fillRise;
+  }
+
+  // Rear rim gently separates the roof and rear haunch from the black background.
+  if(showroomRimLight){
+    const rimRise=smooth(range(showroomPhase,.70,.86))*visibleFactor;
+    showroomRimLight.intensity=(showroomRimLight.userData.targetIntensity||0)*rimRise;
+  }
+
+  // Very low ambient base makes the whole parked Lamborghini readable without lighting the room.
+  if(showroomAmbientLight){
+    const ambientRise=smooth(range(showroomPhase,.66,.84))*visibleFactor;
+    showroomAmbientLight.intensity=(showroomAmbientLight.userData.targetIntensity||0)*ambientRise;
+  }
+
+  // Steady Lamborghini-only side lights arrive after the top-light, one by one.
+  if(showroomLights.length){
+    showroomLights.forEach((l,i)=>{
+      const start=.75+i*.035;
+      const rise=smooth(range(showroomPhase,start,start+.16))*visibleFactor;
+      l.intensity=(l.userData.targetIntensity||0)*rise;
+    });
+  }
+
+    chapter.style.opacity=curtainOpacity>.48?'0':'';
+  topId.style.opacity=curtainOpacity>.48?'0':'1';
+
+  if(storyP<.23){
+    // True side-profile studio framing.
+    camX.target=mix(.10,2.35,turn);
+    camY.target=mix(1.30,1.46,turn);
+    camZ.target=mix(6.9,5.25,turn);
+  }else if(storyP<.84){
+    camX.target=2.35;
+    camY.target=1.46-speedNorm*.22;
+    camZ.target=5.25+speedNorm*1.45+Math.max(0,-thrustKick.x)*.28;
+    if(corner>.01){camX.target=2.35+corner*.25;camY.target=1.46+corner*.045}
+  }else{
+    // Final showroom is a calm horizontal side profile, car shifted right to protect the text column.
+    camX.target=mix(2.35,0,showroomPhase);
+    camY.target=mix(1.46,1.20,showroomPhase);
+    camZ.target=mix(5.25,8.35,showroomPhase);
+  }
+
+  modeEl.textContent=storyP<.23?'READY':storyP<.71?'ACCEL':storyP<.835?'BRAKE':'SHOWCASE';
+}
+addEventListener('scroll',()=>{nav.classList.toggle('scrolled',scrollY>18);updateStory()},{passive:true});updateStory();
+
+const storyObserver=new IntersectionObserver(es=>{storyVisible=es.some(e=>e.isIntersecting)},{threshold:.001});storyObserver.observe(viewport);
+document.addEventListener('visibilitychange',()=>{
+  if(audioCtx&&audioMaster){
+    audioMaster.gain.setTargetAtTime(document.hidden?.0001:(audioEnabled?.55:.0001),audioCtx.currentTime,.06);
+  }
+});
+
+function animate(now){
+  const rawDt=(now-last)/1000;const dt=Math.min(rawDt,.032);last=now;
+  frameAccum+=rawDt;frameSamples++;qualityClock+=rawDt;
+  if(renderer&&qualityClock>2.5&&storyVisible){
+    const avg=frameAccum/Math.max(1,frameSamples);
+    let next=currentDpr;
+    if(avg>.024)next=Math.max(.72,currentDpr-.1);
+    else if(avg<.017&&currentDpr<1.05)next=Math.min(1.05,currentDpr+.05);
+    if(Math.abs(next-currentDpr)>.01){currentDpr=next;renderer.setPixelRatio(currentDpr)}
+    qualityClock=0;frameAccum=0;frameSamples=0;
+  }
+  cx+=(mx-cx)*.16;cy+=(my-cy)*.16;cursor.style.left=cx+'px';cursor.style.top=cy+'px';cursorDot.style.left=mx+'px';cursorDot.style.top=my+'px';
+
+  assemblyFrame(now,dt);
+  const s=Math.max(0,speedSpring.step(dt));
+  const speedNorm=clamp(s/350);
+  speedEl.textContent=String(Math.round(s)).padStart(3,'0');
+
+  // Gear, tachometer and sound follow the PHYSICAL spring speed, not scroll target.
+  const actualGear=gearFor(s);
+  gearEl.textContent=actualGear;
+  showShift(actualGear);
+
+  const actualRpm=rpmForSpeed(s);
+  const rpmNormUI=clamp((actualRpm-1000)/7400);
+  rpm.forEach((b,i)=>b.classList.toggle('on',i<Math.round(rpmNormUI*8)));
+
+  const audioActive=storyP>.085&&storyP<.835;
+  updateAudio(s,audioActive);
+
+  // approximate longitudinal G from the visual speed model (for interface feedback).
+  const accel=(s-previousSpeed)/Math.max(dt,.001);
+  previousSpeed=s;
+  const gTarget=clamp(accel/78,-1.45,1.45);
+  displayG+=(gTarget-displayG)*Math.min(1,dt*6);
+  gforceEl.textContent=(displayG>=0?'+':'')+displayG.toFixed(2)+' g';
+
+  thrustKick.target=0;
+  thrustKick.step(dt);
+  if(flashTimer>0){flashTimer-=dt;flashPulse=Math.max(0,flashPulse-dt*.55)}else flashPulse*=.84;
+  const igniteNow=storyP>.085&&storyP<.125?Math.sin(range(storyP,.085,.125)*Math.PI)*.16:0;
+  flash.style.opacity=Math.max(flashPulse,igniteNow);
+
+  if(renderer&&scene&&camera&&storyVisible&&!document.hidden){
+    const baseCamX=camX.step(dt),baseCamY=camY.step(dt),baseCamZ=camZ.step(dt);
+    const highSpeed=smooth(range(s,90,260));
+
+    // Deterministic high-speed vibration: tiny at 100 km/h, perceptible at 200+.
+    const vibX=Math.sin(now*.019)*.010*highSpeed;
+    const vibY=(Math.sin(now*.027)+Math.sin(now*.011)*.45)*.009*highSpeed;
+    const vibZ=Math.sin(now*.015)*.006*highSpeed;
+
+    camera.position.set(baseCamX+vibX,baseCamY+vibY,baseCamZ+vibZ);
+    camera.rotation.z=camRoll.step(dt)+Math.sin(now*.009)*.0025*highSpeed;
+    camera.fov=fov.step(dt);
+    camera.updateProjectionMatrix();
+
+    const lookZ=storyP<.23?0:-1.58-speedNorm*.42;
+    camera.lookAt(targetX.step(dt),-.28-speedNorm*.035,lookZ);
+
+    if(carRig){
+      carRig.position.x=carShift.step(dt);
+      carRig.position.z=carSurge.step(dt);
+
+      const baseCarYaw=carYawSpring.step(dt);
+      const inspectReady=storyP>.93&&showroomPhaseState>.82;
+
+      if(inspectReady){
+        if(!inspectDragging){
+          // Preserve the release fling first.
+          inspectYaw+=inspectYawVel*dt;
+          inspectYawVel*=Math.exp(-2.9*dt);
+
+          // If auto mode is active, smoothly blend from release momentum
+          // into the constant motorized turntable speed.
+          if(inspectAuto){
+            const motor=inspectAutoDir*inspectAutoSpeed;
+            const inertiaWeight=clamp(Math.abs(inspectYawVel)/(inspectAutoSpeed*2.4));
+
+            // Inertia owns the motion immediately after release.
+            // As the fling decays, the podium motor smoothly takes over.
+            inspectYaw+=motor*(1-inertiaWeight)*dt;
+          }
+        }
+      }else{
+        inspectYaw*=Math.exp(-4.5*dt);
+        inspectYawVel*=Math.exp(-5*dt);
+        inspectAuto=false;
+      }
+
+      const presentationYaw=inspectReady?inspectYaw:0;
+
+      // The CAR does not spin independently.
+      // The whole presentation unit rotates: platform + car share the same angle.
+      if(showroomTurntable)showroomTurntable.rotation.y=presentationYaw;
+      carRig.rotation.y=baseCarYaw+presentationYaw;
+      carRig.rotation.z=bodyRoll.step(dt);
+      carRig.rotation.x=bodyPitch.step(dt);
+
+      const highSpeed=smooth(range(s,100,270));
+      // Road contact is the baseline; the showroom plinth lifts the complete rig by 75 mm.
+      carRig.position.y=showroomPhaseState*.075-speedNorm*.010+Math.sin(now*.024)*.0032*highSpeed;
+
+      updateWheelKinematics(s,dt)
+    }
+
+
+    if(road&&road.visible&&roadTexture){
+      // Texture flow handles micro-detail; physical markers supply macroscopic speed.
+      roadTexture.offset.y=(roadTexture.offset.y+s*dt*.00315)%1;
+
+      // Convert displayed km/h to visual world motion.
+      // 200 km/h now produces ~30 world-units/sec of optic flow.
+      const visualWorldSpeed=(s/3.6)*.56;
+      const markerMove=visualWorldSpeed*dt;
+
+      roadFlowMarkers.forEach(m=>{
+        m.position.z+=markerMove;
+
+        // Velocity stretch is strongest in peripheral/high-speed cues.
+        if(m.userData.kind==='dash'){
+          m.scale.z=1+speedNorm*1.85;
+          if(m.position.z>7)m.position.z-=125;
+        }else{
+          m.scale.z=1+speedNorm*.95;
+          if(m.position.z>7)m.position.z-=126;
+        }
+      });
+
+      streetLights.forEach(l=>{
+        l.position.z+=markerMove;
+        if(l.position.z>7)l.position.z-=131;
+      });
+
+      if(tunnel&&tunnel.visible){
+        rings.forEach(r=>{
+          r.position.z+=markerMove;
+          if(r.position.z>5.4)r.position.z-=128.7;
+        });
+      }
+    }
+    // Final presentation copy is allowed only when the actual car pose has settled.
+    const yawReady=Math.abs(carYawSpring.x-showroomYaw)<.010&&Math.abs(carYawSpring.v)<.025;
+    const xReady=Math.abs(carShift.x)<.035&&Math.abs(carShift.v)<.030;
+    const stopped=s<.8&&Math.abs(speedSpring.v)<1.2;
+    const showroomCopyReady=
+      storyP>.948&&
+      showroomPhaseState>.88&&
+      curtainOpacityState<.035&&
+      yawReady&&xReady&&stopped;
+
+    document.body.classList.toggle('showroom-copy-ready',showroomCopyReady);
+    document.body.classList.toggle('showroom-inspect-ready',showroomCopyReady&&showroomPhaseState>.90);
+    showroomTitle.classList.toggle('on',showroomCopyReady);
+    showroomDetail.classList.toggle('on',showroomCopyReady&&storyP>.958);
+    showroomFloorCopy.classList.toggle('on',showroomCopyReady&&storyP>.972);
+    showroomStatus.classList.toggle('on',showroomCopyReady&&storyP>.952);
+
+    // V19: no giant chapter headline in the final showroom.
+    chapter.classList.remove('on');
+
+    renderer.render(scene,camera)
+  }
+  requestAnimationFrame(animate)
+}
+requestAnimationFrame(animate);
+
+enter.addEventListener('click',()=>{
+  enter.disabled=true;
+  enter.innerHTML='Loading machine';
+  document.body.classList.add('machine-building');
+  document.documentElement.classList.add('story-lock');
+  viewport.classList.add('building');
+  scrollTo(0,0);
+
+  initAudio();
+  if(audioCtx&&audioCtx.state==='suspended')audioCtx.resume();
+
+  // Keep the branded entry screen visible while the external 3D assets load.
+  // The loader success callback hides it only after the Lamborghini is ready.
+  setTimeout(init3D,120);
+
+  // Hard fail-safe: never leave the user trapped behind an unresolved load.
+  setTimeout(()=>{
+    if(!ready&&!assemblyDone){
+      fallbackMode('3D load timed out — fallback active');
+      entry.classList.add('hide');
+    }
+  },15000);
+});
+
+
+// Runtime recovery: V13 must never strand the user on an empty black canvas.
+window.addEventListener('error',e=>{
+  if(e.error && document.documentElement.classList.contains('story-lock')){
+    console.error('Machine Story runtime recovery:',e.error);
+    fallbackMode('runtime recovery active');
+  }
+});
+window.addEventListener('unhandledrejection',e=>{
+  if(document.documentElement.classList.contains('story-lock')){
+    console.error('Machine Story promise recovery:',e.reason);
+    fallbackMode('runtime recovery active');
+  }
+});
+
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('on')}),{threshold:.12});$$('.reveal').forEach(el=>io.observe(el));
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,88 @@
+/* The surface the membrane is designed to sit on. Size it from the parent. */
+.destructible-membrane-stage {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  min-height: 240px;
+  container-type: inline-size;
+  overflow: hidden;
+  background: #111;
+  color: #f2efe7;
+}
+
+.destructible-membrane {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #111;
+  cursor: grab;
+  touch-action: none;
+}
+
+.destructible-membrane:active {
+  cursor: grabbing;
+}
+
+.destructible-membrane:focus-visible {
+  outline: 3px solid #d8ff43;
+  outline-offset: -5px;
+}
+
+.destructible-membrane canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.membrane-control {
+  position: absolute;
+  left: 17px;
+  bottom: 17px;
+  width: 42px;
+  height: 42px;
+  border: 1px solid #d8ff43;
+  background: #111;
+  cursor: pointer;
+}
+
+.membrane-control i:first-child {
+  position: absolute;
+  inset: 9px;
+  border: 1.5px solid #d8ff43;
+  border-left-color: transparent;
+  border-radius: 50%;
+}
+
+.membrane-control i:last-child {
+  position: absolute;
+  left: 7px;
+  top: 8px;
+  width: 8px;
+  height: 8px;
+  border-top: 1.5px solid #d8ff43;
+  border-left: 1.5px solid #d8ff43;
+  transform: rotate(-16deg);
+}
+
+.membrane-control:hover {
+  background: #d8ff43;
+}
+
+.membrane-control:hover i:first-child {
+  border-color: #111;
+  border-left-color: transparent;
+}
+
+.membrane-control:hover i:last-child {
+  border-color: #111;
+}
+
+.membrane-control:focus-visible {
+  outline: 3px solid #3155e7;
+  outline-offset: 3px;
+}

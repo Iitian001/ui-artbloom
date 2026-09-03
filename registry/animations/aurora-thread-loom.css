@@ -1,0 +1,111 @@
+@keyframes loom-wave {
+  0%,
+  100% {
+    transform: translateY(calc((var(--i) - 24) * -0.9px)) scaleY(0.22) rotate(0);
+    opacity: 0.35;
+    filter: hue-rotate(0);
+  }
+  50% {
+    transform: translateY(calc((var(--i) - 24) * 1.8px)) scaleY(1)
+      rotate(calc((var(--i) - 24) * 0.35deg));
+    opacity: 1;
+    filter: hue-rotate(calc(var(--i) * 5deg));
+  }
+}
+
+/* The surface the loom is designed to sit on. Size it from the parent. */
+.aurora-thread-loom-stage {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  min-height: 240px;
+  container-type: inline-size;
+  overflow: hidden;
+  background: #030913;
+  color: white;
+}
+
+.aurora-thread-loom {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+
+.aurora-thread-loom::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 50% 55%, rgba(49, 85, 231, 0.32), transparent 58%),
+    linear-gradient(
+      90deg,
+      transparent 49.8%,
+      rgba(255, 255, 255, 0.12) 50%,
+      transparent 50.2%
+    );
+}
+
+.aurora-thread-loom > div {
+  position: relative;
+  /* 540px is the design width; below a ~590px stage the loom narrows with it
+     rather than overflowing, since 49 threads cannot be squeezed by `flex` alone. */
+  width: min(540px, 92cqw);
+  height: 330px;
+  display: flex;
+  align-items: center;
+  /* At the design width this clamps to the 5px it was drawn with. */
+  gap: clamp(1.5px, 0.95cqw, 5px);
+  filter: drop-shadow(0 0 18px rgba(85, 255, 204, 0.25));
+}
+
+.aurora-thread-loom div > i {
+  flex: 1;
+  height: 100%;
+  /* Only reached on a very narrow stage; `flex` keeps them ~6px when there is room. */
+  min-width: 1px;
+  border-radius: 50%;
+  background: linear-gradient(
+    180deg,
+    transparent,
+    #45f0c0 28%,
+    #3155e7 52%,
+    #b865ff 73%,
+    transparent
+  );
+  transform-origin: center;
+  animation: loom-wave 5.4s calc(var(--i) * -75ms) cubic-bezier(0.45, 0, 0.55, 1) infinite;
+}
+
+.aurora-thread-loom div > i:nth-child(even) {
+  background: linear-gradient(
+    180deg,
+    transparent,
+    #d8ff43 24%,
+    #35c9ff 55%,
+    #ff5a9e 78%,
+    transparent
+  );
+  animation-direction: reverse;
+}
+
+.aurora-thread-loom > b {
+  position: absolute;
+  z-index: 3;
+  font-size: clamp(22px, 22cqw, 118px);
+  letter-spacing: -0.08em;
+  mix-blend-mode: difference;
+}
+
+.aurora-thread-loom > span {
+  position: absolute;
+  left: 18px;
+  bottom: 16px;
+  color: #79908e;
+  font: 8px var(--font-geist-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+  letter-spacing: 0.13em;
+}

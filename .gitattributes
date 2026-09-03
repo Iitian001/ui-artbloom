@@ -1,0 +1,31 @@
+# The registry inlines the literal bytes of every text file under registry/ into
+# the JSON payloads the CLI installs from. If the working tree were allowed to
+# follow the platform (core.autocrlf=true on Windows, LF on a Linux CI builder),
+# the same commit would serve CRLF locally and LF from Vercel — different bytes,
+# different checksums, for the same declared item. Pin LF everywhere.
+* text=auto eol=lf
+
+# Binary assets: never touched, never diffed as text.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.avif binary
+*.gif binary
+*.ico binary
+*.mp3 binary
+*.wav binary
+*.ogg binary
+*.mp4 binary
+*.webm binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.otf binary
+*.bin binary
+*.glb binary
+*.zip binary
+*.pdf binary
+
+# Generated; collapse in diffs and PR reviews.
+package-lock.json linguist-generated=true -diff

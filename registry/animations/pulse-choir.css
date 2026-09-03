@@ -1,0 +1,105 @@
+@keyframes choir {
+  0% {
+    transform: scaleY(0.08);
+  }
+  55% {
+    transform: scaleY(var(--peak));
+  }
+  100% {
+    transform: scaleY(calc(1.05 - var(--peak) * 0.5));
+  }
+}
+
+@keyframes live-blink {
+  50% {
+    opacity: 0.2;
+  }
+}
+
+/* The surface the choir is designed to sit on. Size it from the parent. */
+.pulse-choir-stage {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  min-height: 240px;
+  container-type: inline-size;
+  overflow: hidden;
+  background: radial-gradient(ellipse at 50% 80%, #20266d, #111 58%);
+  color: #f0ede6;
+}
+
+.pulse-choir {
+  width: min(500px, 86%);
+  display: grid;
+  gap: 30px;
+}
+
+.pulse-choir > div {
+  height: 190px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.35);
+}
+
+.pulse-choir i {
+  flex: 1;
+  height: 100%;
+  min-width: 3px;
+  background: linear-gradient(to top, #3155e7, #9b6dff 55%, #d8ff43);
+  transform: scaleY(0.08);
+  transform-origin: bottom;
+  animation: choir 1.65s calc(var(--i) * -55ms) cubic-bezier(0.45, 0, 0.55, 1) infinite
+    alternate;
+}
+
+.pulse-choir > span {
+  display: flex;
+  justify-content: space-between;
+  font: 8px var(--font-geist-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+  letter-spacing: 0.1em;
+}
+
+.pulse-choir span > b {
+  color: #d8ff43;
+  font-weight: 500;
+}
+
+.pulse-choir span > b::before {
+  content: '';
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin-right: 6px;
+  border-radius: 50%;
+  background: #d8ff43;
+  box-shadow: 0 0 8px #d8ff43;
+  animation: live-blink 1s steps(1) infinite;
+}
+
+.pulse-choir > div {
+  position: relative;
+  padding: 0 10px;
+  background: linear-gradient(90deg, transparent, rgba(49, 85, 231, 0.12), transparent);
+  box-shadow: 0 28px 44px rgba(49, 85, 231, 0.16);
+}
+
+.pulse-choir > div::after {
+  content: '';
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  bottom: -16px;
+  height: 13px;
+  background: inherit;
+  filter: blur(4px);
+  transform: scaleY(-0.45);
+  opacity: 0.45;
+}
+
+.pulse-choir i {
+  border-radius: 8px 8px 0 0;
+  box-shadow: 0 0 12px rgba(155, 109, 255, 0.28);
+}

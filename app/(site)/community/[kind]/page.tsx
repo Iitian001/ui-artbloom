@@ -1,0 +1,238 @@
+import type { Metadata } from "next"
+import Link from "next/link"
+import { notFound } from "next/navigation"
+
+import { AuthorAvatar } from "@/components/author"
+import { CatalogTabs, type CatalogTab } from "@/components/catalog-tabs"
+import { FilterChips } from "@/components/filter-chips"
+import { ItemCard } from "@/components/item-card"
+import { ItemGrid } from "@/components/item-grid"
+import { Rail } from "@/components/rail"
+import { CATEGORY_GROUPS, isKind, KIND_LABEL, type Kind } from "@/lib/categories"
+import {
+  type Author,
+  featured,
+  itemsByCategory,
+  itemsByKind,
+  kindCount,
+  newest,
+  popular,
+  populatedCategories,
+  reshuffled,
+} from "@/lib/registry"
+import { profileHref } from "@/lib/hrefs"
+import { formatCount, formatFull } from "@/lib/utils"
+
+const TABS: CatalogTab[] = [
+  { value: "featured", label: "Featured" },
+  { value: "newest", label: "Newest" },
+  { value: "popular", label: "Popular" },
+  { value: "authors", label: "Authors" },
+]
+
+export function generateStaticParams() {
+  return CATEGORY_GROUPS.map((group) => ({ kind: group.kind }))
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ kind: string }>
+}): Promise<Metadata> {
+  const { kind } = await params
+  if (!isKind(kind)) return {}
+  const group = CATEGORY_GROUPS.find((g) => g.kind === kind)
+  return { title: KIND_LABEL[kind], description: group?.blurb }
+}
+
+/** Authors scoped to one kind, so the numbers on this page describe this page. */
+function authorsForKind(kind: Kind): (Author & { count: number; installs: number })[] {
+  const map = new Map<string, Author & { count: number; installs: number }>()
+  for (const item of itemsByKind(kind)) {
+    const found = map.get(item.author.handle)
+    if (found) {
+      found.count += 1
+      found.installs += item.installs
+    } else {
+      map.set(item.author.handle, { ...item.author, count: 1, installs: item.installs })
+    }
+  }
+  return [...map.values()].sort((a, b) => b.installs - a.installs)
+}
+
+function Stat({ value, label }: { value: string; label: string }) {
+  return (
+    <span className="flex items-baseline gap-1.5">
+      <span className="font-mono text-sm tabular-nums">{value}</span>
+      <span className="text-xs text-muted-foreground">{label}</span>
+    </span>
+  )
+}
+
+function Empty({ message }: { message: string }) {
+  return (
+    <div className="rounded-xl border border-dashed border-border py-20 text-center">
+      <p className="text-sm text-muted-foreground">{message}</p>
+    </div>
+  )
+}
+
+/** The default view: rails, the way a store front page reads. */
+function FeaturedView({ kind }: { kind: Kind }) {
+  const everything = reshuffled(undefined, kind)
+  if (everything.length === 0) {
+    return (
+      <div className="container-page">
+        <Empty
+          message={`No ${KIND_LABEL[kind].toLowerCase()} published yet — the first ones land soon.`}
+        />
+      </div>
+    )
+  }
+
+  const spotlight = featured(8, kind)
+  const fresh = newest(8, kind)
+  const top = popular(8, kind)
+  // One rail per category, but only where a rail has something to scroll.
+  const railCats = populatedCategories(kind)
+    .filter((category) => itemsByCategory(kind, category.slug).length >= 2)
+    .slice(0, 6)
+
+  return (
+    <div className="flex flex-col gap-14">
+      {spotlight.length > 0 && (
+        <Rail title="Featured" subtitle="Hand-picked this week">
+          {spotlight.map((item) => (
+            <ItemCard key={item.name} item={item} height={220} />
+          ))}
+        </Rail>
+      )}
+
+      {fresh.length > 0 && (
+        <Rail title="Just added" viewAllHref={`/community/${kind}?tab=newest`}>
+          {fresh.map((item) => (
+            <ItemCard key={item.name} item={item} height={220} />
+          ))}
+        </Rail>
+      )}
+
+      {top.length > 0 && (
+        <Rail title="Most installed" viewAllHref={`/community/${kind}?tab=popular`}>
+          {top.map((item) => (
+            <ItemCard key={item.name} item={item} height={220} />
+          ))}
+        </Rail>
+      )}
+
+      {railCats.map((category) => (
+        <Rail
+          key={category.slug}
+          title={category.label}
+          viewAllHref={`/community/${kind}/s/${category.slug}`}
+        >
+          {itemsByCategory(kind, category.slug).map((item) => (
+            <ItemCard key={item.name} item={item} height={220} />
+          ))}
+        </Rail>
+      ))}
+
+      <div className="container-page">
+        <div className="mb-4">
+          <h2 className="text-lg font-semibold tracking-tight">Explore everything</h2>
+          <p className="mt-0.5 text-sm text-muted-foreground">
+            The whole catalogue, ranked for you and reshuffled daily.
+          </p>
+        </div>
+        <ItemGrid items={everything} />
+      </div>
+    </div>
+  )
+}
+
+function AuthorsView({ kind }: { kind: Kind }) {
+  const authors = authorsForKind(kind)
+  if (authors.length === 0) return <Empty message="No authors yet." />
+
+  return (
+    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      {authors.map((author) => (
+        <Link
+          key={author.handle}
+          href={profileHref(author.handle)}
+          className="flex items-center gap-3 rounded-xl border border-border p-4 transition-colors hover:border-foreground/25 hover:bg-secondary/40"
+        >
+          <AuthorAvatar author={author} className="size-9 text-[11px]" />
+          <div className="min-w-0 flex-1">
+            <p className="truncate text-sm font-medium">{author.name}</p>
+            <p className="truncate text-xs text-muted-foreground">@{author.handle}</p>
+          </div>
+          <div className="shrink-0 text-right">
+            <p className="font-mono text-sm tabular-nums">{formatCount(author.installs)}</p>
+            <p className="text-[11px] text-muted-foreground">
+              {author.count} {author.count === 1 ? "item" : "items"}
+            </p>
+          </div>
+        </Link>
+      ))}
+    </div>
+  )
+}
+
+export default async function CatalogPage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ kind: string }>
+  searchParams: Promise<{ tab?: string }>
+}) {
+  const { kind } = await params
+  if (!isKind(kind)) notFound()
+
+  const { tab } = await searchParams
+  const active = tab && TABS.some((t) => t.value === tab) ? tab : "featured"
+
+  const group = CATEGORY_GROUPS.find((g) => g.kind === kind)
+  const total = kindCount(kind)
+  const cats = populatedCategories(kind)
+  const installs = itemsByKind(kind).reduce((sum, item) => sum + item.installs, 0)
+  const empty = `No ${KIND_LABEL[kind].toLowerCase()} yet.`
+
+  return (
+    <>
+      <div className="container-page pt-10">
+        <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
+          Community
+        </p>
+        <h1 className="mt-2 text-3xl font-semibold tracking-tighter sm:text-4xl">
+          {KIND_LABEL[kind]}
+        </h1>
+        {group && <p className="mt-3 max-w-xl text-pretty text-muted-foreground">{group.blurb}</p>}
+
+        <div className="mt-5 flex flex-wrap items-center gap-x-6 gap-y-2">
+          <Stat value={formatFull(total)} label={total === 1 ? "item" : "items"} />
+          <Stat
+            value={formatFull(cats.length)}
+            label={cats.length === 1 ? "category" : "categories"}
+          />
+          <Stat value={formatFull(installs)} label="installs" />
+        </div>
+
+        <FilterChips kind={kind} className="mt-7" />
+        <CatalogTabs tabs={TABS} defaultValue="featured" className="mt-6" />
+      </div>
+
+      <div className="py-10">
+        {active === "featured" && <FeaturedView kind={kind} />}
+        {active !== "featured" && (
+          <div className="container-page">
+            {active === "newest" && <ItemGrid items={newest(undefined, kind)} emptyMessage={empty} />}
+            {active === "popular" && (
+              <ItemGrid items={popular(undefined, kind)} emptyMessage={empty} />
+            )}
+            {active === "authors" && <AuthorsView kind={kind} />}
+          </div>
+        )}
+      </div>
+    </>
+  )
+}
