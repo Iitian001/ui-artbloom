@@ -79,8 +79,6 @@ export type RegistryItem = {
   /** Static screenshot used before the live frame hydrates, if any. */
   image?: string
   imageDark?: string
-  /** Free to copy, or membership-gated — mirrors 21st's 2-a-day model. */
-  access?: "free" | "pro"
 }
 
 /** What the CLI receives from /r/{name}.json. */

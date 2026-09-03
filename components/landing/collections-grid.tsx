@@ -73,12 +73,6 @@ export function CollectionsGrid() {
               </span>
             </Link>
           ))}
-          <Link
-            href="/publish"
-            className="rounded-full border border-dashed border-border px-4 py-2 text-[13px] text-muted-foreground transition-colors hover:border-foreground/30 hover:text-foreground"
-          >
-            Publish yours →
-          </Link>
         </div>
       </div>
     </section>

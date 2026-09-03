@@ -99,7 +99,6 @@ export default async function ItemPage({ params }: { params: Promise<Params> }) 
           <div className="flex items-center gap-2">
             <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">{item.title}</h1>
             {item.isNew && <Badge variant="new">New</Badge>}
-            {item.access === "pro" && <Badge variant="pro">Pro</Badge>}
           </div>
           <p className="mt-2 max-w-2xl text-pretty text-muted-foreground">{item.description}</p>
 

@@ -33,10 +33,9 @@ export function ItemCard({ item, height, className, showBookmarks = false }: Ite
           dark={item.previewDark}
         />
 
-        {(item.isNew || item.access === "pro") && (
+        {item.isNew && (
           <div className="absolute top-2.5 left-2.5 flex gap-1.5">
-            {item.isNew && <Badge variant="new">New</Badge>}
-            {item.access === "pro" && <Badge variant="pro">Pro</Badge>}
+            <Badge variant="new">New</Badge>
           </div>
         )}
 

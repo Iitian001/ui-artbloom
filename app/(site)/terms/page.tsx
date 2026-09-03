@@ -38,19 +38,19 @@ export default function TermsPage() {
             account that is used to scrape the catalogue, resell it, or attack the service.
           </p>
 
-          <h2>Free and paid use</h2>
+          <h2>What it costs</h2>
           <p>
-            The free tier allows two copies or installs a day. Paid plans lift that limit — the
-            current prices are on <Link href="/pricing">the pricing page</Link> and apply from the day
-            you subscribe. If a price changes, existing subscribers keep theirs until they cancel.
-            Cancel whenever; access runs to the end of the period you paid for.
+            Nothing. Every template, animation and component in the catalogue is free to copy and
+            free to install, with no daily limit, no paid tier and no account required to use the
+            CLI. If that ever changes it will not change retroactively for code you have already
+            installed — what you copied is yours under the terms on the{" "}
+            <Link href="/license">licence page</Link>.
           </p>
 
           <h2>What you may not do</h2>
           <ul>
             <li>Resell or republish the catalogue, in whole or in substantial part.</li>
             <li>Mirror the registry in bulk, or hammer it beyond ordinary CLI use.</li>
-            <li>Publish work that is not yours, or that you cannot license to us.</li>
             <li>Upload anything malicious, or code that exfiltrates a user&apos;s data.</li>
           </ul>
           <p>

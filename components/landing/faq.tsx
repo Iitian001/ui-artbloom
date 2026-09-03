@@ -8,7 +8,7 @@ const FAQS = [
   },
   {
     q: "Is it free?",
-    a: "Browsing is free and always will be. Free accounts can copy two items a day; a membership lifts that to unlimited and unlocks the full template catalog. Nothing you have already installed ever stops working.",
+    a: "Completely. Every template, animation and component is free to copy and free to install — no daily limit, no paid tier, no card, and no account needed to use the CLI. Nothing you install ever stops working.",
   },
   {
     q: "How is this different from a component library?",
@@ -24,7 +24,7 @@ const FAQS = [
   },
   {
     q: "Can I publish my own?",
-    a: "Yes. Point the CLI at a folder, and it generates the registry entry from your files. Your work keeps your name on it, and you set whether it is free or membership-only.",
+    a: `No — ${brand.name} is not a marketplace. Everything here is made and maintained by one author, which is what keeps the quality and the licensing predictable. You are free to take any of it, change it, and ship it as your own; you just cannot list your work in this catalogue.`,
   },
   {
     q: "What exactly is a template?",
