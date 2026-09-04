@@ -1,0 +1,196 @@
+@keyframes ridge-shift {
+  0%,
+  18%,
+  88%,
+  100% {
+    transform: rotateY(-28deg);
+  }
+  46%,
+  65% {
+    transform: rotateY(28deg);
+  }
+}
+
+@keyframes ridge-front {
+  0%,
+  42%,
+  70%,
+  100% {
+    opacity: 1;
+  }
+  43%,
+  69% {
+    opacity: 0;
+  }
+}
+
+@keyframes ridge-back {
+  0%,
+  42%,
+  70%,
+  100% {
+    opacity: 0;
+  }
+  43%,
+  69% {
+    opacity: 1;
+  }
+}
+
+/*
+ * The surface the lens is designed to sit on. `perspective` lives here as well
+ * as on the root so the slats keep their depth if the stage is reused.
+ */
+.lenticular-shift-stage {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  min-height: 240px;
+  container-type: inline-size;
+  overflow: hidden;
+  background: #d8ff43;
+  perspective: 900px;
+}
+
+.lenticular-shift {
+  /*
+   * 420px is the design width. Below a ~440px stage the lens narrows with the
+   * stage so its layout box still fits and the grid above can centre it. `--slat`
+   * is derived rather than written twice, so the faces and their per-slat offset
+   * cannot drift out of step with the width; 18 is the slat count.
+   */
+  --w: min(420px, 96cqw);
+  --slat: calc(var(--w) / 18);
+  position: relative;
+  width: var(--w);
+  height: calc(var(--w) * 0.381);
+  display: flex;
+  perspective: 900px;
+  filter: drop-shadow(0 25px 24px rgba(60, 72, 12, 0.28));
+}
+
+.lenticular-shift > i {
+  --delay: calc(var(--i) * 22ms);
+  position: relative;
+  width: var(--slat);
+  height: calc(var(--w) * 0.381);
+  overflow: hidden;
+  border-right: 1px solid rgba(17, 17, 15, 0.24);
+  background: #111;
+  transform-style: preserve-3d;
+  animation: ridge-shift 5.6s var(--delay) cubic-bezier(0.76, 0, 0.24, 1) infinite;
+}
+
+.lenticular-shift i > span,
+.lenticular-shift i > b {
+  position: absolute;
+  left: calc(var(--i) * -1 * var(--slat));
+  top: 0;
+  width: var(--w);
+  height: calc(var(--w) * 0.381);
+  display: grid;
+  place-items: center;
+  font-size: calc(var(--w) * 0.1952);
+  font-style: normal;
+  font-weight: 800;
+  letter-spacing: -0.08em;
+  line-height: 1;
+}
+
+.lenticular-shift i > span {
+  color: #f0ede6;
+  animation: ridge-front 5.6s var(--delay) steps(1) infinite;
+}
+
+.lenticular-shift i > b {
+  color: #111;
+  background: #ff5a40;
+  opacity: 0;
+  animation: ridge-back 5.6s var(--delay) steps(1) infinite;
+}
+
+.lenticular-shift > em {
+  position: absolute;
+  left: 0;
+  bottom: -27px;
+  font: 8px var(--font-geist-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+  font-style: normal;
+  letter-spacing: 0.13em;
+}
+
+/*
+ * The card variant: the 298x240 catalogue frame, at that real size and never scaled.
+ *
+ * Nothing here is the full stage made smaller. The plate's height follows its width
+ * (`--w * 0.381`), so the one rule that governs the composition changes meaning with the
+ * box: at 420 wide it draws a 160-tall plate, half the height of the 320px item-page
+ * stage, and in a 298px-wide card the same rule hands it 286x109 — 45% of the height, a
+ * letterbox strip afloat in lime with an 8px marker under it. So the plate takes the
+ * frame's full width and 70% of its height, and the lime stays as the band above and
+ * below: the ground, and what the drop shadow lands on.
+ */
+.lenticular-shift-stage[data-compact='true'] {
+  /*
+   * The frame is the only sizing authority — 240px of parent height here, 200 on the
+   * bookmark rows, 260 on the landing lists — not a 240px floor under a page section.
+   * No `border-radius: 0` line: this stage never set one, and the card frame clips.
+   */
+  min-height: 0;
+  height: 100%;
+}
+
+/* No `touch-action` line: this stage is keyframes end to end and takes no pointer events,
+   so it never claims the vertical gesture a card in a scrolling grid has to hand back. */
+
+/*
+ * Full width rather than `min(420px, 96cqw)`: the 4% held back is a 6px sliver of lime down
+ * each side against a 36px band top and bottom, which reads as a plate that missed its box
+ * rather than as a margin. `cqw` resolves against this stage's own `container-type:
+ * inline-size`, so it is the card's 298px and not the viewport's; and since `--slat` and the
+ * per-slat face offsets both derive from `--w`, 18 slats and 18 word slices follow this line.
+ */
+.lenticular-shift-stage[data-compact='true'] .lenticular-shift {
+  --w: 100cqw;
+  /*
+   * 70% is 168px of 240, where the aspect ratio above would have given the plate 109. A
+   * percentage and not `168px` because the same card is rendered 200 and 260 tall
+   * elsewhere; the chain is definite either way, since the preview frame carries a pixel
+   * height and this stage is `height: 100%` of it.
+   */
+  height: 70%;
+}
+
+/* The slat and both of its faces fill the plate, so the three `--w * 0.381` heights that
+   together made the letterbox all follow the line above and cannot drift apart. */
+.lenticular-shift-stage[data-compact='true'] .lenticular-shift > i,
+.lenticular-shift-stage[data-compact='true'] .lenticular-shift i > span,
+.lenticular-shift-stage[data-compact='true'] .lenticular-shift i > b {
+  height: 100%;
+}
+
+/*
+ * The word is the whole readout of the flip — the ridges turn, but what carries across a
+ * grid is LENS becoming SHIFT — so it grows with the plate: 0.27 of the width against the
+ * 0.1952 the plate was drawn at, which puts the type at 48% of the plate height where the
+ * item page has it at 51%. `SHIFT` is the face that sets the ceiling: five caps of Inter 800
+ * at 80px under the -0.08em tracking come to roughly 210px of the plate's 298 by advance
+ * width — computed, not measured — and each `i` clips, so a face that outgrew the plate
+ * would lose its outer letters rather than wrap. The ratio holds at any card width, since
+ * type and plate both track `--w`.
+ */
+.lenticular-shift-stage[data-compact='true'] .lenticular-shift i > span,
+.lenticular-shift-stage[data-compact='true'] .lenticular-shift i > b {
+  font-size: calc(var(--w) * 0.27);
+}
+
+/*
+ * The marker goes: 8px of mono in the bottom band is a corner detail on a 420px plate and
+ * grey lint on a 298px tile. Nothing is lost with it — the surface turns on its own from
+ * the moment it mounts, so there is no gesture for a caption to explain, and the card's own
+ * title link already names the item.
+ */
+.lenticular-shift-stage[data-compact='true'] .lenticular-shift > em {
+  display: none;
+}

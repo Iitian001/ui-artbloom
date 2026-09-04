@@ -64,17 +64,21 @@ export default function HomePage() {
    * No cap on either grid, which is the fix for an item that was registered,
    * flagged `featured`, and visible on neither.
    *
-   * Two grids of eight is sixteen slots for seventeen items, and the ninth
+   * Two grids of eight is sixteen slots, and at seventeen items the ninth
    * `featured: true` entry fell through both of them. `featured(8)` cut it on
    * declaration order — every item has `installs: 0`, so that sort is a no-op —
    * and then `Just added`, taking eight of the nine left over, cut the same item
    * again. `monolith-launch`, the newest template and flagged both featured and
    * new, was reachable from nowhere but /community/templates.
    *
-   * A cap is worth having again once the catalogue is big enough for one to mean
-   * something, but only paired with somewhere for the overflow to go. The
-   * property to keep either way is the one restored here: every registered item
-   * appears on this page, and the `picked` filter below means each appears once.
+   * The catalogue is twenty-nine items now, so uncapped is fourteen cards under
+   * Featured and fifteen under Just added — eight rows at the grid's widest. That
+   * is a long page and it is the right trade for now: the two `viewAllHref` links
+   * are the only other way in, and a cap silently demotes whatever falls past it
+   * to a listing nobody clicked. Reintroduce one when the overflow has a home of
+   * its own — a paginated /community landing, say. The property to keep either
+   * way is the one restored here: every registered item appears on this page, and
+   * the `picked` filter below means each appears once.
    */
   const spotlight = featured()
   // Newest, minus anything already standing in the Featured grid above, so the

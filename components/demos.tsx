@@ -3,19 +3,31 @@
 import type { ReactNode } from "react"
 
 import { AuroraBackground } from "@/registry/animations/aurora-background"
+import { AuroraThreadLoom } from "@/registry/animations/aurora-thread-loom"
 import { BalanceProgress } from "@/registry/animations/balance-progress"
+import { BubbleBurst } from "@/registry/animations/bubble-burst"
 import { ChipPile } from "@/registry/animations/chip-pile"
+import { CurtainSequence } from "@/registry/animations/curtain-sequence"
+import { DestructibleMembrane } from "@/registry/animations/destructible-membrane"
+import { DominoWord } from "@/registry/animations/domino-word"
 import { EulerDiskSpinner } from "@/registry/animations/euler-disk-spinner"
 import { FlockSearch } from "@/registry/animations/flock-search"
 import { HeatGrid } from "@/registry/animations/heat-grid"
+import { KineticKerning } from "@/registry/animations/kinetic-kerning"
+import { KineticTextureMesh } from "@/registry/animations/kinetic-texture-mesh"
+import { LenticularShift } from "@/registry/animations/lenticular-shift"
 import { LiquidNav } from "@/registry/animations/liquid-nav"
 import { Marquee } from "@/registry/animations/marquee"
+import { MercuryDropletChoir } from "@/registry/animations/mercury-droplet-choir"
 import { MorphogenWordmark } from "@/registry/animations/morphogen-wordmark"
 import { NumberTicker } from "@/registry/animations/number-ticker"
 import { PressureButton } from "@/registry/animations/pressure-button"
 import { PullCord } from "@/registry/animations/pull-cord"
+import { PulseChoir } from "@/registry/animations/pulse-choir"
+import { RollbackOrbit } from "@/registry/animations/rollback-orbit"
 import { ShadowCaster } from "@/registry/animations/shadow-caster"
 import { SloshGauge } from "@/registry/animations/slosh-gauge"
+import { SplitShutter } from "@/registry/animations/split-shutter"
 import { TextShimmer } from "@/registry/animations/text-shimmer"
 
 /**
@@ -86,6 +98,23 @@ export const DEMOS: Record<string, ReactNode> = {
   "heat-grid": <HeatGrid />,
   "morphogen-wordmark": <MorphogenWordmark />,
   "pressure-button": <PressureButton />,
+
+  /* The first catalogue round. These twelve were registered and live before the
+     batch above existed, and they are back here verbatim — the full stage each
+     was authored at, unchanged. Their card compositions are in `CARD_DEMOS`
+     below, which is the part they never had. */
+  "aurora-thread-loom": <AuroraThreadLoom />,
+  "bubble-burst": <BubbleBurst />,
+  "curtain-sequence": <CurtainSequence />,
+  "destructible-membrane": <DestructibleMembrane />,
+  "domino-word": <DominoWord />,
+  "kinetic-kerning": <KineticKerning />,
+  "kinetic-texture-mesh": <KineticTextureMesh />,
+  "lenticular-shift": <LenticularShift />,
+  "mercury-droplet-choir": <MercuryDropletChoir />,
+  "pulse-choir": <PulseChoir />,
+  "rollback-orbit": <RollbackOrbit />,
+  "split-shutter": <SplitShutter />,
 }
 
 /**
@@ -175,5 +204,26 @@ export const CARD_DEMOS: Record<string, ReactNode> = {
   "heat-grid": <HeatGrid compact />,
   "morphogen-wordmark": <MorphogenWordmark compact />,
   "pressure-button": <PressureButton compact />,
+
+  /* The first catalogue round, given the card composition they were missing.
+     Registering these twelve without an entry here would drop each one onto
+     `ItemPreview`'s `wantsScale` fallback — a full marketing stage rendered at
+     roughly a third of its design size behind an `inert` poster — which is the
+     presentation that was rejected, and which also puts the two canvas ones
+     (`destructible-membrane`, `kinetic-texture-mesh`) through a transform their
+     own `measure()` reads back as the true frame size. An entry here keeps that
+     branch dead. */
+  "aurora-thread-loom": <AuroraThreadLoom compact />,
+  "bubble-burst": <BubbleBurst compact />,
+  "curtain-sequence": <CurtainSequence compact />,
+  "destructible-membrane": <DestructibleMembrane compact />,
+  "domino-word": <DominoWord compact />,
+  "kinetic-kerning": <KineticKerning compact />,
+  "kinetic-texture-mesh": <KineticTextureMesh compact />,
+  "lenticular-shift": <LenticularShift compact />,
+  "mercury-droplet-choir": <MercuryDropletChoir compact />,
+  "pulse-choir": <PulseChoir compact />,
+  "rollback-orbit": <RollbackOrbit compact />,
+  "split-shutter": <SplitShutter compact />,
 }
 

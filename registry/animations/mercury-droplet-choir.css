@@ -1,0 +1,175 @@
+@keyframes droplet-choir {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(0.72);
+    border-radius: 50%;
+  }
+  23% {
+    transform: translate3d(var(--in-x), var(--in-y), 0) scale(1.18);
+  }
+  48% {
+    transform: translate3d(var(--out-x), var(--out-y), 0) scale(0.86);
+    border-radius: 38% 62% 44% 56%;
+  }
+  72% {
+    transform: translate3d(0, var(--wave-y), 0) scale(1);
+  }
+}
+
+/* The surface the choir is designed to sit on. Size it from the parent. */
+.mercury-droplet-choir-stage {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  min-height: 240px;
+  container-type: inline-size;
+  overflow: hidden;
+  background: #151617;
+  color: #e7e5de;
+}
+
+.mercury-droplet-choir {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background: radial-gradient(circle at 50% 46%, #303337 0, #151617 44%, #090a0a 78%);
+}
+
+.mercury-droplet-choir > div {
+  position: relative;
+  width: 310px;
+  height: 310px;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 17px;
+  filter: contrast(1.12);
+}
+
+.mercury-droplet-choir i {
+  display: block;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 31% 25%,
+    #fff 0 4%,
+    #bbc0c3 7%,
+    #494d50 18%,
+    #090a0b 53%,
+    #8d9295 75%,
+    #111 88%
+  );
+  box-shadow:
+    inset -7px -9px 12px #000,
+    0 12px 16px rgba(0, 0, 0, 0.46);
+  animation: droplet-choir 5.8s calc(var(--i) * -90ms) cubic-bezier(0.6, 0, 0.25, 1)
+    infinite;
+  will-change: transform;
+}
+
+.mercury-droplet-choir i:nth-child(4n) {
+  border-radius: 62% 38% 55% 45%;
+}
+
+.mercury-droplet-choir > b {
+  position: absolute;
+  font-size: 74px;
+  letter-spacing: -0.08em;
+  color: #f1eee6;
+  mix-blend-mode: difference;
+  z-index: 2;
+}
+
+.mercury-droplet-choir > span {
+  position: absolute;
+  left: 18px;
+  bottom: 16px;
+  font: 8px var(--font-geist-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+  letter-spacing: 0.13em;
+}
+
+@container (max-width: 520px) {
+  .mercury-droplet-choir > div {
+    scale: 0.75;
+  }
+}
+
+/*
+ * The card variant: the 298x240 catalogue frame, at that real size and never scaled.
+ * There is no marketing section to dismantle here — the stage is already nothing but the
+ * choir, a wordmark and an 8px slug — so the whole job is arithmetic: get the motion,
+ * not the grid box, inside 240px of height, and stop the wordmark from sitting across the
+ * mechanism.
+ */
+.mercury-droplet-choir-stage[data-compact='true'] {
+  /* 240px happens to match the frame exactly, but a min-height outranks `height: 100%`
+     the moment the frame is a pixel shorter, so it goes to zero. The frame does the
+     rounding and the clipping, and this stage never set a radius of its own. */
+  min-height: 0;
+  height: 100%;
+}
+
+/*
+ * No `touch-action` line, and none needed: nothing in this component reads the pointer —
+ * the droplets are CSS keyframes and the stage has no handlers — so it never becomes a
+ * drag surface that claims the vertical gesture. A touch on the card scrolls the page as
+ * it should, and declaring `pan-y` would only cost the card its pinch-zoom.
+ */
+
+/*
+ * 0.66, and it is the height that sets it. The grid is a 310px box of 48.4px cells on a
+ * 65.4px pitch, but the motion reaches well past that box: at 48% the blob throws the
+ * outer columns 10.6px clear either side, and at 72% the wave lifts one column 20px above
+ * the top edge and drops another 20px below the bottom. So the thing that has to fit is
+ * 331x350, not 310x310 — and 350 x 0.66 = 231px, which leaves 4.5px of clearance top and
+ * bottom inside 240 with none of the choreography clipped. The narrow-container rule above
+ * lands on 0.75, which is right for a 520px-wide surface and 11px per edge too tall here.
+ *
+ * A scale rather than a smaller box, because every offset in the component is a pixel
+ * constant read against that 65.4px pitch: 18px in, 7px and 11px out, 10px of wave.
+ * Shrinking the cells while those stayed fixed would turn the converge phase from a crowd
+ * into a pile-up, and it would leave the `inset -7px -9px 12px` highlight sized for a 48px
+ * ball on a 32px one — which reads as a black disc, not as chrome.
+ *
+ * 0.66 is sized to the 240px frame this composition is authored for, and it is the one
+ * number here that does not survive a shorter one. Three surfaces pass `height={200}` to
+ * the same card — bookmarks, the profile grid, the related row under an item — and in
+ * 200px the 231px envelope loses 15.5px to each edge, which cuts the ball the wave lifts
+ * out of the top row and the one it drops out of the bottom roughly in half at that
+ * phase. Fitting 200 means 0.57, or 177px of choir instead of 205px on every card in the
+ * catalogue grid, so this stays sized for 240. A height-driven scale is not available:
+ * the stage is an `inline-size` container, `cqh` needs `container-type: size`, and
+ * `scale` takes a number rather than a length either way.
+ */
+.mercury-droplet-choir-stage[data-compact='true'] .mercury-droplet-choir > div {
+  scale: 0.66;
+}
+
+/*
+ * A cqw clamp instead of the shipped 74px, resolved against the stage — it is the
+ * `inline-size` container, so 13cqw is 38.7px across a 298px card. CHOIR carries -0.08em
+ * of tracking and sets around 2.6em, so that is roughly 100px of word over the 205px grid;
+ * at 74px it runs nearer 195px and covers the choir end to end, which is the mechanism
+ * losing to its own label.
+ *
+ * The ceiling is 40px and not the shipped 74px, because the choir does not grow with the
+ * frame: the scale above is a constant, so the grid renders 205px wide in a 298px card
+ * and 205px wide in the 607px one `grid-cols-1` produces at a 639px viewport. 13cqw
+ * reaches 74px at 569px of container, inside that range, and would hand back exactly the
+ * end-to-end wordmark this rule exists to remove. Pinned at 40px the mark stays about
+ * half the choir at every card width the catalogue renders, and the 22px floor holds a
+ * frame narrower than this one.
+ */
+.mercury-droplet-choir-stage[data-compact='true'] .mercury-droplet-choir > b {
+  font-size: clamp(22px, 13cqw, 40px);
+}
+
+/* The slug is editorial detail for a full-width section. On a card the item's own title
+   and description say what this is, and 8px of tracking under the droplets is noise
+   competing for the only 240px there are. */
+.mercury-droplet-choir-stage[data-compact='true'] .mercury-droplet-choir > span {
+  display: none;
+}

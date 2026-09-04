@@ -1,0 +1,260 @@
+@keyframes roll-across {
+  0% {
+    transform: translateX(0) rotate(0);
+  }
+  44% {
+    transform: translateX(202px) rotate(600deg);
+  }
+  63% {
+    transform: translateX(210px) rotate(670deg);
+  }
+  100% {
+    transform: translateX(0) rotate(1080deg);
+  }
+}
+
+@keyframes roll-rail-rock {
+  45% {
+    transform: rotate(3deg);
+  }
+  72% {
+    transform: rotate(-5deg);
+  }
+}
+
+@keyframes roll-target-hit {
+  45% {
+    scale: 1;
+  }
+  54% {
+    scale: 0.72;
+  }
+  68% {
+    scale: 1.15;
+  }
+  100% {
+    scale: 1;
+  }
+}
+
+@keyframes roll-rail-shadow {
+  50% {
+    scale: 0.88;
+    filter: blur(19px);
+    opacity: 0.52;
+  }
+}
+
+/*
+ * The surface the button is designed to sit on. Also the positioning context
+ * for the rail's ground shadow, which is absolute with auto offsets.
+ */
+.rollback-orbit-stage {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  min-height: 240px;
+  container-type: inline-size;
+  overflow: hidden;
+  background: #d8ff43;
+}
+
+.rollback-orbit {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  border: 0;
+  background: radial-gradient(circle at 50% 43%, #eeff9a 0, #d8ff43 47%, #9dad2f 100%);
+}
+
+/* The rail's ground shadow, breathing on its own slower clock. */
+.rollback-orbit::before {
+  content: '';
+  position: absolute;
+  width: 330px;
+  height: 86px;
+  border-radius: 60px;
+  background: rgba(17, 17, 15, 0.1);
+  filter: blur(13px);
+  transform: translateY(32px) rotate(-3deg);
+  animation: roll-rail-shadow 2.8s ease-in-out infinite;
+}
+
+.rollback-orbit::after {
+  content: 'MOMENTUM / 01';
+  position: absolute;
+  right: 17px;
+  top: 15px;
+  font: 7px var(--font-geist-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+  letter-spacing: 0.14em;
+}
+
+.rollback-orbit .roll-rail {
+  position: relative;
+  width: 280px;
+  height: 72px;
+  border: 4px solid #111;
+  border-radius: 50px;
+  background: linear-gradient(#b7cf42, #edff9e);
+  box-shadow:
+    inset 0 12px 18px rgba(255, 255, 255, 0.5),
+    inset 0 -11px 18px rgba(17, 17, 15, 0.2),
+    0 19px 0 rgba(17, 17, 15, 0.1);
+  transform: rotate(-3deg);
+  transition: transform 0.25s;
+}
+
+.rollback-orbit .roll-ball {
+  position: absolute;
+  left: 9px;
+  top: 8px;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 35% 28%,
+    #fff 0 4%,
+    #8d71ff 12%,
+    #342176 62%,
+    #17102d 100%
+  );
+  box-shadow:
+    inset -8px -10px 14px rgba(0, 0, 0, 0.45),
+    inset 7px 7px 10px rgba(255, 255, 255, 0.38),
+    5px 10px 14px rgba(0, 0, 0, 0.32);
+  transform-origin: center;
+}
+
+.rollback-orbit .roll-ball b {
+  position: absolute;
+  inset: 8px;
+  border: 1px dashed rgba(255, 255, 255, 0.35);
+  border-radius: 50%;
+}
+
+.rollback-orbit .roll-target {
+  position: absolute;
+  right: 14px;
+  top: 14px;
+  width: 40px;
+  height: 40px;
+  border: 2px dashed rgba(17, 17, 15, 0.35);
+  border-radius: 50%;
+}
+
+.rollback-orbit > em {
+  position: absolute;
+  margin-top: 132px;
+  font: 8px var(--font-geist-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+  font-style: normal;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.rollback-orbit.running .roll-rail {
+  animation: roll-rail-rock 2s ease-in-out;
+}
+
+.rollback-orbit.running .roll-ball {
+  animation: roll-across 2s cubic-bezier(0.5, 0.05, 0.16, 1);
+}
+
+.rollback-orbit.running .roll-target {
+  animation: roll-target-hit 2s ease;
+}
+
+@container (max-width: 520px) {
+  .rollback-orbit .roll-rail {
+    scale: 0.82;
+  }
+}
+
+/*
+ * The card variant: the 298x240 catalogue frame, at that real size and never scaled.
+ *
+ * Nothing below shrinks the mechanism, because nothing has to. The rail is 280x72 and
+ * the -3deg tilt puts its bounding box at 283x87, so it sits in a 298px frame with 7px
+ * of lime at each side — the 4px border, the 50px ball, the 40px target and the 202px
+ * of travel are the shipped pixels rather than a miniature of them. What was wrong at
+ * this size was never the rail; it was the 132px margin under it and a 330px shadow in
+ * a 298px box.
+ *
+ * No border-radius line: this stage never set one, and the card frame rounds and clips
+ * already. No touch-action either — the only pointer target is a button answering to a
+ * click, so this never becomes a drag surface that could claim the vertical gesture,
+ * and a touch on the card goes on scrolling the page.
+ */
+.rollback-orbit-stage[data-compact='true'] {
+  min-height: 0;
+  height: 100%;
+}
+
+/*
+ * The bottom strip the label sits in — 12px of inset plus its line, near enough 30px —
+ * taken out of the button's content box rather than off the rail. The rail is an
+ * in-flow grid item and the ground shadow is an absolute child aligned in the same
+ * content box, so this one value lifts both by 15px and the shadow stays under the
+ * rail instead of drifting out from beneath it. The lift also puts the rail's centre on
+ * the 43% highlight of the button's radial gradient — 103px of 240 against a rail
+ * centred at 105 — which the 320px stage has 22px above the rail rather than on it.
+ */
+.rollback-orbit-stage[data-compact='true'] .rollback-orbit {
+  padding-bottom: 30px;
+  /* The press surface is the whole frame now and only the label says so; nothing gives
+     a bare <button> a pointer cursor. */
+  cursor: pointer;
+}
+
+/*
+ * 330px of ground shadow in a 298px frame is 16px of soft slab cut off flat against
+ * each edge, and the blur is not wide enough to hide the cut. 252px keeps it 14px
+ * inside the rail's own ends, and its outer edge dies about 10px short of the frame
+ * once the 13px blur is spent; 74px keeps the lower half clear of the label. The 2.8s
+ * breathing is deliberately left alone — it is the whole reason the card has motion on
+ * load, before anyone has pressed anything.
+ */
+.rollback-orbit-stage[data-compact='true'] .rollback-orbit::before {
+  width: 252px;
+  height: 74px;
+}
+
+/*
+ * 'MOMENTUM / 01' is decoration at 7px in the section and a collision in a card: it is
+ * pinned 17px in and 15px down from the top right corner, which is exactly where the
+ * card frame hangs its own "Open" link. This box carries one line of type and the label
+ * under the rail is the one that earns it.
+ */
+.rollback-orbit-stage[data-compact='true'] .rollback-orbit::after {
+  display: none;
+}
+
+/* Undoes the narrow-stage miniature above. 298px is enough for the rail at 1:1, and a
+   fractional scale only softens a 4px border and two dashed rings. */
+.rollback-orbit-stage[data-compact='true'] .roll-rail {
+  scale: 1;
+}
+
+/*
+ * The one line of type that stays, and the only one. Nothing about a lime slab says it
+ * can be pressed, and this is the same <em> that turns over to 'In motion' while the
+ * ball is out, so it carries the instruction and the state on one line.
+ *
+ * The 132px margin was measured for the 320px stage, where it clears the rail and
+ * lands 23px above the floor; in a 240px box the same margin puts the label past the
+ * bottom edge, where the stage's overflow: hidden eats it — the label is simply
+ * missing today at card height. So it is anchored to the bottom edge instead. 10px
+ * rather than the section's 8px because it is now the only text in the frame, and the
+ * ink is pinned to the rail's own #111: the lime is a fixed colour in both themes, so
+ * an inherited foreground would put white type on it in dark mode.
+ */
+.rollback-orbit-stage[data-compact='true'] .rollback-orbit > em {
+  inset: auto 0 12px;
+  margin-top: 0;
+  font-size: 10px;
+  text-align: center;
+  color: #111;
+}

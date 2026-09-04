@@ -1,0 +1,202 @@
+@keyframes choir {
+  0% {
+    transform: scaleY(0.08);
+  }
+  55% {
+    transform: scaleY(var(--peak));
+  }
+  100% {
+    transform: scaleY(calc(1.05 - var(--peak) * 0.5));
+  }
+}
+
+@keyframes live-blink {
+  50% {
+    opacity: 0.2;
+  }
+}
+
+/* The surface the choir is designed to sit on. Size it from the parent. */
+.pulse-choir-stage {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  min-height: 240px;
+  container-type: inline-size;
+  overflow: hidden;
+  background: radial-gradient(ellipse at 50% 80%, #20266d, #111 58%);
+  color: #f0ede6;
+}
+
+.pulse-choir {
+  width: min(500px, 86%);
+  display: grid;
+  gap: 30px;
+}
+
+.pulse-choir > div {
+  height: 190px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.35);
+}
+
+.pulse-choir i {
+  flex: 1;
+  height: 100%;
+  min-width: 3px;
+  background: linear-gradient(to top, #3155e7, #9b6dff 55%, #d8ff43);
+  transform: scaleY(0.08);
+  transform-origin: bottom;
+  animation: choir 1.65s calc(var(--i) * -55ms) cubic-bezier(0.45, 0, 0.55, 1) infinite
+    alternate;
+}
+
+.pulse-choir > span {
+  display: flex;
+  justify-content: space-between;
+  font: 8px var(--font-geist-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+  letter-spacing: 0.1em;
+}
+
+.pulse-choir span > b {
+  color: #d8ff43;
+  font-weight: 500;
+}
+
+.pulse-choir span > b::before {
+  content: '';
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin-right: 6px;
+  border-radius: 50%;
+  background: #d8ff43;
+  box-shadow: 0 0 8px #d8ff43;
+  animation: live-blink 1s steps(1) infinite;
+}
+
+.pulse-choir > div {
+  position: relative;
+  padding: 0 10px;
+  background: linear-gradient(90deg, transparent, rgba(49, 85, 231, 0.12), transparent);
+  box-shadow: 0 28px 44px rgba(49, 85, 231, 0.16);
+}
+
+.pulse-choir > div::after {
+  content: '';
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  bottom: -16px;
+  height: 13px;
+  background: inherit;
+  filter: blur(4px);
+  transform: scaleY(-0.45);
+  opacity: 0.45;
+}
+
+.pulse-choir i {
+  border-radius: 8px 8px 0 0;
+  box-shadow: 0 0 12px rgba(155, 109, 255, 0.28);
+}
+
+/*
+ * The card variant: the 298x240 catalogue frame, at that real size and never scaled.
+ *
+ * There is no prose in this animation to drop — no headline, no paragraph, no `vw`
+ * anywhere — so the thing that fails in a card is the width. `min(500px, 86%)` leaves
+ * 236px inside the row's padding, and 32 bars floored at `min-width: 3px` plus 31
+ * five-pixel gaps need 251px: every bar is pinned at that floor, a 3px hairline, and the
+ * line still overruns by 15px. Nothing is cropped — the spill stops 16px short of the
+ * stage's own edge, so `overflow: hidden` never reaches it — the last two bars simply
+ * stand outside the underline and the reflection, which both end where the row does.
+ * Closing the gap to 3px is what makes the field fit — 93px of gaps in a 262px row leaves
+ * 169px, so a bar is 5.28px and the floor never binds.
+ *
+ * Vertically the frame goes to the mechanism. 190 + 30 + 11 did fit 240px, with about 4px
+ * of air top and bottom, but 41 of those 240 were a gap and a strip of 8px type. Here the
+ * label keeps one 13px line at 10px and the bars take the 193px left over — taller than
+ * the 190px they get on the full stage.
+ */
+.pulse-choir-stage[data-compact='true'] {
+  min-height: 0;
+  height: 100%;
+  /*
+   * The only padding in the file, and it replaces an inset that used to be implied by
+   * the 86% width. 8px at the sides plus the row's own 10px keeps the first and last bar
+   * clear of the card frame's 14px corner radius (`rounded-xl` on this project's 0.625rem
+   * `--radius`); 12px above is what the tallest peak in the set — a bar whose keyframe
+   * reaches `scaleY(1)` — has instead of the top edge.
+   */
+  padding: 12px 8px 10px;
+}
+
+/*
+ * No `touch-action` line here, and none needed: this stage has no pointer handlers and
+ * never captures a gesture, so a touch on the card scrolls the page as it should and
+ * declaring `pan-y` would only cost the card its pinch-zoom. No `border-radius` line
+ * either — the stage never set one, and the card frame rounds and clips already.
+ */
+
+/*
+ * Fills the frame rather than sitting in the middle of it, and the rows are stated so
+ * the bars get everything the label does not. `1fr` rather than a measured height: the
+ * line box under a 10px monospace face is the webfont's business, not a number to
+ * hard-code and then be wrong about.
+ */
+.pulse-choir-stage[data-compact='true'] .pulse-choir {
+  justify-self: stretch;
+  width: auto;
+  height: 100%;
+  grid-template-rows: minmax(0, 1fr) auto;
+  gap: 12px;
+}
+
+/*
+ * The row takes the whole `1fr`, and it has to say so in a percentage rather than in
+ * `auto`: 190px is a definite height and a definite height does not stretch, but the bars
+ * inside are `height: 100%` and want a definite one to resolve against, so leaving this
+ * to stretch alignment would put the field's height on the least portable step of the
+ * chain. The drop shadow comes up with the row — 28px down over 44px of blur throws most
+ * of the wash past the bottom edge, where 10px of padding is all there is to catch it.
+ */
+.pulse-choir-stage[data-compact='true'] .pulse-choir > div {
+  height: 100%;
+  gap: 3px;
+  box-shadow: 0 14px 26px rgba(49, 85, 231, 0.16);
+}
+
+/*
+ * The reflection, pulled inside the smaller gap. At -16px over 13px it hangs from 3px to
+ * 16px below the baseline, which is four pixels into a label that now starts at twelve;
+ * -7px over 8px keeps the flip touching the line it belongs to and stops short of the
+ * type, with only the blur tail reaching the leading above it.
+ */
+.pulse-choir-stage[data-compact='true'] .pulse-choir > div::after {
+  bottom: -7px;
+  height: 8px;
+}
+
+/*
+ * Stated rather than left to the radius clamp: at 5.28px wide the browser scales 8px down
+ * to 2.6px on its own, which is near enough to this and arrived at by arithmetic nobody
+ * can read off the file.
+ */
+.pulse-choir-stage[data-compact='true'] .pulse-choir i {
+  border-radius: 3px 3px 0 0;
+}
+
+/*
+ * The one line kept, at 10px instead of 8px. It is a label and not prose — the card's own
+ * title and description say what the item is — and it earns its 13px by naming the field
+ * and carrying the blinking dot, the only channel in here running at a different rate to
+ * the bars. The text is about 166px of the 282px strip at this size, so `space-between`
+ * still reads as two ends of one line rather than a broken sentence.
+ */
+.pulse-choir-stage[data-compact='true'] .pulse-choir > span {
+  font-size: 10px;
+}

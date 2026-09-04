@@ -1,0 +1,352 @@
+@keyframes curtain-panel {
+  0% {
+    transform: translateX(-135%) rotateY(-92deg);
+    transform-origin: left center;
+  }
+  35%,
+  59% {
+    transform: translateX(0) rotateY(0);
+    transform-origin: left center;
+  }
+  60% {
+    transform-origin: right center;
+  }
+  100% {
+    transform: translateX(135%) rotateY(92deg);
+    transform-origin: right center;
+  }
+}
+
+@keyframes curtain-title {
+  0%,
+  24% {
+    opacity: 0;
+    transform: scale(0.72);
+    filter: blur(12px);
+    color: #f0ede6;
+  }
+  43%,
+  62% {
+    opacity: 1;
+    transform: scale(1);
+    filter: blur(0);
+    color: #111;
+  }
+  76%,
+  100% {
+    opacity: 0;
+    transform: scale(1.18);
+    filter: blur(8px);
+    color: #f0ede6;
+  }
+}
+
+@keyframes curtain-index {
+  0%,
+  28% {
+    opacity: 0.18;
+    transform: translateY(0);
+  }
+  45%,
+  66% {
+    opacity: 1;
+    transform: translateY(118px);
+    color: #111;
+  }
+  100% {
+    opacity: 0.18;
+    transform: translateY(0);
+  }
+}
+
+/*
+ * The surface the sequence is designed to sit on. `perspective` lives here as
+ * well as on the button so the panels keep their depth if the stage is reused.
+ */
+.curtain-sequence-stage {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  min-height: 240px;
+  container-type: inline-size;
+  overflow: hidden;
+  background: #0d0d0c;
+  perspective: 1100px;
+}
+
+.curtain-sequence {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border: 0;
+  background: radial-gradient(circle at 50% 46%, #2a2a27 0, #111 58%, #080807 100%);
+  color: #f0ede6;
+  perspective: 1100px;
+}
+
+.curtain-sequence::before {
+  content: '';
+  position: absolute;
+  inset: 28px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background:
+    linear-gradient(
+      90deg,
+      transparent 49.9%,
+      rgba(255, 255, 255, 0.08) 50%,
+      transparent 50.1%
+    ),
+    linear-gradient(
+      0deg,
+      transparent 49.9%,
+      rgba(255, 255, 255, 0.08) 50%,
+      transparent 50.1%
+    );
+}
+
+.curtain-sequence::after {
+  content: '12';
+  position: absolute;
+  right: 17px;
+  top: 12px;
+  color: rgba(255, 255, 255, 0.18);
+  font-size: 54px;
+  font-weight: 750;
+  letter-spacing: -0.08em;
+}
+
+.curtain-sequence > span {
+  position: absolute;
+  z-index: 9;
+  left: 17px;
+  bottom: 15px;
+  font: 8px var(--font-geist-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+.curtain-sequence > div {
+  position: absolute;
+  z-index: 4;
+  inset: 0;
+  display: flex;
+  perspective: 900px;
+  pointer-events: none;
+}
+
+.curtain-sequence > div > i {
+  --delay: calc(var(--panel) * 75ms);
+  position: relative;
+  width: 16.667%;
+  height: 100%;
+  overflow: hidden;
+  border-right: 1px solid rgba(17, 17, 15, 0.38);
+  background: #d8ff43;
+  transform: translateX(-130%) rotateY(-92deg);
+  transform-origin: left center;
+  box-shadow: 16px 0 34px rgba(0, 0, 0, 0.22);
+  backface-visibility: hidden;
+}
+
+.curtain-sequence > div > i:nth-child(2) {
+  background: #f0ede6;
+}
+
+.curtain-sequence > div > i:nth-child(3) {
+  background: #3155e7;
+}
+
+.curtain-sequence > div > i:nth-child(4) {
+  background: #ff5a40;
+}
+
+.curtain-sequence > div > i:nth-child(5) {
+  background: #9b6dff;
+}
+
+.curtain-sequence > div > i:nth-child(6) {
+  background: #111;
+  color: white;
+}
+
+.curtain-sequence i > small {
+  position: absolute;
+  left: 50%;
+  bottom: 21px;
+  font: 7px var(--font-geist-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+  transform: translateX(-50%);
+  opacity: 0.65;
+}
+
+.curtain-sequence > b {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  gap: 12px;
+  font-weight: 700;
+}
+
+.curtain-sequence b > em {
+  /* Sized from the stage, not the viewport, and divided by the letter count so
+     any label fits. `--n` is the longer of the two labels; see the component. */
+  font-size: clamp(20px, calc(135cqw / var(--n, 7)), 118px);
+  font-style: normal;
+  line-height: 0.75;
+  letter-spacing: -0.08em;
+  text-shadow: 0 22px 38px rgba(0, 0, 0, 0.55);
+}
+
+.curtain-sequence b > small {
+  font: 8px var(--font-geist-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+  letter-spacing: 0.18em;
+  color: #8f8f89;
+}
+
+.curtain-sequence.running > div > i {
+  animation: curtain-panel 2.45s var(--delay) cubic-bezier(0.76, 0, 0.24, 1) both;
+}
+
+.curtain-sequence.running > b {
+  z-index: 6;
+  animation: curtain-title 2.8s ease-in-out both;
+}
+
+.curtain-sequence.running::after {
+  animation: curtain-index 2.8s ease-in-out both;
+}
+
+/*
+ * The card variant: the 298x240 catalogue frame, at that real size and never scaled.
+ * Most of this stage already tracked its container — the wordmark is a `cqw` clamp and
+ * the panels are sixths of the width, so both arrive in a card the right size — and what
+ * did not survive 320px of height becoming 240 is the chrome around them: a 28px
+ * viewfinder margin, a 54px frame counter, two lines of 8px mono where there is room for
+ * one, and a drop shadow measured against 118px type. The mechanism is six panels
+ * crossing the whole box, which is what it already was, so nothing below touches the
+ * panels themselves.
+ */
+.curtain-sequence-stage[data-compact='true'] {
+  /* 240px was the floor this stage was authored never to drop under; in a card it is the
+     whole frame, so the floor has to go and the height comes from the frame. Nothing to
+     neutralise for the corners: this stage never set a radius, and the card clips. */
+  min-height: 0;
+  height: 100%;
+}
+
+/*
+ * No `touch-action` line here, and none wanted: the panel layer is `pointer-events: none`
+ * and the only pointer target is the plate, which is a button and not a drag surface. A
+ * vertical swipe that starts on this card stays the page's — the one thing that must not
+ * break inside a scrolling grid of cards — and `pan-y` would cost it its pinch-zoom for
+ * nothing.
+ */
+
+/*
+ * The viewfinder, pulled in from 28px to 10px and stopped 26px short of the bottom edge.
+ * The pair of 28px insets is 17% of the stage's authored 320px of height and 23% of the
+ * card's 240, and the box they left was too tight for a 50px wordmark: 'SEQUENCE' comes to
+ * something near 230px at that size — arithmetic off the face's advances, not a measured
+ * render — and `curtain-title` takes it to scale 1.18 mid-run, which is ~272px against the
+ * 242px those insets leave. 10px gives it 278px and the word clears the side rules at its
+ * widest. The deeper bottom inset is the type strip below: the instruction ends up under
+ * the rule rather than across it, which is the relationship it has at full size.
+ */
+.curtain-sequence-stage[data-compact='true'] .curtain-sequence::before {
+  inset: 10px 10px 26px;
+}
+
+/*
+ * The frame counter, the one thing here that scaled badly: 54px marks the corner of a
+ * section and takes 18% of the width of a 298px card, a numeral arguing with the title
+ * rather than dating it. At 28px it is a corner mark again. Left on its authored 118px
+ * drop, because the numeral now starts at y=6 and lands at y=124 of 240, so the whole
+ * travel stays inside the viewfinder and the card needs no keyframe of its own.
+ */
+.curtain-sequence-stage[data-compact='true'] .curtain-sequence::after {
+  top: 6px;
+  right: 12px;
+  font-size: 28px;
+}
+
+/*
+ * The one line of type that stays, off the corner and onto the strip along the bottom
+ * edge, and lifted from 8px to 10px: it is the only text left in the card, so it is the
+ * one thing here that has to be legible rather than atmospheric. 25 uppercase mono
+ * characters at 10px with the authored 0.12em of tracking come to ~180px of the 278px the
+ * strip has, so the longer of the two strings still sets on one line.
+ *
+ * It earns the strip because nothing else here says the plate is a control — the card runs
+ * the sequence by itself, but the press is the item, and this is the line that turns over
+ * to 'Sequence running' while the panels are out. Under `prefers-reduced-motion` the loop
+ * never starts and this is the only thing telling a visitor the card is not a screenshot.
+ */
+.curtain-sequence-stage[data-compact='true'] .curtain-sequence > span {
+  inset: auto 0 0 0;
+  padding: 0 10px 8px;
+  font-size: 10px;
+  text-align: center;
+}
+
+/*
+ * 'EDITORIAL TRANSITION' at 8px under a 50px wordmark is a second whisper arguing with the
+ * one along the bottom edge, and the card's own title and description already say what this
+ * is. It takes the plate's 12px gap with it, so the wordmark is the whole of `b`.
+ */
+.curtain-sequence-stage[data-compact='true'] .curtain-sequence b > small {
+  display: none;
+}
+
+/*
+ * The wordmark, centred in the viewfinder rather than in the frame. A button centres its
+ * content over its full height, so with the type strip holding the bottom 26px the title
+ * would sit 8px low inside the rules and the crosshair would cross its caps instead of its
+ * middle. Same box as the `::before` above, stated rather than inherited, which also takes
+ * the one piece of this composition that relied on button centring off it. The `z-index` is
+ * untouched: the running rule still lifts it to 6 and the panels still pass under it.
+ *
+ * The transition is for the other end of the run. `curtain-title` is `both`-filled and
+ * leaves the word at opacity 0 / scale 1.18 / blur 8px, and `.running` comes off 50ms
+ * later, so the resting wordmark cuts straight back in. Once per press that reads as the
+ * shutter closing; on a card that presses itself every 3.85s it is a blink. Removing a
+ * filled animation is a computed-value change from its own last frame, so these three
+ * properties settle instead of snapping — and a browser that resolves that as a cut lands
+ * exactly on today's behaviour, which is why this is one declaration and not a second
+ * keyframe. Safe at the start of a run too: whatever it travels through, it hands over at
+ * the 0.72 / blur(12px) the keyframe holds until 24% anyway. Compact only — a press at
+ * full size is still the cut it was authored as.
+ */
+.curtain-sequence-stage[data-compact='true'] .curtain-sequence > b {
+  position: absolute;
+  inset: 10px 10px 26px;
+  transition:
+    opacity 240ms ease-out,
+    transform 240ms ease-out,
+    filter 240ms ease-out;
+}
+
+/*
+ * The drop shadow under the wordmark, rescaled with the type it belongs to. `0 22px 38px`
+ * is 0.19em of offset and 0.32em of blur against the 118px the title reaches in a section;
+ * left alone under a 50px card wordmark the same pixels are 0.44em and 0.76em — a dark
+ * cloud sitting clear of the letters rather than a shadow under them, and it is at its most
+ * visible in the half second the title is #111 over the light panels. 9px and 16px are that
+ * authored ratio at this size.
+ */
+.curtain-sequence-stage[data-compact='true'] .curtain-sequence b > em {
+  text-shadow: 0 9px 16px rgba(0, 0, 0, 0.55);
+}
+
+/*
+ * The panel numbers, lifted clear of the type strip. A panel is a sixth of the stage —
+ * broad in a section, 50px in a card — so the numbers on panels 3 and 4 land in the middle
+ * of the card, which is exactly where the centred instruction now is, and the instruction
+ * wins on z-index. 42px puts them in the lower third of the panel with the strip below them
+ * empty.
+ */
+.curtain-sequence-stage[data-compact='true'] .curtain-sequence i > small {
+  bottom: 42px;
+}

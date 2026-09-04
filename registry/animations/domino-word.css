@@ -1,0 +1,198 @@
+@keyframes domino-fall {
+  0%,
+  19%,
+  91%,
+  100% {
+    transform: rotateX(0) translateY(0);
+  }
+  40%,
+  66% {
+    transform: rotateX(79deg) translateY(13px);
+  }
+  72% {
+    transform: rotateX(-8deg) translateY(-5px);
+  }
+  80% {
+    transform: rotateX(3deg);
+  }
+}
+
+/*
+ * The surface the tiles are designed to sit on. Also the positioning context
+ * for the ground shadow, and where the 3D depth comes from.
+ */
+.domino-word-stage {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  min-height: 240px;
+  container-type: inline-size;
+  overflow: hidden;
+  background: radial-gradient(circle at 50% 45%, #ff9a7c, #ff5a40 50%, #bd3027);
+  perspective: 900px;
+}
+
+.domino-word {
+  /*
+   * A tile is 70px wherever there is room for it. When there is not — a narrow
+   * stage, or a long word — the whole rack narrows instead of overflowing, so the
+   * layout box keeps fitting and the grid above can still centre it. Everything
+   * below is a ratio of `--tile`, which is how the 70px design stays intact.
+   * `--n` is the letter count; the component passes it. 1.1143 is tile + gap.
+   */
+  --tile: min(70px, calc(96cqw / (var(--n, 6) * 1.1143)));
+  display: flex;
+  align-items: flex-end;
+  gap: calc(var(--tile) * 0.1143);
+  height: calc(var(--tile) * 2.1429);
+  perspective: 900px;
+}
+
+.domino-word > span {
+  --delay: calc(var(--i) * 0.13s);
+  position: relative;
+  width: var(--tile);
+  height: calc(var(--tile) * 1.5143);
+  display: grid;
+  place-items: center;
+  transform-style: preserve-3d;
+  transform-origin: 50% 100%;
+  animation: domino-fall 4.5s var(--delay) cubic-bezier(0.65, 0, 0.2, 1) infinite;
+}
+
+.domino-word span > b {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  border: 1px solid #111;
+  border-radius: 4px;
+  background: #f0ede6;
+  font-size: calc(var(--tile) * 0.8286);
+  line-height: 1;
+  box-shadow: 8px 10px 0 rgba(17, 17, 15, 0.13);
+}
+
+.domino-word span > i {
+  position: absolute;
+  left: calc(var(--tile) * 0.0429);
+  right: calc(var(--tile) * 0.0429);
+  bottom: calc(var(--tile) * -0.1571);
+  height: calc(var(--tile) * 0.1714);
+  background: #111;
+  transform: rotateX(90deg);
+  transform-origin: top;
+}
+
+.domino-word::before {
+  content: '';
+  position: absolute;
+  width: calc(var(--n, 6) * var(--tile) * 1.0714);
+  height: calc(var(--tile) * 1.3571);
+  border-radius: 50%;
+  background: rgba(83, 12, 8, 0.22);
+  filter: blur(20px);
+  transform: translateY(85px) rotateX(70deg);
+}
+
+.domino-word > span {
+  filter: drop-shadow(0 18px 18px rgba(86, 15, 10, 0.22));
+}
+
+.domino-word span > b {
+  background: linear-gradient(135deg, #fff, #e8e3d8);
+  box-shadow:
+    inset 0 0 0 5px rgba(255, 255, 255, 0.35),
+    8px 10px 0 rgba(17, 17, 15, 0.16);
+}
+
+.domino-word > span:nth-child(3) b {
+  background: #d8ff43;
+}
+
+.domino-word > span:nth-child(5) b {
+  background: #9b6dff;
+}
+
+/*
+ * The card variant: the 298x240 catalogue frame, at that real size and never scaled.
+ * There is no copy in this stage to drop — the rack is the whole composition — so the
+ * work here is geometry. The container query already narrows a tile to 43px at 298px and
+ * that is where it has to stay: six of them and five gaps are 281px of the 298. What did
+ * not follow the tile down is everything drawn in absolute pixels for the 70px one. The
+ * rack came out 65px tall in a 240px frame with 101px of empty gradient above it, and the
+ * ground blob — an 85px translate under a 92px rack — landed 46px clear of the feet, a
+ * detached smudge across the bottom edge.
+ *
+ * So the tile keeps its width and gains its height back, and the pixel offsets below are
+ * re-tied to `--tile`. No `border-radius: 0` line, because this stage never set one and
+ * the card frame rounds and clips already. No `touch-action` either: the rack takes no
+ * pointer events at all — the fall is a CSS loop, running before the card is even
+ * scrolled to — so a finger on the card scrolls the page, and `pan-y` would only cost it
+ * the pinch-zoom.
+ */
+.domino-word-stage[data-compact='true'] {
+  min-height: 0;
+  height: 100%;
+}
+
+/*
+ * 106px, and a constant rather than a ratio of `--tile`: it is the height the shipped 70px
+ * tile has, and what it has to stay in proportion with is constant too — the fall
+ * keyframes' fixed 13px drop and 5px rebound, and the 900px perspective. As a multiple of
+ * the tile it would be 106px only at the one card width it was worked out for, and the
+ * grid does not hold still at that width: `ItemGrid` runs one to four columns inside
+ * `container-page`, so a card is 286px across at 640px of viewport and 607px across at
+ * 639px. The tile is capped at 70px, and 2.4762 of that is a 173px rack in a 240px frame —
+ * feet at y=207 and the ground shadow back out of the bottom edge, which is the exact
+ * failure the rest of this block exists to fix. Held at 106px the feet stay at y=173 at
+ * every card width, and the widening tile only walks the face back toward the shipped
+ * 1:1.5 proportion.
+ *
+ * At the 43px tile of a 298px card that face is nearer 1:2.5, so there is more blank face
+ * around a letter that cannot grow with it: `M` much over 35px stops clearing a 43px face.
+ * It gives the mechanism 106px of the 240 instead of 65.
+ *
+ * The rack box is set to that same 106px rather than the 1.4x of it that it carries at
+ * full size. The extra is headroom above the tiles, and at this tile height it would put
+ * the feet at y=195 of 240 and crush the ground shadow into the bottom edge. Without it
+ * the tiles are exactly centred, feet at y=173, and the shadow has the strip below them.
+ */
+.domino-word-stage[data-compact='true'] .domino-word {
+  height: 106px;
+}
+
+.domino-word-stage[data-compact='true'] .domino-word > span {
+  height: 106px;
+  /* 18px of offset and blur under a 43px tile with 5px of gap merges the six shadows into
+     one band, and the blob below is already doing that job; 11px keeps them per-tile. */
+  filter: drop-shadow(0 calc(var(--tile) * 0.2571) calc(var(--tile) * 0.2571) rgba(86, 15, 10, 0.22));
+}
+
+/*
+ * Both layers restated, because `box-shadow` cannot be overridden a layer at a time. The
+ * hard offset is the one that had to move: at full size it is 8px against an 8px gap, the
+ * same 0.1143 of the tile, so the cast shadow reaches exactly to the next tile. Left at a
+ * literal 8px against the card's 5px gap it crosses into the neighbour by 3px. The inset
+ * bevel is 7% of a 70px face and 12% of a 43px one, which reads as a thick rim around a
+ * small letter; the ratio puts it back to 3px.
+ */
+.domino-word-stage[data-compact='true'] .domino-word span > b {
+  box-shadow:
+    inset 0 0 0 calc(var(--tile) * 0.0714) rgba(255, 255, 255, 0.35),
+    calc(var(--tile) * 0.1143) calc(var(--tile) * 0.1429) 0 rgba(17, 17, 15, 0.16);
+}
+
+/*
+ * The ground shadow, the one thing in the file whose offset is large enough to leave the
+ * frame. 85px was 1.2143 of the 70px tile; as that ratio it is 52px here, which lands the
+ * blob's band at y=186..206 under feet at y=173 instead of 46px adrift of them, and keeps
+ * 22px between it and the bottom edge. The blur goes with it: 20px on a blob shrunk from
+ * 450x95 to 275x58 is a smear rather than a shadow, and 12px holds the same edge.
+ */
+.domino-word-stage[data-compact='true'] .domino-word::before {
+  filter: blur(calc(var(--tile) * 0.2857));
+  transform: translateY(calc(var(--tile) * 1.2143)) rotateX(70deg);
+}

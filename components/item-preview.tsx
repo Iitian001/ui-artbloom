@@ -28,7 +28,7 @@ const REACH = 300
  * Deliberately not a timeout, which was the other way to cover the silent
  * observer: several of these scenes do real work in `setup` — the reaction-
  * diffusion field warms 1.8e7 cell-steps before its first paint — so mounting
- * fourteen of them at once on a timer trades a stuck skeleton for a stall. The
+ * twenty-six of them at once on a timer trades a stuck skeleton for a stall. The
  * rect check mounts a demo only when it is genuinely within reach, which is what
  * the observer was for.
  */

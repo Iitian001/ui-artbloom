@@ -1,0 +1,68 @@
+/* The surface the mesh is designed to sit on. Size it from the parent. */
+.kinetic-texture-mesh-stage {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  min-height: 240px;
+  container-type: inline-size;
+  overflow: hidden;
+  background: #0d0d0d;
+  color: #f2efe7;
+}
+
+.kinetic-texture-mesh {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #0d0d0d;
+  cursor: grab;
+  touch-action: none;
+}
+
+.kinetic-texture-mesh:active {
+  cursor: grabbing;
+}
+
+.kinetic-texture-mesh:focus-visible {
+  outline: 3px solid #d8ff43;
+  outline-offset: -5px;
+}
+
+.kinetic-texture-mesh canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/*
+ * The card variant: the 298x240 catalogue frame, at that real size and never scaled.
+ * Short by design. There is no marketing layout here to take apart — the mesh is already
+ * full-bleed and its weave is counted out from whatever box it is handed — so what a card
+ * needed is in the tsx instead: the wordmark fitted to 298px rather than clipped mid-word,
+ * the pluck reach scaled to the box, and the mesh plucking itself so the card is moving
+ * before anyone touches it. No `vw` anywhere below; the frame is 298px wide and the
+ * viewport is not.
+ */
+.kinetic-texture-mesh-stage[data-compact='true'] {
+  /* Load-bearing wherever the frame is shorter than the catalogue grid's 240px: cards are
+     200px on a profile and in the related row, and a 240px minimum inside a 200px frame
+     hangs 40px of the weave below the crop and leaves the wordmark sitting low in what is
+     left. The stage takes the frame's own height instead. */
+  min-height: 0;
+  height: 100%;
+}
+
+/*
+ * `pan-y`, not the `none` above: a full-bleed drag surface that claims every touch traps
+ * the page inside a scrolling grid of cards, which is the worse failure. The vertical
+ * gesture goes back to the document; a horizontal drag still gathers the weave and still
+ * releases its wave on the way out, so the mechanism survives the trade on a phone.
+ */
+.kinetic-texture-mesh-stage[data-compact='true'] .kinetic-texture-mesh {
+  touch-action: pan-y;
+}

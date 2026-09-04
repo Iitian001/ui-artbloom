@@ -122,9 +122,17 @@ export function useCanvasScene<State>(options: CanvasSceneOptions<State>): Canva
 
     /** Rebuild the backing store and the scene state for the current size. */
     const measure = () => {
-      const rect = stageNode.getBoundingClientRect()
-      const nextWidth = Math.max(1, Math.round(rect.width))
-      const nextHeight = Math.max(1, Math.round(rect.height))
+      // `offsetWidth`/`offsetHeight`, not `getBoundingClientRect()`: the rect is
+      // post-transform, so a scene sitting inside a scaled ancestor measured its
+      // own frame at the scaled size, sized the backing store to that, and then
+      // had CSS scale the result a second time — the scene ran at a fraction of
+      // the box it was drawn into. The catalogue's scaled-poster branch is the
+      // one place that happens, and it is reachable again the moment an
+      // animation is registered without a card composition. These two properties
+      // are the untransformed layout box; both are integers, which is what the
+      // rounding below already reduced the rect to.
+      const nextWidth = Math.max(1, stageNode.offsetWidth)
+      const nextHeight = Math.max(1, stageNode.offsetHeight)
       const nextDpr = Math.min(2, window.devicePixelRatio || 1)
       if (nextWidth === width && nextHeight === height && nextDpr === dpr && state) return
 
@@ -178,8 +186,16 @@ export function useCanvasScene<State>(options: CanvasSceneOptions<State>): Canva
 
     const at = (event: PointerEvent) => {
       const rect = stageNode.getBoundingClientRect()
-      pointer.x = event.clientX - rect.left
-      pointer.y = event.clientY - rect.top
+      // The rect is the right thing to subtract here — `clientX` is viewport
+      // space and so is the rect — but the difference comes back in *rendered*
+      // pixels, and a scene reads `pointer` in the scene pixels `measure()` set
+      // up from the untransformed box. Under a CSS scale those two disagree, so
+      // divide the transform back out. `rect.width / offsetWidth` is the scale
+      // actually in force, whatever produced it, and it is exactly 1 when there
+      // is none.
+      const scale = stageNode.offsetWidth > 0 ? rect.width / stageNode.offsetWidth : 1
+      pointer.x = (event.clientX - rect.left) / (scale || 1)
+      pointer.y = (event.clientY - rect.top) / (scale || 1)
       // A frozen loop still owes the user feedback for a drag.
       if (reduced) paintOnce()
     }

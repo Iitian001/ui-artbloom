@@ -1,0 +1,156 @@
+@keyframes kern-lock {
+  0%,
+  14%,
+  90%,
+  100% {
+    transform: translateX(calc((var(--i) - var(--mid)) * 0.34em))
+      rotate(calc((var(--i) - var(--mid)) * 8deg)) scale(0.72);
+    filter: blur(7px);
+    opacity: 0.18;
+  }
+  38%,
+  66% {
+    transform: translateX(0) rotate(0) scale(1);
+    filter: blur(0);
+    opacity: 1;
+  }
+  48% {
+    transform: translateX(calc((var(--i) - var(--mid)) * -0.023em)) scale(1.04);
+  }
+}
+
+/* The surface the word is designed to sit on. Size it from the parent. */
+.kinetic-kerning-stage {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  min-height: 240px;
+  container-type: inline-size;
+  overflow: hidden;
+  background: #111;
+  color: #f0ede6;
+}
+
+.kinetic-kerning {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.kinetic-kerning::before {
+  content: '';
+  position: absolute;
+  left: 8%;
+  right: 8%;
+  top: 50%;
+  height: 1px;
+  background: rgba(216, 255, 67, 0.45);
+}
+
+.kinetic-kerning > i {
+  position: relative;
+  /* Stage-relative, divided by the letter count: the word fits at any width and
+     at any length, and the scatter in `kern-lock` is in `em` so it tracks it. */
+  font-size: clamp(20px, calc(135cqw / var(--n, 7)), 132px);
+  font-weight: 800;
+  font-style: normal;
+  line-height: 0.8;
+  letter-spacing: -0.12em;
+  color: #f0ede6;
+  text-shadow: 0 18px 30px rgba(0, 0, 0, 0.55);
+  animation: kern-lock 5.8s calc(var(--i) * 70ms) cubic-bezier(0.76, 0, 0.24, 1) infinite;
+}
+
+.kinetic-kerning > i:nth-of-type(2) {
+  color: #d8ff43;
+}
+
+.kinetic-kerning > i:nth-of-type(4) {
+  color: #ff5a40;
+}
+
+.kinetic-kerning > span {
+  position: absolute;
+  left: 16px;
+  bottom: 15px;
+  color: #9a9a92;
+  font: 8px var(--font-geist-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+  letter-spacing: 0.13em;
+}
+
+/*
+ * The card variant: the 298x240 catalogue frame, at that real size and never scaled.
+ *
+ * There is almost no copy to cut here — the word *is* the composition — so the job is
+ * scale. The stage was authored against a 320px section, and dropped into a card the
+ * same clamp hands it 57px letters: a word across roughly seventy per cent of the
+ * width sitting in a 46px line box inside a 240px frame, so most of the card is empty
+ * ground with a hairline through it. Everything below is measured against the frame
+ * rather than the viewport, and can be: the stage declares `container-type:
+ * inline-size`, so every `cqw` in this file already reads 298px, and there is not a
+ * viewport unit anywhere in it.
+ *
+ * `min-height` is the only sizing the stage asserts, and there is no radius to drop —
+ * the card frame rounds and clips. No `touch-action` either, and none needed: the
+ * component has no pointer handler and no drag surface, so a swipe over the card
+ * scrolls the page as it should.
+ */
+.kinetic-kerning-stage[data-compact='true'] {
+  min-height: 0;
+  height: 100%;
+}
+
+/*
+ * Edge to edge. The 8% inset leaves a 250px rail at this width, which stops within a
+ * few pixels of the word's own ends and so reads as an underline that happens to fit —
+ * the opposite of the full-size composition, where the rail runs a long way past the
+ * letters and is clearly a guide they are being aligned to. Full bleed puts both ends
+ * back outside the word.
+ */
+.kinetic-kerning-stage[data-compact='true'] .kinetic-kerning::before {
+  left: 0;
+  right: 0;
+}
+
+/*
+ * 160cqw over the letter count instead of 135, which is a flat eighteen per cent more
+ * word across the same 298px however the face measures: 68px letters, a 54px line box,
+ * and about twenty-five pixels of ground either side of the settled word. That margin
+ * is the point of stopping at 160 — 180cqw would fill the width outright and leaves
+ * nothing for a fallback face wider than Inter to spend. The two bounds are carried
+ * over untouched; at seven letters neither one is reached in a card.
+ *
+ * The scatter is written in `em`, so it grows with the size and keeps its proportions,
+ * and it cannot be made to fit. At peak the outermost letter is thrown 1.02em clear of
+ * its slot on top of the half-word it already stands from the centre, which is outside
+ * a 298px frame at any size where the settled word is still worth reading. It leaves
+ * whole rather than being sliced down the middle, at 0.18 opacity under a 7px blur, and
+ * what the card shows is letters arriving from beyond its own edges.
+ */
+.kinetic-kerning-stage[data-compact='true'] .kinetic-kerning > i {
+  font-size: clamp(20px, calc(160cqw / var(--n, 7)), 132px);
+  /*
+   * Started 38% in — the first frame of the locked plateau — so a card mounting on
+   * scroll opens on the word snapping true instead of on three quarters of a second of
+   * blurred ghosts. The 70ms stagger is unchanged and still runs forward, so the first
+   * letter is home while the last is closing the final third of its approach.
+   */
+  animation-delay: calc(var(--i) * 70ms - 2.2s);
+}
+
+/*
+ * The tagline goes. It is a second line of copy, and a static one — nothing animates it
+ * — set at 8px, which at card width is a smudge in a corner rather than a label, and
+ * the card's own title and description already carry the words. Nothing is kept in its
+ * place: this loop needs no instruction, because it is running before the visitor has
+ * done anything to it.
+ */
+.kinetic-kerning-stage[data-compact='true'] .kinetic-kerning > span {
+  display: none;
+}

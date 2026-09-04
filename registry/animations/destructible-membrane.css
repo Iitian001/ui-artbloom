@@ -1,0 +1,170 @@
+/* The surface the membrane is designed to sit on. Size it from the parent. */
+.destructible-membrane-stage {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  min-height: 240px;
+  container-type: inline-size;
+  overflow: hidden;
+  background: #111;
+  color: #f2efe7;
+}
+
+.destructible-membrane {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #111;
+  cursor: grab;
+  touch-action: none;
+}
+
+.destructible-membrane:active {
+  cursor: grabbing;
+}
+
+.destructible-membrane:focus-visible {
+  outline: 3px solid #d8ff43;
+  outline-offset: -5px;
+}
+
+.destructible-membrane canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/*
+ * The rebuild button is scoped like every other rule here rather than shipping
+ * `.membrane-control` as a global: it is a generic name a host app could easily
+ * own too, and the markup always nests the button inside the membrane, so the
+ * descendant selector costs nothing and keeps the sheet inert outside it.
+ */
+.destructible-membrane .membrane-control {
+  position: absolute;
+  left: 17px;
+  bottom: 17px;
+  width: 42px;
+  height: 42px;
+  border: 1px solid #d8ff43;
+  background: #111;
+  cursor: pointer;
+}
+
+.destructible-membrane .membrane-control i:first-child {
+  position: absolute;
+  inset: 9px;
+  border: 1.5px solid #d8ff43;
+  border-left-color: transparent;
+  border-radius: 50%;
+}
+
+.destructible-membrane .membrane-control i:last-child {
+  position: absolute;
+  left: 7px;
+  top: 8px;
+  width: 8px;
+  height: 8px;
+  border-top: 1.5px solid #d8ff43;
+  border-left: 1.5px solid #d8ff43;
+  transform: rotate(-16deg);
+}
+
+.destructible-membrane .membrane-control:hover {
+  background: #d8ff43;
+}
+
+.destructible-membrane .membrane-control:hover i:first-child {
+  border-color: #111;
+  border-left-color: transparent;
+}
+
+.destructible-membrane .membrane-control:hover i:last-child {
+  border-color: #111;
+}
+
+.destructible-membrane .membrane-control:focus-visible {
+  outline: 3px solid #3155e7;
+  outline-offset: 3px;
+}
+
+/*
+ * The card variant: the 298x240 catalogue frame, at that real size and never scaled.
+ *
+ * There is no copy to drop here — this stage was never a marketing section, it was only
+ * ever the sheet — so the composition work is on the other side of the canvas and lives
+ * in the .tsx: `CARD_PAD` cuts the 30/42 border of bare backing that left the membrane
+ * 156 of the 240 pixels, and `CARD_REACH` brings the damage radii down to the smaller
+ * lattice pitch. What is left for CSS is the frame's own sizing, the touch gesture, and
+ * the two pieces of chrome sitting on top of the sheet.
+ */
+.destructible-membrane-stage[data-compact='true'] {
+  min-height: 0;
+  height: 100%;
+}
+
+/*
+ * `pan-y`, not the `none` a drag surface wants: full-bleed and swallowing the vertical
+ * gesture, this card would trap the page in a scrolling grid on a phone. Tearing is a
+ * sideways pull anyway — wear is weighted by how squarely a link crosses the pull, so a
+ * horizontal drag is the one that breaks the most of them — and that gesture survives
+ * the trade intact.
+ */
+.destructible-membrane-stage[data-compact='true'] .destructible-membrane {
+  touch-action: pan-y;
+}
+
+/*
+ * 42px of lime in the corner of a 298x240 frame is a control arguing with the mechanism,
+ * so the whole glyph comes down by 0.76 — box, ring, arrowhead and inset together, which
+ * is why every number moved and not just the box. 32px clears the 24px minimum target
+ * size, not the comfortable 44px, and in a card that is the right way round: it is the
+ * only way back to an intact sheet once the card has torn itself, so it has to stay, and
+ * it is a detail rather than the subject, so it has to be small. The 1.5px strokes are
+ * left alone — scaled with the rest they would land on 1.14 and go soft.
+ */
+.destructible-membrane-stage[data-compact='true'] .membrane-control {
+  left: 10px;
+  bottom: 10px;
+  width: 32px;
+  height: 32px;
+}
+
+.destructible-membrane-stage[data-compact='true'] .membrane-control i:first-child {
+  inset: 7px;
+}
+
+.destructible-membrane-stage[data-compact='true'] .membrane-control i:last-child {
+  left: 5px;
+  top: 6px;
+  width: 6px;
+  height: 6px;
+}
+
+/*
+ * The one line of text, and it earns the room: the sheet holds still until something
+ * pulls on it, and the grab cursor that says so on a desktop says nothing on a phone.
+ * Bottom right, on the rebuild button's own centre line — 20px up plus half of 11 is
+ * the 26 a 32px box at inset 10 centres on — and clear of it across the card: that box
+ * ends 42px in from the left edge, and the type takes about 90 of the 298 back from the
+ * right. Absolute, so it takes no grid row from the sheet; deaf to the pointer, so a
+ * drag that starts on the words still takes hold of the surface underneath. The
+ * shadow is what keeps it legible on both grounds it can end up over — the grain at
+ * rest, the orange backing once the corner beneath it has torn away.
+ */
+.destructible-membrane-stage[data-compact='true'] .destructible-membrane-hint {
+  position: absolute;
+  inset: auto 12px 20px auto;
+  margin: 0;
+  font: 500 0.6875rem/1 ui-monospace, "SFMono-Regular", Menlo, monospace;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(242, 239, 231, 0.74);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+  pointer-events: none;
+}

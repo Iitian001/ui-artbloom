@@ -59,7 +59,9 @@ export const TEMPLATE_CATEGORIES: Category[] = [
 
 export const ANIMATION_CATEGORIES: Category[] = [
   c("animations", "Text Effects", "text"),
+  c("animations", "Page Transitions", "transitions"),
   c("animations", "Backgrounds", "backgrounds"),
+  c("animations", "Gradients", "gradients"),
   c("animations", "Loaders", "loaders"),
   c("animations", "Marquees", "marquees"),
   c("animations", "Particles", "particles"),

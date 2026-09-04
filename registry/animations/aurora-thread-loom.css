@@ -1,0 +1,207 @@
+@keyframes loom-wave {
+  0%,
+  100% {
+    transform: translateY(calc((var(--i) - 24) * -0.9px)) scaleY(0.22) rotate(0);
+    opacity: 0.35;
+    filter: hue-rotate(0);
+  }
+  50% {
+    transform: translateY(calc((var(--i) - 24) * 1.8px)) scaleY(1)
+      rotate(calc((var(--i) - 24) * 0.35deg));
+    opacity: 1;
+    filter: hue-rotate(calc(var(--i) * 5deg));
+  }
+}
+
+/* The surface the loom is designed to sit on. Size it from the parent. */
+.aurora-thread-loom-stage {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  min-height: 240px;
+  container-type: inline-size;
+  overflow: hidden;
+  background: #030913;
+  color: white;
+}
+
+.aurora-thread-loom {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+
+.aurora-thread-loom::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 50% 55%, rgba(49, 85, 231, 0.32), transparent 58%),
+    linear-gradient(
+      90deg,
+      transparent 49.8%,
+      rgba(255, 255, 255, 0.12) 50%,
+      transparent 50.2%
+    );
+}
+
+.aurora-thread-loom > div {
+  position: relative;
+  /* 540px is the design width; below a ~590px stage the loom narrows with it
+     rather than overflowing, since 49 threads cannot be squeezed by `flex` alone. */
+  width: min(540px, 92cqw);
+  height: 330px;
+  display: flex;
+  align-items: center;
+  /* At the design width this clamps to the 5px it was drawn with. */
+  gap: clamp(1.5px, 0.95cqw, 5px);
+  filter: drop-shadow(0 0 18px rgba(85, 255, 204, 0.25));
+}
+
+.aurora-thread-loom div > i {
+  flex: 1;
+  height: 100%;
+  /* Only reached on a very narrow stage; `flex` keeps them ~6px when there is room. */
+  min-width: 1px;
+  border-radius: 50%;
+  background: linear-gradient(
+    180deg,
+    transparent,
+    #45f0c0 28%,
+    #3155e7 52%,
+    #b865ff 73%,
+    transparent
+  );
+  transform-origin: center;
+  animation: loom-wave 5.4s calc(var(--i) * -75ms) cubic-bezier(0.45, 0, 0.55, 1) infinite;
+}
+
+.aurora-thread-loom div > i:nth-child(even) {
+  background: linear-gradient(
+    180deg,
+    transparent,
+    #d8ff43 24%,
+    #35c9ff 55%,
+    #ff5a9e 78%,
+    transparent
+  );
+  animation-direction: reverse;
+}
+
+.aurora-thread-loom > b {
+  position: absolute;
+  z-index: 3;
+  font-size: clamp(22px, 22cqw, 118px);
+  letter-spacing: -0.08em;
+  mix-blend-mode: difference;
+}
+
+.aurora-thread-loom > span {
+  position: absolute;
+  left: 18px;
+  bottom: 16px;
+  color: #79908e;
+  font: 8px var(--font-geist-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+  letter-spacing: 0.13em;
+}
+
+/*
+ * Card variant: the catalogue frame, at real pixels and never scaled. 298x240 in the
+ * main grids, and the frame asks for 200px on a profile, in bookmarks and in the
+ * related strip, 260px in the landing lists — so nothing below is allowed to assume a
+ * height. Widths run about 285-360px across the breakpoints.
+ *
+ * Most of this loom already answers to its container — the sheet's width, the gap
+ * between threads and the wordmark are all `cqw`, and the wash and the centre seam are
+ * percentages — so the compact block is short on purpose. What breaks at this size is
+ * the geometry drawn for the 320px stage: a 330px thread row, and a wordmark scaled to
+ * lead a hero. Both come down. The 8px spec strip goes entirely; the keyframes and the
+ * comb are untouched, and so is the 18px bloom — relative to the thread pitch it
+ * reaches about twice as far here as at design width (18px over a 5.7px pitch against
+ * 11.3px), which turns the comb hazier and more sheet-like. For a tile of an aurora
+ * that is the right trade, but it is the one call here worth checking in a browser.
+ */
+
+/*
+ * The 240px floor goes first, and it is not tidying: at the 200px frames above, a
+ * stage held open to 240px inside an `overflow: hidden` box loses 20px off each end of
+ * the loom instead of fitting it. The height comes from the frame, as it already did.
+ * Nothing to unround — the stage sets no radius of its own and the card frame clips
+ * its own corners.
+ */
+.aurora-thread-loom-stage[data-compact='true'] {
+  min-height: 0;
+  height: 100%;
+}
+
+/*
+ * No `touch-action` line, and none wanted: the loom has no pointer handler, no hover
+ * branch and no drag surface, so a full-bleed tile of it never takes the vertical
+ * gesture and a touch on the card scrolls the page. Declaring `pan-y` here would only
+ * cost the card its pinch-zoom.
+ */
+
+/*
+ * 80% of the frame — 192px in a 240px card — down from the 330px the row was drawn at.
+ * The row height is only half of what decides the fit: each thread is also translated
+ * by `(var(--i) - 24) * 1.8px` at the peak of its own cycle, 43px for thread 0 and 41px
+ * for thread 47, so the threads at the ends of the comb cross the clip whatever the row
+ * does. What the fraction buys is how much of one gets taken.
+ *
+ * At 192px centred in 240px, thread 0 loses 19px, a tenth of its own length. On the
+ * shipped 320px stage the same thread loses 48px of 330px — 15% — and the row there
+ * overhangs the frame by 5px at each end on its own, so at the peak of its cycle every
+ * thread is cut; here it is threads 0-10 and 38-47. So the card takes less off the swell
+ * than the composition it was approved at, not more. 90% is where the two fractions
+ * meet; 80% leaves 24px of air above and below the row at rest, where the keyframe holds
+ * the sheet at `scaleY(0.22)`.
+ *
+ * And what the clip takes is the tapered end of a thread rather than its body:
+ * `border-radius: 50%` makes each `i` an ellipse, ~60% of full width at the height of
+ * the cut, and the gradient is still climbing out of `transparent` there — the first
+ * colour stop sits at 28%, so a cut at 10% lands near 0.4 alpha. The `-75ms` per-thread
+ * stagger spreads the peaks along the comb, so this is a travelling event at the two
+ * ends and never a straight cut across the sheet.
+ *
+ * Left at 330px, by contrast, thread 0 would be cut 88px into a 240px frame — 27% of
+ * its length, which is the far edge of that 28% ramp and effectively solid colour.
+ *
+ * A percentage and not `cqh`: the stage is an `inline-size` container, so `cqh` has no
+ * block-axis container to resolve against here. A fraction also follows the frame,
+ * which is the thing that varies — 200px, 240px, 260px depending on the surface. At the
+ * 200px end the cut is back to the stage's own 15%, which is the worst it gets.
+ */
+.aurora-thread-loom-stage[data-compact='true'] .aurora-thread-loom > div {
+  height: 80%;
+}
+
+/*
+ * ~42px in a 298px card. The clamp already measures the right container — `22cqw` is
+ * 66px here, not the 118px it reaches on a hero — so nothing overflows; what is wrong is
+ * the share of the frame it takes. Six caps at -0.08em run roughly 3.7x the font size in
+ * the inherited sans, so 22cqw sets a word about 240px wide inside 298px and the mark
+ * stops sitting on the sheet and becomes a lid over it. On any stage wide enough to reach
+ * the 118px ceiling the same word takes a third to a half of the width and the threads
+ * are what you see first; 14cqw puts that ratio back — about 155px of 298 — and stays a
+ * fraction of the container, so it tracks the real card widths rather than the one
+ * nominal 298.
+ */
+.aurora-thread-loom-stage[data-compact='true'] .aurora-thread-loom > b {
+  font-size: 14cqw;
+}
+
+/*
+ * The spec strip goes. "LIGHT LOOM / 048 THREADS" restates the card's own title and
+ * description a few pixels above them, and the one line a card may keep is meant for
+ * an instruction — for something the visitor has to hover or drag to see move. This
+ * loom asks nothing of anyone, so there is nothing to instruct, and 8px of mono at the
+ * bottom-left of a tile this size is debris.
+ */
+.aurora-thread-loom-stage[data-compact='true'] .aurora-thread-loom > span {
+  display: none;
+}

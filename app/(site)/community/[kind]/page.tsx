@@ -91,10 +91,10 @@ function SectionHead({ title, subtitle }: { title: string; subtitle?: string }) 
  * This used to be five or six horizontal rails — Featured, Just added, Most
  * installed, then one per category, then a grid of everything. On a catalogue
  * this size that put the same card on the page three and four times over, and
- * each rail carried about 1800px of sideways scroll on a 1340px window: fourteen
- * animations, of which four were visible and ten were behind a gesture. A grid
- * shows all fourteen at once and the page scrolls the one direction a page is
- * supposed to.
+ * each rail carried sideways scroll far past the window: twenty-six animations
+ * at about 3300px of track, of which four were visible and the rest were behind
+ * a gesture. A grid shows all twenty-six at once and the page scrolls the one
+ * direction a page is supposed to.
  *
  * Categories are still navigable — `FilterChips` above this links every one of
  * them to its own route. They just no longer each get a rail of cards that are

@@ -1,0 +1,208 @@
+@keyframes shutter-split {
+  0%,
+  18%,
+  90%,
+  100% {
+    transform: scaleY(1);
+  }
+  43%,
+  68% {
+    transform: scaleY(0);
+  }
+}
+
+@keyframes open-focus {
+  0%,
+  24%,
+  86%,
+  100% {
+    letter-spacing: -0.08em;
+    scale: 0.75;
+    filter: blur(8px);
+    opacity: 0.1;
+  }
+  44%,
+  67% {
+    letter-spacing: 0.02em;
+    scale: 1;
+    filter: blur(0);
+    opacity: 1;
+  }
+}
+
+/* The surface the shutters are designed to sit on. Size it from the parent. */
+.split-shutter-stage {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  min-height: 240px;
+  container-type: inline-size;
+  overflow: hidden;
+  background: #f0ede6;
+}
+
+.split-shutter {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background: #d8ff43;
+}
+
+.split-shutter > b {
+  /* Stage-relative and divided by the letter count, so a long word still fits. */
+  font-size: clamp(20px, calc(135cqw / var(--n, 4)), 132px);
+  letter-spacing: -0.08em;
+}
+
+.split-shutter > div {
+  position: absolute;
+  inset: 0;
+  display: flex;
+}
+
+.split-shutter i {
+  position: relative;
+  width: 11.111%;
+  height: 100%;
+  overflow: hidden;
+  border-right: 1px solid rgba(240, 237, 230, 0.35);
+  background: #111;
+  transform-origin: top;
+  animation: shutter-split 5s calc(var(--i) * 0.055s) cubic-bezier(0.76, 0, 0.24, 1)
+    infinite;
+}
+
+.split-shutter i:nth-child(even) {
+  transform-origin: bottom;
+  background: #3155e7;
+}
+
+.split-shutter i > span {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  color: #f0ede6;
+  font: 700 10px var(--font-geist-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+  letter-spacing: 0.2em;
+  writing-mode: vertical-rl;
+  transform: translate(-50%, -50%);
+}
+
+.split-shutter > em {
+  position: absolute;
+  z-index: 4;
+  left: 16px;
+  bottom: 15px;
+  font: 8px var(--font-geist-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+  font-style: normal;
+  letter-spacing: 0.1em;
+  mix-blend-mode: difference;
+  color: white;
+}
+
+.split-shutter {
+  background: radial-gradient(circle, #efff9c, #d8ff43 60%, #a6bd32);
+}
+
+.split-shutter > b {
+  text-shadow: 0 18px 30px rgba(17, 17, 15, 0.2);
+  animation: open-focus 5s ease-in-out infinite;
+}
+
+.split-shutter i {
+  box-shadow: 8px 0 18px rgba(0, 0, 0, 0.18);
+  filter: saturate(1.2);
+}
+
+.split-shutter i:nth-child(3n) {
+  background: #ff5a40;
+}
+
+/*
+ * The card variant: the 298x240 catalogue frame, at that real size and never scaled.
+ *
+ * There is no prose here to drop. The composition is nine slats over one word, the slats
+ * are already `inset: 0` and the stage carries no padding, so the mechanism has the whole
+ * frame the moment the stage stops asking for 240px of its own height. What did not come
+ * down with the container query is everything else — the word's drop shadow, the slats' cast
+ * shadow and the corner marker's 8px, all chosen in absolute pixels against a stage several
+ * times this wide.
+ *
+ * The word is the defect. `135cqw / 4` is 100px at a 298px container, and `open-focus`
+ * tracks it out to +0.02em at the top of the reveal: four bold caps at 100px with tracking
+ * on come to within a pixel or two of 298 across, so both ends sit on the frame edge and
+ * `overflow: hidden` is what decides where the O starts. This is arithmetic off the advance
+ * widths rather than a measured box — see the `> b` rule below for the number it was moved
+ * to, and it stays a `cqw` clamp so a longer `word` still divides itself down. Its colour is
+ * a second defect on the same element, and that one is not about this frame at all; the
+ * `> b` rule carries both.
+ *
+ * No `border-radius: 0` line, because this stage never set one and the card frame rounds
+ * and clips already. No `touch-action` either, and no `tabIndex` in the component: the
+ * whole thing is a CSS loop over nine `<i>` elements with no pointer handler and nothing
+ * focusable inside it, so a finger on the card scrolls the page as it should and `pan-y`
+ * would only cost the card its pinch-zoom. Nothing has to be hovered or pressed for this
+ * to move, which is why no instruction line was kept: the first slats part 0.9s after the
+ * card mounts, on their own.
+ */
+.split-shutter-stage[data-compact='true'] {
+  min-height: 0;
+  height: 100%;
+}
+
+/*
+ * 108cqw is 80px at a 298px container: the word comes to roughly four fifths of the frame
+ * at its widest keyframe, with some 30px of lime past each end, and its line box takes 97px
+ * of the 240 instead of 120. The 20px floor and the 132px cap are the shipped ones and
+ * neither binds here — the middle term governs for any word of three letters or more, and a
+ * one or two letter word capped at 132px still clears both axes of this frame.
+ *
+ * 18px of drop under the 132px word the cap describes is a lift; under an 80px one it is a
+ * second grey word below the first. The same 0.14 and 0.23 of the size are 11px and 18px.
+ *
+ * The ink is pinned to the slats' own #111 instead of being left to inherit. Nothing in this
+ * file sets a colour on the word, so it takes the site's `--foreground` — and the site's
+ * default theme is dark, which puts near-white type on a slab that is this same lime in both
+ * themes: about 1.2:1, a ghost of a word in the one frame whose entire mechanism exists to
+ * reveal it. #111 is the colour the composition was drawn for; the shipped drop shadow is
+ * already `rgba(17, 17, 15, 0.2)`. Pinned here and not on `.split-shutter > b`, which would
+ * be an edit to the shipped stage rather than an addition for the card.
+ */
+.split-shutter-stage[data-compact='true'] .split-shutter > b {
+  font-size: clamp(20px, calc(108cqw / var(--n, 4)), 132px);
+  text-shadow: 0 11px 18px rgba(17, 17, 15, 0.2);
+  color: #111;
+}
+
+/*
+ * Nine slats divide 298px into 33px each. An 8px offset with half of an 18px blur showing
+ * past it throws the shadow 17px beyond a slat's own right edge — half the width of its
+ * neighbour, nine times over, which is a grey wash where the subject is nine separately lit
+ * edges parting in sequence. Held to the same fraction of the narrower slat it is 3px and
+ * 6px: the seam still reads as depth and it stops before the next label.
+ *
+ * The labels themselves are left alone. They are 10px absolute at any stage width, and a
+ * 33px slat holds a 10px vertical column with room either side; `SHUTTER` runs 56px of the
+ * slat's 240 with the tracking, so it stays the printed mark it is meant to be.
+ */
+.split-shutter-stage[data-compact='true'] .split-shutter i {
+  box-shadow: 3px 0 6px rgba(0, 0, 0, 0.18);
+}
+
+/*
+ * The one piece of text kept, and it is a marker rather than a caption: it never meets the
+ * word — 90px along the bottom edge, with the word's line box stopping some 40px above it —
+ * and the difference blend goes on taking its colour off whichever slat is beneath it, so it
+ * is legible against black, blue, red and lime in turn. Legible except for the size: 8px in a
+ * frame this small is a smudge rather than a mark, and 10px is the floor for mono. Its 16px
+ * and 15px insets are left as they are: read against 298px rather than a full-width stage
+ * they are already a corner inset rather than a hairline.
+ */
+.split-shutter-stage[data-compact='true'] .split-shutter > em {
+  font-size: 10px;
+}
