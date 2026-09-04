@@ -64,7 +64,7 @@ export function GET() {
       meta: {
         type: "object",
         properties: {
-          kind: { type: "string", enum: ["templates", "animations", "components"] },
+          kind: { type: "string", enum: ["templates", "animations"] },
           categories: { type: "array", items: { type: "string" } },
           docs: { type: "string", format: "uri" },
         },

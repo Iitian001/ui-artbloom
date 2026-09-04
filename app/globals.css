@@ -119,6 +119,17 @@
   body {
     @apply bg-background text-foreground antialiased;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    /* Nothing on this site is meant to scroll sideways. `clip` rather than
+       `hidden` on purpose: `hidden` would make the body a scroll container and
+       break the sticky header, while `clip` clips without scrolling and leaves
+       `position: sticky` intact.
+
+       This is a backstop, not the layout. The catalogue used to be built from
+       horizontally scrolling rails, and an absolutely positioned `sr-only` label
+       inside one of them escaped its clip and handed the page a thousand pixels
+       of empty gutter. The rails are gone — every listing is a grid now — and
+       this line stays so that one stray absolute child can never do it again. */
+    overflow-x: clip;
   }
   ::selection {
     @apply bg-foreground/15;

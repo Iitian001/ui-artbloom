@@ -9,6 +9,11 @@
       "autoPort": false
     },
     {
+      "name": "web-attach",
+      "url": "http://localhost:3210",
+      "port": 3210
+    },
+    {
       "name": "consumer-verify",
       "url": "http://localhost:3212",
       "port": 3212

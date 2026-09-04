@@ -1,12 +1,11 @@
 {
   "name": "ui.artbloom",
   "version": "0.1.0",
-  "description": "Install templates, animations, and components from ui.artbloom straight into your project.",
+  "description": "Install templates and animations from ui.artbloom straight into your project.",
   "keywords": [
     "ui",
     "templates",
     "animations",
-    "components",
     "react",
     "nextjs",
     "tailwindcss",

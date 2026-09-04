@@ -26,6 +26,12 @@ export type MarqueeProps = {
  * by exactly one copy's width, so the seam never lands mid-frame.
  *
  * Requires the `marquee-x` / `marquee-y` keyframes in your global stylesheet.
+ *
+ * Under `prefers-reduced-motion` the track is paused rather than removed. It
+ * holds at 0%, which is the position the content would occupy with no animation
+ * at all, so nothing moves and nothing is hidden. The pause is a class and the
+ * animation is an inline style, so they set different properties and neither has
+ * to out-specify the other.
  */
 export function Marquee({
   children,
@@ -53,6 +59,7 @@ export function Marquee({
           aria-hidden={i > 0}
           className={cn(
             "flex shrink-0 items-center justify-around",
+            "motion-reduce:[animation-play-state:paused]",
             vertical ? "flex-col" : "flex-row",
             pauseOnHover && "group-hover:[animation-play-state:paused]",
           )}
@@ -71,18 +78,30 @@ export function Marquee({
 
       {fade && (
         <>
+          {/*
+           * The fade is a share of the track, not a fixed 96px. At hero width the two
+           * behave the same — 12% of 1340px clamps straight back to 6rem — but a
+           * marquee dropped into a sidebar or a 298px card had 192px of gradient over
+           * 296px of content, so two thirds of every name was under a vignette and the
+           * rest read as clipped. A percentage keeps the edge soft at any width the
+           * component is actually given.
+           */}
           <div
             aria-hidden
             className={cn(
               "pointer-events-none absolute from-background to-transparent",
-              vertical ? "inset-x-0 top-0 h-24 bg-gradient-to-b" : "inset-y-0 left-0 w-24 bg-gradient-to-r",
+              vertical
+                ? "inset-x-0 top-0 h-[clamp(1.5rem,12%,6rem)] bg-gradient-to-b"
+                : "inset-y-0 left-0 w-[clamp(1.5rem,12%,6rem)] bg-gradient-to-r",
             )}
           />
           <div
             aria-hidden
             className={cn(
               "pointer-events-none absolute from-background to-transparent",
-              vertical ? "inset-x-0 bottom-0 h-24 bg-gradient-to-t" : "inset-y-0 right-0 w-24 bg-gradient-to-l",
+              vertical
+                ? "inset-x-0 bottom-0 h-[clamp(1.5rem,12%,6rem)] bg-gradient-to-t"
+                : "inset-y-0 right-0 w-[clamp(1.5rem,12%,6rem)] bg-gradient-to-l",
             )}
           />
         </>

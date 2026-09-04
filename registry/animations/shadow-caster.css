@@ -1,0 +1,195 @@
+/*
+ * No `border` on the stage, deliberately: the canvas is `inset: 0`, which positions
+ * it against the padding box, so a border would offset the canvas from the box the
+ * card rects are measured against and every shadow would sit a pixel off its card.
+ * The hairline is an inset shadow instead, which takes no space.
+ */
+.shadow-caster-stage {
+  position: relative;
+  width: 100%;
+  min-height: 30rem;
+  overflow: hidden;
+  border-radius: 0.75rem;
+  background: #090b10;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+  color: #f4efe6;
+}
+
+.shadow-caster-floor {
+  position: absolute;
+  inset: 0;
+  touch-action: none;
+}
+
+.shadow-caster-floor canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* Transparent to the pointer all the way down: the cards are copy, not controls, and
+   the light has to keep following the pointer while it passes over one. */
+.shadow-caster-face {
+  position: relative;
+  padding: 2.75rem 2.5rem 3rem;
+  pointer-events: none;
+}
+
+.shadow-caster-eyebrow {
+  margin: 0 0 0.875rem;
+  font: 500 0.6875rem/1 ui-monospace, "SFMono-Regular", Menlo, monospace;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(255, 226, 178, 0.7);
+}
+
+.shadow-caster-face h2 {
+  margin: 0 0 2.25rem;
+  max-width: 30rem;
+  font-size: clamp(1.5rem, 2.8vw, 2.125rem);
+  font-weight: 500;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+  color: rgba(255, 250, 242, 0.9);
+}
+
+.shadow-caster-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  gap: 1.125rem;
+  max-width: 44rem;
+}
+
+/*
+ * The card is the occluder. Opaque enough to read as a solid object standing off the
+ * floor — a translucent one would show the light passing through the thing casting
+ * the shadow, which is the one contradiction the effect cannot survive.
+ */
+.shadow-caster-card {
+  padding: 1.125rem 1.25rem 1.25rem;
+  border-radius: 0.625rem;
+  background: linear-gradient(170deg, #1b1f28 0%, #14171e 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 245, 226, 0.08);
+}
+
+.shadow-caster-card h3 {
+  margin: 0 0 0.4375rem;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: #f7f2e8;
+}
+
+.shadow-caster-card p {
+  margin: 0;
+  font-size: 0.8125rem;
+  line-height: 1.55;
+  color: rgba(244, 239, 230, 0.52);
+}
+
+.shadow-caster-hint {
+  position: absolute;
+  right: 0.875rem;
+  bottom: 0.75rem;
+  margin: 0;
+  font: 500 0.6875rem/1 ui-monospace, "SFMono-Regular", Menlo, monospace;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(244, 239, 230, 0.26);
+  pointer-events: none;
+}
+
+/*
+ * Nothing to switch off here. With the loop stopped the light stays parked and the
+ * frame that gets painted is the full fourteen-sample solution — the penumbrae are
+ * present and correct, they simply do not move. That is the whole of the effect that
+ * is not motion, and it is the part worth keeping.
+ */
+@media (prefers-reduced-motion: reduce) {
+  .shadow-caster-floor {
+    cursor: default;
+  }
+}
+
+/*
+ * The 298x240 catalogue card. The copy comes off and the mechanism takes the whole box:
+ * the light parks 31px down at the top centre, the four occluders sit in one row across
+ * the middle, and the bottom 90px is open floor for the penumbrae to fan across. No
+ * `vw` anywhere below — the card is 298px wide and the viewport is 1340.
+ */
+.shadow-caster-stage[data-compact='true'] {
+  min-height: 0;
+  height: 100%;
+  /* The card frame rounds and clips already. */
+  border-radius: 0;
+  /* And draws its own border: a square hairline inside a rounded clip loses its corners. */
+  box-shadow: none;
+}
+
+/*
+ * `pan-y`, not `none`. The floor is the full-bleed pointer surface, and one that eats
+ * vertical touches traps the page in a scrolling grid of cards — the worse failure. The
+ * light follows the pointer's position rather than a gesture axis, so a horizontal drag
+ * still walks it the full width of the box and the shadows swing with it.
+ */
+.shadow-caster-stage[data-compact='true'] .shadow-caster-floor {
+  touch-action: pan-y;
+}
+
+/*
+ * The occluders are the mechanism here — there is no penumbra without something to cast
+ * one — so the text layer is not moved off them, it is emptied and they stay. The
+ * padding puts the row 110px down, which is 79px below the parked light: far enough that
+ * each shadow starts crisp under its own card, close enough that the fan still has 90px
+ * of floor to soften over. Much nearer and the whole floor is umbra; much further and
+ * the shadows have nowhere to go.
+ */
+.shadow-caster-stage[data-compact='true'] .shadow-caster-face {
+  padding: 6.875rem 0.875rem 0;
+}
+
+/* Four across at this width, explicitly: `auto-fit` with a 15rem minimum resolves to one
+   270px column here, and four rows do not fit in 240px. */
+.shadow-caster-stage[data-compact='true'] .shadow-caster-grid {
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.625rem;
+  max-width: none;
+}
+
+/*
+ * 60x40 tiles. An explicit height because the copy inside them is gone and there is
+ * nothing left to give them one, and `padding: 0` so 40px is 40px under either
+ * `box-sizing`. The radius comes down with the box for a reason beyond taste: the shadow
+ * volume is built from the element's bounding rect, so a corner rounded much more than
+ * this is a corner that visibly disagrees with its own shadow.
+ */
+.shadow-caster-stage[data-compact='true'] .shadow-caster-card {
+  height: 2.5rem;
+  padding: 0;
+  border-radius: 0.375rem;
+}
+
+/* The heading is a `clamp()` with a `vw` term, which reads the viewport and not this box.
+   The card titles would be four more lines of type at five pixels, and the bodies are the
+   paragraph. What this card is showing is the light, and the card's own title link
+   underneath already says which item it belongs to. */
+.shadow-caster-stage[data-compact='true'] .shadow-caster-eyebrow,
+.shadow-caster-stage[data-compact='true'] .shadow-caster-face h2,
+.shadow-caster-stage[data-compact='true'] .shadow-caster-card h3,
+.shadow-caster-stage[data-compact='true'] .shadow-caster-card p {
+  display: none;
+}
+
+/*
+ * The one line that stays, on the bottom edge and well clear of the tiles, which end at
+ * 150px. It is the hint and not the eyebrow because this mechanism holds perfectly still
+ * until a pointer arrives — the light parks and stays parked — so "move the light" is
+ * what tells a visitor the card is not a photograph. Still at its own fixed 0.6875rem,
+ * and still deaf to the pointer, so a drag across it takes hold of the floor underneath.
+ */
+.shadow-caster-stage[data-compact='true'] .shadow-caster-hint {
+  inset: auto 0 0 0;
+  padding: 0 0.75rem 0.75rem;
+  text-align: right;
+}

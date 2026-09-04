@@ -1,9 +1,9 @@
 # ui.artbloom
 
-Copy React templates, animations, and components out of [ui.artbloom](https://ui.artbloom.tech) and into your project. One command, plain files, no runtime dependency on this CLI.
+Copy React templates and animations out of [ui.artbloom](https://ui.artbloom.tech) and into your project. One command, plain files, no runtime dependency on this CLI.
 
 ```bash
-npx ui.artbloom add aurora-background
+npx ui.artbloom add liquid-nav
 ```
 
 ## What it does
@@ -15,12 +15,12 @@ It fetches the items you name from the registry, prints the whole plan — every
 ```bash
 npx ui.artbloom list                    # the whole catalogue
 npx ui.artbloom list --kind animations  # one kind
-npx ui.artbloom info aurora-background  # what it would write. writes nothing
-npx ui.artbloom add aurora-background   # write it. or several
+npx ui.artbloom info liquid-nav          # what it would write. writes nothing
+npx ui.artbloom add liquid-nav           # write it. or several
 npx ui.artbloom init                    # record your paths so you stop passing them
 ```
 
-Installed as a dependency, the executable is `artbloom` — `npm i -D ui.artbloom`, then `npx artbloom add aurora-background`, or plain `artbloom` inside a package.json script. Both of those put `node_modules/.bin` on PATH; typing `artbloom` straight into a shell does not find it. The names differ on purpose: a dot in an executable name is unrunnable on Windows, because `cmd.exe` reads everything after the last dot as a file extension and so never finds the `.cmd` shim.
+Installed as a dependency, the executable is `artbloom` — `npm i -D ui.artbloom`, then `npx artbloom add liquid-nav`, or plain `artbloom` inside a package.json script. Both of those put `node_modules/.bin` on PATH; typing `artbloom` straight into a shell does not find it. The names differ on purpose: a dot in an executable name is unrunnable on Windows, because `cmd.exe` reads everything after the last dot as a file extension and so never finds the `.cmd` shim.
 
 ## Flags
 
@@ -61,7 +61,7 @@ Optional. `init` writes `ui.artbloom.json`, and the CLI guesses the same values 
 One HTTP request per item, sent after an `add` that wrote your files and exited `0`. It goes to `<registry>/api/track/install` and carries this and nothing else:
 
 ```json
-{ "name": "aurora-background", "version": "0.1.0", "runner": "npm" }
+{ "name": "liquid-nav", "version": "0.1.0", "runner": "npm" }
 ```
 
 The item you asked for, this CLI's version, and which package manager your project uses. One request per name you typed; the registry dependencies an item pulls in are not reported. There are no file paths, no directory or project names, no username, no hostname, no machine or session id — nothing that identifies you and no id of any kind, so two installs from the same machine are indistinguishable in the body. The request does reach the host with your IP address, as every HTTP request does, including the one that fetched the item a second earlier.
@@ -93,7 +93,7 @@ React 19 and Node 22.12 or newer. Beyond that, each item declares what it needs 
 Every item is also a valid shadcn registry item:
 
 ```bash
-npx shadcn@latest add https://ui.artbloom.tech/r/aurora-background.json
+npx shadcn@latest add https://ui.artbloom.tech/r/liquid-nav.json
 ```
 
 Assets are the exception: `cinematic-supercar` declares its 15MB of models and audio in a field only this CLI reads, so `shadcn` writes the code and downloads none of the media.

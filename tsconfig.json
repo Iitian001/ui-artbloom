@@ -28,8 +28,7 @@
       ],
       "@/components/ui/*": [
         "./components/ui/*",
-        "./registry/animations/*",
-        "./registry/components/*"
+        "./registry/animations/*"
       ],
       "@/hooks/*": [
         "./hooks/*",

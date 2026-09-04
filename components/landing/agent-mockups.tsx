@@ -60,23 +60,28 @@ export function AgentMockups() {
             <TitleBar>~/acme/website</TitleBar>
             <div className="flex-1 space-y-2 p-3.5 font-mono text-[12px] leading-relaxed">
               {/*
-                A mockup, but not a fictional one: the item, both targets and the
-                line counts are what `add aurora-thread-loom` really writes. It
+                A mockup, but not a fictional one: the item, all three targets and
+                the line counts are what `add morphogen-wordmark` really writes. It
                 ships its own stylesheet rather than keyframes, so nothing here
-                claims to touch the project's globals.css.
+                claims to touch the project's globals.css, and the shared canvas
+                hook is a real third file rather than a hidden dependency.
               */}
               <p>
                 <span className="text-muted-foreground">$</span> npx {brand.npmPackage} add
-                aurora-thread-loom
+                morphogen-wordmark
               </p>
               <p className="text-muted-foreground">✔ Resolved 1 item, 0 dependencies to add</p>
               <p className="text-emerald-500">
-                ✔ components/ui/aurora-thread-loom.tsx
-                <span className="text-muted-foreground"> +28</span>
+                ✔ components/ui/morphogen-wordmark.tsx
+                <span className="text-muted-foreground"> +400</span>
               </p>
               <p className="text-emerald-500">
-                ✔ components/ui/aurora-thread-loom.css
-                <span className="text-muted-foreground"> +111</span>
+                ✔ components/ui/morphogen-wordmark.css
+                <span className="text-muted-foreground"> +166</span>
+              </p>
+              <p className="text-emerald-500">
+                ✔ hooks/use-canvas-scene.ts
+                <span className="text-muted-foreground"> +265</span>
               </p>
               <p className="text-muted-foreground">
                 Done in 1.2s — written to your components path.
@@ -101,9 +106,10 @@ export function AgentMockups() {
               </div>
               <div className="flex-1 space-y-0.5 overflow-hidden p-3.5 font-mono text-[11.5px] leading-relaxed">
                 {/*
-                  The loom paints its own surface and takes no children, so it goes
-                  in as a sibling inside a sized box — the stage fills its parent.
-                  Three lines in for one out, which is what the hunk header says.
+                  The wordmark paints its own surface and takes no children, so it
+                  goes in as a sibling inside a sized box — the stage fills its
+                  parent. Three lines in for one out, which is what the hunk header
+                  says.
                 */}
                 <p className="text-muted-foreground">@@ -18,7 +18,9 @@</p>
                 <p className="rounded bg-red-500/10 px-1.5 text-red-400">- &lt;OldHero /&gt;</p>
@@ -111,7 +117,7 @@ export function AgentMockups() {
                   + &lt;div className=&quot;relative h-[32rem]&quot;&gt;
                 </p>
                 <p className="rounded bg-emerald-500/10 px-1.5 text-emerald-500">
-                  + &nbsp;&lt;AuroraThreadLoom /&gt;
+                  + &nbsp;&lt;MorphogenWordmark /&gt;
                 </p>
                 <p className="rounded bg-emerald-500/10 px-1.5 text-emerald-500">
                   + &lt;/div&gt;
@@ -135,8 +141,8 @@ export function AgentMockups() {
             <div className="flex-1 space-y-2.5 p-3.5 text-[12.5px]">
               <p className="text-muted-foreground">Worked for 14s</p>
               {[
-                "created components/ui/aurora-thread-loom.tsx",
-                "created components/ui/aurora-thread-loom.css",
+                "created components/ui/morphogen-wordmark.tsx",
+                "created components/ui/morphogen-wordmark.css",
                 "created components/ui/number-ticker.tsx",
                 "edited app/page.tsx",
               ].map((line) => (

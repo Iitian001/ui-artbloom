@@ -1,0 +1,896 @@
+/*
+ * monolith-launch — a single-product launch site built almost entirely from type.
+ *
+ * Nothing here can leak. Every class name carries a `mono` prefix and every
+ * bare-element rule is scoped under `.monoSite`. A template that ships names
+ * like `.hero`, `.eyebrow` and `.rule` into a consumer's global stylesheet is a
+ * collision waiting to happen; a prefix plus one wrapper element makes the whole
+ * sheet inert outside itself.
+ *
+ * There are no images anywhere in this template. The composition is the type
+ * scale, the hairlines and the vertical rhythm, which is why it weighs nothing
+ * and why it will not look dated when a stock photograph would.
+ *
+ * The two things most people will want to change are at the top: the palette,
+ * and the display scale. Nothing below hard-codes a value that is a variable
+ * up here.
+ */
+.monoSite {
+  /* Palette. Monochrome by design — one accent is enough for a launch page. */
+  --ink: #f4f3f1;
+  --ink-dim: rgba(244, 243, 241, 0.62);
+  --ink-faint: rgba(244, 243, 241, 0.38);
+  --ink-ghost: rgba(244, 243, 241, 0.14);
+  --surface: #0b0b0c;
+  --surface-lift: #131315;
+  --line: rgba(244, 243, 241, 0.12);
+  --line-strong: rgba(244, 243, 241, 0.28);
+  --accent: #d8734a;
+
+  /*
+   * Display scale. The viewport unit is what makes the headline monumental on a
+   * desktop and still legible on a phone; the clamp stops it doing either badly.
+   */
+  --display: clamp(3.2rem, 13vw, 13.5rem);
+  --display-sm: clamp(2.4rem, 7.4vw, 6.5rem);
+  --heading: clamp(1.75rem, 3.4vw, 3.1rem);
+  --body: clamp(1rem, 1.12vw, 1.1875rem);
+
+  /* Rhythm. Sections are tall on purpose — the space is part of the design. */
+  --gutter: clamp(1.25rem, 4.5vw, 6rem);
+  --section: clamp(5.5rem, 12vh, 11rem);
+  --measure: 34rem;
+
+  --font-display: var(--font-mono-display, "Inter Tight", "Helvetica Neue", Arial, sans-serif);
+  --font-body: var(--font-mono-body, ui-sans-serif, system-ui, "Segoe UI", Arial, sans-serif);
+  --font-mono: ui-monospace, "SFMono-Regular", "Cascadia Mono", "Roboto Mono", monospace;
+
+  position: relative;
+  min-height: 100vh;
+  background: var(--surface);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: var(--body);
+  line-height: 1.6;
+  /* Contains the sticky header and any blend mode so neither escapes the wrapper. */
+  isolation: isolate;
+  overflow-x: hidden;
+}
+
+.monoSite *,
+.monoSite *::before,
+.monoSite *::after { box-sizing: border-box; }
+
+/*
+ * `:where()` contributes no specificity, which is the whole point: `.monoSite a`
+ * would be (0,1,1) and would beat every single-class rule below it, so a solid
+ * button would inherit white text on a white background. This way the reset is
+ * (0,1,0) and any later class rule wins.
+ */
+.monoSite :where(a) { color: inherit; text-decoration: none; }
+.monoSite :where(button, input, textarea, select) { font: inherit; color: inherit; }
+.monoSite ::selection { background: var(--accent); color: #0b0b0c; }
+
+/* One visible focus style for the whole template, on the element that has focus. */
+.monoSite :focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* ---------------------------------------------------------------- primitives */
+
+.monoWrap {
+  width: 100%;
+  max-width: 96rem;
+  margin: 0 auto;
+  padding-inline: var(--gutter);
+}
+
+/* The hairline that separates every section. Its own element so a section can
+   opt out without a `:last-child` exception. */
+.monoRule {
+  height: 1px;
+  background: var(--line);
+  border: 0;
+  margin: 0;
+}
+
+.monoSection { padding-block: var(--section); }
+
+/* Wide-tracked micro-label. Used for eyebrows, group headings and table heads. */
+.monoLabel {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.monoLede {
+  max-width: var(--measure);
+  margin: 0;
+  font-size: clamp(1.0625rem, 1.5vw, 1.375rem);
+  line-height: 1.55;
+  color: var(--ink-dim);
+  text-wrap: pretty;
+}
+
+.monoHeading {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--heading);
+  font-weight: 500;
+  line-height: 1.04;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+}
+
+/* Label + heading, above a band of rows. */
+.monoSectionHead {
+  display: grid;
+  gap: 1.125rem;
+  max-width: 40rem;
+  margin-bottom: clamp(2rem, 5vw, 3.5rem);
+}
+
+/* The same pair with no space under it — for use inside a grid that already gaps. */
+.monoStack { display: grid; gap: 1.125rem; align-content: start; }
+
+/*
+ * Consecutive sections would otherwise stack two full `--section` paddings
+ * against each other. The first one in a run keeps its top padding; the rest
+ * carry this.
+ */
+.monoSectionTight { padding-top: 0; }
+
+/* The head that has a link on the far side of it at desktop width. */
+.monoSectionHeadRow {
+  display: grid;
+  gap: 1.5rem;
+  margin-bottom: clamp(2rem, 5vw, 3.5rem);
+}
+
+@media (min-width: 52rem) {
+  .monoSectionHeadRow {
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: end;
+    gap: 2.5rem;
+  }
+  .monoSectionHeadRow .monoSectionHead { margin-bottom: 0; }
+}
+
+/* ------------------------------------------------------------------- buttons */
+
+.monoBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0.9375rem 1.75rem;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  background: transparent;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  letter-spacing: -0.005em;
+  cursor: pointer;
+  transition:
+    background-color 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    color 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.monoBtn:hover {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--surface);
+}
+
+.monoBtnSolid {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--surface);
+}
+
+.monoBtnSolid:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #0b0b0c;
+}
+
+.monoBtn:disabled { opacity: 0.5; cursor: default; }
+
+/* The arrow that leans forward on hover. Inline so no icon library is needed. */
+.monoBtn > .monoArrow {
+  display: inline-block;
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.monoBtn:hover > .monoArrow { transform: translateX(3px); }
+
+/* -------------------------------------------------------------------- header */
+
+.monoHeader {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: color-mix(in oklab, var(--surface) 82%, transparent);
+  backdrop-filter: blur(14px) saturate(140%);
+  border-bottom: 1px solid var(--line);
+}
+
+.monoHeaderRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  height: 4.25rem;
+}
+
+.monoBrand {
+  display: flex;
+  align-items: baseline;
+  gap: 0.625rem;
+  font-family: var(--font-display);
+  font-size: 1.0625rem;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+}
+
+.monoBrandMark {
+  /* The logo is a square. A launch page does not need more than a square. */
+  width: 0.6875rem;
+  height: 0.6875rem;
+  background: var(--accent);
+  transform: translateY(-0.05em);
+}
+
+.monoBrandDescriptor {
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.monoNav {
+  display: none;
+  align-items: center;
+  gap: 2rem;
+}
+
+.monoNavLink {
+  position: relative;
+  font-size: 0.875rem;
+  color: var(--ink-dim);
+  transition: color 0.25s ease;
+}
+
+.monoNavLink:hover { color: var(--ink); }
+
+/* Underline grows from the left rather than fading in — cheaper to read. */
+.monoNavLink::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -0.3125rem;
+  width: 100%;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.monoNavLink:hover::after,
+.monoNavLink[aria-current="page"]::after { transform: scaleX(1); }
+.monoNavLink[aria-current="page"] { color: var(--ink); }
+
+/*
+ * Mobile navigation is a native `<details>`. No state, no JS, no focus trap to
+ * get wrong — and it still works if hydration never happens, which a marketing
+ * page should survive.
+ */
+.monoMenu { position: relative; }
+
+.monoMenuSummary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.875rem;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  cursor: pointer;
+  list-style: none;
+}
+
+/* Safari still paints a disclosure triangle without this. */
+.monoMenuSummary::-webkit-details-marker { display: none; }
+.monoMenu[open] .monoMenuSummary { color: var(--ink); border-color: var(--ink); }
+
+.monoMenuPanel {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 0.75rem);
+  z-index: 30;
+  display: grid;
+  gap: 0.25rem;
+  min-width: 12rem;
+  padding: 0.75rem;
+  border: 1px solid var(--line);
+  border-radius: 0.75rem;
+  background: var(--surface-lift);
+}
+
+.monoMenuLink {
+  padding: 0.5rem 0.625rem;
+  border-radius: 0.5rem;
+  font-size: 0.9375rem;
+  color: var(--ink-dim);
+}
+
+.monoMenuLink:hover { background: rgba(244, 243, 241, 0.06); color: var(--ink); }
+.monoMenuLink[aria-current="page"] { color: var(--ink); }
+
+@media (min-width: 52rem) {
+  .monoNav { display: flex; }
+  .monoHeaderRow { height: 5rem; }
+  .monoMenu { display: none; }
+}
+
+/* ---------------------------------------------------------------------- hero */
+
+.monoHero {
+  padding-top: clamp(3.5rem, 9vh, 7rem);
+  padding-bottom: clamp(2rem, 5vh, 4rem);
+}
+
+.monoHeroEyebrow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: clamp(2rem, 6vh, 4.5rem);
+}
+
+.monoHeroEyebrow::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--line);
+}
+
+/*
+ * The display headline. One word per line, set as tight as the face allows.
+ * `text-transform` is deliberately absent — the scale is the emphasis, so the
+ * words keep their natural case and stay readable.
+ */
+.monoDisplay {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--display);
+  font-weight: 500;
+  line-height: 0.86;
+  letter-spacing: -0.045em;
+}
+
+.monoDisplayWord { display: block; }
+
+/* Every other word steps back, which gives the block depth without colour. */
+.monoDisplayWord:nth-child(even) {
+  color: var(--ink-faint);
+  padding-left: 0.09em;
+}
+
+.monoHeroFoot {
+  display: grid;
+  gap: 2.5rem;
+  margin-top: clamp(2.5rem, 7vh, 5rem);
+}
+
+.monoHeroActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+@media (min-width: 52rem) {
+  .monoHeroFoot {
+    grid-template-columns: 1fr auto;
+    align-items: end;
+    gap: 4rem;
+  }
+}
+
+/* --------------------------------------------------------------------- ticker */
+
+.monoTicker {
+  border-block: 1px solid var(--line);
+  padding-block: 1.125rem;
+  overflow: hidden;
+  /* Fades the ends so the loop never shows a hard cut at the viewport edge. */
+  mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
+}
+
+.monoTickerTrack {
+  display: flex;
+  width: max-content;
+  animation: monoTickerScroll 38s linear infinite;
+}
+
+.monoTickerItem {
+  display: flex;
+  align-items: center;
+  gap: 2.75rem;
+  padding-right: 2.75rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  white-space: nowrap;
+}
+
+.monoTickerItem::after {
+  content: "";
+  width: 0.25rem;
+  height: 0.25rem;
+  background: var(--accent);
+  flex-shrink: 0;
+}
+
+@keyframes monoTickerScroll {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(-50%, 0, 0); }
+}
+
+/* ----------------------------------------------------------------- manifesto */
+
+.monoManifesto {
+  display: grid;
+  gap: clamp(2rem, 5vw, 4.5rem);
+}
+
+.monoManifestoBody { display: grid; gap: 1.5rem; }
+
+.monoManifestoBody p {
+  margin: 0;
+  max-width: 40rem;
+  font-size: clamp(1.0625rem, 1.35vw, 1.3125rem);
+  line-height: 1.6;
+  color: var(--ink-dim);
+  text-wrap: pretty;
+}
+
+/* First paragraph reads as the statement, the rest as the argument. */
+.monoManifestoBody p:first-child {
+  color: var(--ink);
+  font-size: clamp(1.1875rem, 1.7vw, 1.625rem);
+  line-height: 1.45;
+}
+
+@media (min-width: 60rem) {
+  .monoManifesto { grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); }
+}
+
+/* ------------------------------------------------------------------- pillars */
+
+.monoPillars {
+  display: grid;
+  gap: 0;
+  border-top: 1px solid var(--line);
+}
+
+.monoPillar {
+  display: grid;
+  gap: 1rem;
+  padding-block: clamp(2rem, 4.5vw, 3.25rem);
+  border-bottom: 1px solid var(--line);
+}
+
+.monoPillarIndex {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  color: var(--accent);
+}
+
+.monoPillarTitle {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 2.6vw, 2.375rem);
+  font-weight: 500;
+  line-height: 1.06;
+  letter-spacing: -0.03em;
+}
+
+.monoPillarBody {
+  margin: 0;
+  max-width: 32rem;
+  color: var(--ink-dim);
+  text-wrap: pretty;
+}
+
+.monoPillarMetric {
+  display: grid;
+  gap: 0.25rem;
+  align-content: start;
+}
+
+.monoPillarMetricValue {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 4.5vw, 3.5rem);
+  font-weight: 500;
+  line-height: 0.95;
+  letter-spacing: -0.04em;
+  font-variant-numeric: tabular-nums;
+}
+
+@media (min-width: 60rem) {
+  .monoPillar {
+    grid-template-columns: 4rem minmax(0, 1fr) minmax(0, 1fr) 10rem;
+    gap: 2.5rem;
+    align-items: start;
+  }
+  .monoPillarMetric { justify-items: end; text-align: right; }
+}
+
+/* --------------------------------------------------------------------- specs */
+
+.monoSpecGroup { border-bottom: 1px solid var(--line); }
+.monoSpecGroup:first-of-type { border-top: 1px solid var(--line); }
+
+.monoSpecGroupInner {
+  display: grid;
+  gap: 1.25rem;
+  padding-block: clamp(1.75rem, 3.5vw, 2.75rem);
+}
+
+.monoSpecRows {
+  display: grid;
+  gap: 0;
+  margin: 0;
+}
+
+/* A definition list, so a screen reader gets term/value pairing for free. */
+.monoSpecRow {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr);
+  gap: 1rem 1.5rem;
+  padding-block: 0.8125rem;
+  border-top: 1px solid var(--line);
+  font-size: 0.9375rem;
+}
+
+.monoSpecRow:first-child { border-top: 0; }
+.monoSpecRow dt { color: var(--ink-faint); }
+.monoSpecRow dd { margin: 0; color: var(--ink); }
+
+@media (min-width: 60rem) {
+  .monoSpecGroupInner { grid-template-columns: 12rem minmax(0, 1fr); gap: 2.5rem; }
+}
+
+/* --------------------------------------------------------------------- offer */
+
+.monoOffer {
+  display: grid;
+  gap: clamp(2rem, 5vw, 4rem);
+  padding: clamp(2rem, 5vw, 4rem);
+  border: 1px solid var(--line);
+  border-radius: 1.25rem;
+  background: var(--surface-lift);
+}
+
+.monoOfferPrice {
+  font-family: var(--font-display);
+  font-size: var(--display-sm);
+  font-weight: 500;
+  line-height: 0.9;
+  letter-spacing: -0.04em;
+  font-variant-numeric: tabular-nums;
+}
+
+.monoOfferNote {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  color: var(--ink-faint);
+}
+
+.monoOfferBody { display: grid; gap: 1.5rem; align-content: start; }
+
+@media (min-width: 60rem) {
+  .monoOffer { grid-template-columns: minmax(0, 0.85fr) minmax(0, 1fr); align-items: start; }
+}
+
+/* --------------------------------------------------------------------- story */
+
+.monoBeat {
+  display: grid;
+  gap: 0.875rem;
+  padding-block: clamp(1.75rem, 4vw, 3rem);
+  border-top: 1px solid var(--line);
+}
+
+.monoBeatYear {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  letter-spacing: 0.1em;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+}
+
+.monoBeatTitle {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.375rem, 2.2vw, 2rem);
+  font-weight: 500;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+}
+
+.monoBeatBody {
+  margin: 0;
+  max-width: 38rem;
+  color: var(--ink-dim);
+  text-wrap: pretty;
+}
+
+@media (min-width: 60rem) {
+  .monoBeat { grid-template-columns: 8rem minmax(0, 1fr); gap: 2.5rem; }
+  .monoBeatYear { padding-top: 0.3rem; }
+}
+
+/* ---------------------------------------------------------------------- form */
+
+.monoForm { display: grid; gap: 1.25rem; max-width: 32rem; }
+.monoField { display: grid; gap: 0.5rem; }
+
+.monoFieldLabel {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.monoInput {
+  width: 100%;
+  padding: 0.8125rem 1rem;
+  border: 1px solid var(--line);
+  border-radius: 0.5rem;
+  background: var(--surface-lift);
+  font-size: 0.9375rem;
+  transition: border-color 0.25s ease;
+}
+
+.monoInput:hover { border-color: var(--line-strong); }
+.monoInput::placeholder { color: var(--ink-ghost); }
+.monoTextarea { min-height: 6.5rem; resize: vertical; }
+
+.monoFormNote {
+  margin: 0;
+  font-size: 0.8125rem;
+  line-height: 1.55;
+  color: var(--ink-faint);
+}
+
+/* Result line for the demo submit. `role="status"` announces it politely. */
+.monoFormStatus {
+  margin: 0;
+  padding: 0.875rem 1rem;
+  border: 1px solid var(--line-strong);
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  color: var(--ink);
+}
+
+/* -------------------------------------------------------------------- footer */
+
+.monoFooter { border-top: 1px solid var(--line); padding-block: clamp(3rem, 7vw, 5rem); }
+
+.monoFooterTop {
+  display: grid;
+  gap: 2.5rem;
+  padding-bottom: 3rem;
+}
+
+.monoFooterBlurb {
+  margin: 0;
+  max-width: 30rem;
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  color: var(--ink-dim);
+  text-wrap: pretty;
+}
+
+.monoFooterCols {
+  display: grid;
+  gap: 2rem;
+  grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+  align-content: start;
+}
+
+.monoFooterLinks { display: grid; gap: 0.625rem; margin-top: 1.125rem; }
+
+.monoFooterLink {
+  font-size: 0.9375rem;
+  color: var(--ink-dim);
+  transition: color 0.25s ease;
+}
+
+.monoFooterLink:hover { color: var(--ink); }
+
+.monoFooterBottom a { color: inherit; transition: color 0.25s ease; }
+.monoFooterBottom a:hover { color: var(--ink); }
+
+.monoFooterBottom {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem 2rem;
+  justify-content: space-between;
+  padding-top: 1.75rem;
+  border-top: 1px solid var(--line);
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+/*
+ * The wordmark that closes the page. It is allowed to overflow its box and be
+ * clipped by the wrapper — that is the effect, not a bug.
+ */
+.monoFooterWord {
+  margin: 0;
+  padding-top: clamp(2rem, 6vw, 4rem);
+  font-family: var(--font-display);
+  font-size: clamp(3.5rem, 19vw, 18rem);
+  font-weight: 500;
+  line-height: 0.8;
+  letter-spacing: -0.05em;
+  color: var(--ink-ghost);
+  user-select: none;
+}
+
+@media (min-width: 52rem) {
+  .monoFooterTop { grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 4rem; }
+}
+
+/* ----------------------------------------------------------------- page head */
+
+/*
+ * The three inner pages open the same way: label, one large line, one lede.
+ * Sharing it here is what keeps them feeling like one site.
+ */
+.monoPageHead {
+  display: grid;
+  gap: 1.5rem;
+  padding-top: clamp(3rem, 8vh, 5.5rem);
+  padding-bottom: clamp(2rem, 5vh, 3.5rem);
+}
+
+.monoPageTitle {
+  margin: 0;
+  max-width: 22ch;
+  font-family: var(--font-display);
+  font-size: var(--display-sm);
+  font-weight: 500;
+  line-height: 0.94;
+  letter-spacing: -0.04em;
+  text-wrap: balance;
+}
+
+/* A link inside body copy still needs to look like one. */
+.monoInlineLink {
+  color: var(--ink);
+  border-bottom: 1px solid var(--line-strong);
+  transition: border-color 0.25s ease;
+}
+
+.monoInlineLink:hover { border-color: var(--ink); }
+
+/* ------------------------------------------------------------------- reserve */
+
+.monoReserveGrid { display: grid; gap: clamp(2.5rem, 6vw, 4.5rem); }
+
+/* The summary card beside the form. Same material as the offer block. */
+.monoAside {
+  display: grid;
+  gap: 1rem;
+  align-content: start;
+  padding: clamp(1.5rem, 3vw, 2rem);
+  border: 1px solid var(--line);
+  border-radius: 1.25rem;
+  background: var(--surface-lift);
+}
+
+.monoAsideList {
+  display: grid;
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.9375rem;
+  color: var(--ink-dim);
+}
+
+/* A hairline tick rather than a bullet glyph — no font dependency. */
+.monoAsideList li {
+  display: grid;
+  grid-template-columns: 0.75rem minmax(0, 1fr);
+  gap: 0.75rem;
+}
+
+.monoAsideList li::before {
+  content: "";
+  margin-top: 0.6em;
+  width: 0.5rem;
+  height: 1px;
+  background: var(--accent);
+}
+
+@media (min-width: 60rem) {
+  .monoReserveGrid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 0.78fr);
+    align-items: start;
+  }
+}
+
+/* -------------------------------------------------------------- scroll reveal */
+
+/*
+ * Reveal on scroll, driven by one IntersectionObserver in `components/reveal.tsx`
+ * that flips `data-shown` on. Two rules matter for correctness:
+ *
+ *   - The hidden state is set here, not in JS, so nothing flashes in before the
+ *     observer attaches.
+ *   - Under `prefers-reduced-motion` the element is simply visible. Not a
+ *     shorter animation — none, and no transform, because a translate is exactly
+ *     what triggers vestibular discomfort.
+ */
+.monoReveal {
+  opacity: 0;
+  transform: translate3d(0, 1.25rem, 0);
+  transition:
+    opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.monoReveal[data-shown="true"] {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
+/* Rows in a list stagger by index; the JS sets `--mono-delay`. */
+.monoReveal { transition-delay: var(--mono-delay, 0ms); }
+
+@media (prefers-reduced-motion: reduce) {
+  .monoReveal,
+  .monoReveal[data-shown="true"] {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .monoTickerTrack { animation: none; }
+
+  .monoSite *,
+  .monoSite *::before,
+  .monoSite *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+  }
+}

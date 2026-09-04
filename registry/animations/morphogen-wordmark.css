@@ -1,0 +1,227 @@
+.morphogen-wordmark-stage {
+  position: relative;
+  display: flex;
+  width: 100%;
+  min-height: 28rem;
+  overflow: hidden;
+  border-radius: 0.75rem;
+  background: #06080b;
+  color: #edf6f1;
+}
+
+/* A border here would push `inset: 0` in on the padding box and slide the canvas
+   origin away from the grid the solver is stepping. Hairline as an inset shadow. */
+.morphogen-wordmark-surface {
+  position: absolute;
+  inset: 0;
+  touch-action: none;
+  cursor: crosshair;
+  box-shadow: inset 0 0 0 1px rgba(126, 231, 195, 0.14);
+}
+
+.morphogen-wordmark-surface canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* The field is at its densest exactly where the copy sits, so the copy gets its
+   own floor of contrast rather than hoping the pattern stays polite down there. */
+.morphogen-wordmark-surface::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(115% 85% at 82% 6%, rgba(6, 8, 11, 0) 34%, rgba(4, 6, 8, 0.6) 100%),
+    linear-gradient(180deg, rgba(4, 6, 8, 0.18) 0%, rgba(4, 6, 8, 0) 32%, rgba(4, 6, 8, 0.88) 88%);
+}
+
+/* Transparent to the pointer: a drag that starts anywhere over the hero still
+   nucleates. The button takes events back, and works because it is a later
+   sibling than the element the hook captures the pointer on. */
+.morphogen-wordmark-content {
+  position: relative;
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 0.875rem;
+  padding: 1.75rem clamp(1.25rem, 5vw, 3rem) 3.5rem;
+  pointer-events: none;
+}
+
+/* The wordmark itself is painted into the field, and the canvas is aria-hidden.
+   This is the same word, kept in the accessibility tree and out of the picture. */
+.morphogen-wordmark-mark {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.morphogen-wordmark-eyebrow {
+  margin: 0;
+  font: 600 0.6875rem/1 ui-monospace, "SFMono-Regular", Menlo, monospace;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(126, 231, 195, 0.82);
+}
+
+.morphogen-wordmark-headline {
+  max-width: 20ch;
+  margin: 0;
+  font-size: clamp(1.5rem, 3.6vw, 2.25rem);
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -0.025em;
+  text-shadow: 0 1px 20px rgba(4, 6, 8, 0.72);
+}
+
+.morphogen-wordmark-body {
+  max-width: 44ch;
+  margin: 0;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: rgba(237, 246, 241, 0.68);
+  text-shadow: 0 1px 16px rgba(4, 6, 8, 0.7);
+}
+
+.morphogen-wordmark-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1.125rem;
+  margin-top: 0.25rem;
+}
+
+.morphogen-wordmark-cta {
+  appearance: none;
+  margin: 0;
+  padding: 0.625rem 1.125rem;
+  border: 0;
+  border-radius: 999px;
+  background: #7ee7c3;
+  font: inherit;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #04231a;
+  cursor: pointer;
+  pointer-events: auto;
+  transition:
+    background-color 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.morphogen-wordmark-cta:hover {
+  background: #9df3d6;
+  box-shadow: 0 0 0 6px rgba(126, 231, 195, 0.12);
+}
+
+.morphogen-wordmark-cta:focus-visible {
+  outline: 2px solid rgba(157, 243, 214, 0.9);
+  outline-offset: 3px;
+}
+
+.morphogen-wordmark-meta {
+  font: 500 0.6875rem/1 ui-monospace, "SFMono-Regular", Menlo, monospace;
+  letter-spacing: 0.1em;
+  color: rgba(237, 246, 241, 0.46);
+}
+
+.morphogen-wordmark-hint {
+  position: absolute;
+  right: 0.875rem;
+  bottom: 0.75rem;
+  margin: 0;
+  font: 500 0.6875rem/1 ui-monospace, "SFMono-Regular", Menlo, monospace;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(237, 246, 241, 0.3);
+  pointer-events: none;
+}
+
+/*
+ * What goes away is the ongoing growth: the hook never starts the loop, so the
+ * pattern the component paints once is a field that was already stepped a few
+ * hundred times inside setup — the letters are dense, the spill is out past them,
+ * and it simply stops there. The button still reseeds and repaints on demand.
+ */
+@media (prefers-reduced-motion: reduce) {
+  .morphogen-wordmark-cta {
+    transition: none;
+  }
+
+  .morphogen-wordmark-cta:hover {
+    box-shadow: none;
+  }
+
+  .morphogen-wordmark-surface {
+    cursor: default;
+  }
+}
+
+/*
+ * Card variant: the 298x240 catalogue tile, at real pixels and with no scaling
+ * anywhere. The hero copy is what has to go — a headline sized in `vw` reads the
+ * 1340px viewport, not this box, and it landed under the growing pattern. Here the
+ * field owns the whole frame and the copy is one line of eyebrow plus the reseed
+ * chip, pinned along the bottom edge where the existing wash is already darkest.
+ */
+.morphogen-wordmark-stage[data-compact='true'] {
+  min-height: 0;
+  height: 100%;
+  border-radius: 0;
+}
+
+/* `none` would eat a vertical swipe over a full-bleed card inside a scrolling
+   grid and trap the page on a phone. Seeding wants both axes, but a stuck page is
+   the worse failure: `pan-y` gives the scroll back and a sideways drag still
+   nucleates, as does any pointer that is not a finger. */
+.morphogen-wordmark-stage[data-compact='true'] .morphogen-wordmark-surface {
+  touch-action: pan-y;
+}
+
+/* Off the mechanism entirely rather than stacked in front of it: a bottom strip
+   about 64px tall, while the wordmark is painted around y=86 and the spill has the
+   rest. Still `pointer-events: none`, so a drag through the strip seeds. */
+.morphogen-wordmark-stage[data-compact='true'] .morphogen-wordmark-content {
+  position: absolute;
+  inset: auto 0 0 0;
+  width: auto;
+  align-items: flex-start;
+  gap: 0.5rem;
+  padding: 0.75rem;
+}
+
+.morphogen-wordmark-stage[data-compact='true'] .morphogen-wordmark-headline,
+.morphogen-wordmark-stage[data-compact='true'] .morphogen-wordmark-body,
+.morphogen-wordmark-stage[data-compact='true'] .morphogen-wordmark-meta,
+.morphogen-wordmark-stage[data-compact='true'] .morphogen-wordmark-hint {
+  display: none;
+}
+
+/* The one line that stays, at a fixed 10px and held to a single line. */
+.morphogen-wordmark-stage[data-compact='true'] .morphogen-wordmark-eyebrow {
+  font-size: 0.625rem;
+  letter-spacing: 0.14em;
+  white-space: nowrap;
+  text-shadow: 0 1px 10px rgba(4, 6, 8, 0.85);
+}
+
+.morphogen-wordmark-stage[data-compact='true'] .morphogen-wordmark-actions {
+  margin-top: 0;
+}
+
+/* Kept, and kept clickable: pressing it re-nucleates the field out of the letters,
+   which is the whole trick in two seconds. `tabIndex={-1}` in the component keeps
+   it out of the tab order under the card's `aria-hidden`. */
+.morphogen-wordmark-stage[data-compact='true'] .morphogen-wordmark-cta {
+  padding: 0.3125rem 0.625rem;
+  font-size: 0.625rem;
+  pointer-events: auto;
+}

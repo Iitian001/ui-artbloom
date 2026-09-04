@@ -5,16 +5,13 @@ import { notFound } from "next/navigation"
 import { AuthorAvatar } from "@/components/author"
 import { CatalogTabs, type CatalogTab } from "@/components/catalog-tabs"
 import { FilterChips } from "@/components/filter-chips"
-import { ItemCard } from "@/components/item-card"
 import { ItemGrid } from "@/components/item-grid"
-import { Rail } from "@/components/rail"
 import { CATEGORY_GROUPS, KIND_LABEL, type Kind } from "@/lib/categories"
 import {
   type Author,
   browsableKinds,
   featured,
   isBrowsableKind,
-  itemsByCategory,
   itemsByKind,
   kindCount,
   newest,
@@ -79,66 +76,55 @@ function Empty({ message }: { message: string }) {
   )
 }
 
-/** The default view: rails, the way a store front page reads. */
-function FeaturedView({ kind }: { kind: Kind }) {
+function SectionHead({ title, subtitle }: { title: string; subtitle?: string }) {
+  return (
+    <div className="mb-4">
+      <h2 className="text-lg font-semibold tracking-tight">{title}</h2>
+      {subtitle && <p className="mt-0.5 text-sm text-muted-foreground">{subtitle}</p>}
+    </div>
+  )
+}
+
+/**
+ * The default view. Two grids, and every item appears in exactly one of them.
+ *
+ * This used to be five or six horizontal rails — Featured, Just added, Most
+ * installed, then one per category, then a grid of everything. On a catalogue
+ * this size that put the same card on the page three and four times over, and
+ * each rail carried about 1800px of sideways scroll on a 1340px window: fourteen
+ * animations, of which four were visible and ten were behind a gesture. A grid
+ * shows all fourteen at once and the page scrolls the one direction a page is
+ * supposed to.
+ *
+ * Categories are still navigable — `FilterChips` above this links every one of
+ * them to its own route. They just no longer each get a rail of cards that are
+ * already on the page.
+ */
+function CatalogueView({ kind }: { kind: Kind }) {
   // Never empty: the route 404s for a kind with nothing in it, so there is no
   // "the first ones land soon" state to fall back to.
-  const everything = reshuffled(undefined, kind)
-  const spotlight = featured(8, kind)
-  const fresh = newest(8, kind)
-  const top = popular(8, kind)
-  // One rail per category, but only where a rail has something to scroll.
-  const railCats = populatedCategories(kind)
-    .filter((category) => itemsByCategory(kind, category.slug).length >= 2)
-    .slice(0, 6)
+  const spotlight = featured(undefined, kind)
+  const picked = new Set(spotlight.map((item) => item.name))
+  const rest = reshuffled(undefined, kind).filter((item) => !picked.has(item.name))
 
   return (
-    <div className="flex flex-col gap-14">
+    <div className="container-page flex flex-col gap-14">
       {spotlight.length > 0 && (
-        <Rail title="Featured" subtitle="Hand-picked this week">
-          {spotlight.map((item) => (
-            <ItemCard key={item.name} item={item} height={220} />
-          ))}
-        </Rail>
+        <section>
+          <SectionHead title="Featured" subtitle="Hand-picked this week" />
+          <ItemGrid items={spotlight} />
+        </section>
       )}
 
-      {fresh.length > 0 && (
-        <Rail title="Just added" viewAllHref={`/community/${kind}?tab=newest`}>
-          {fresh.map((item) => (
-            <ItemCard key={item.name} item={item} height={220} />
-          ))}
-        </Rail>
+      {rest.length > 0 && (
+        <section>
+          <SectionHead
+            title={spotlight.length > 0 ? "Everything else" : "Everything"}
+            subtitle="The rest of the catalogue, reshuffled daily."
+          />
+          <ItemGrid items={rest} />
+        </section>
       )}
-
-      {top.length > 0 && (
-        <Rail title="Most installed" viewAllHref={`/community/${kind}?tab=popular`}>
-          {top.map((item) => (
-            <ItemCard key={item.name} item={item} height={220} />
-          ))}
-        </Rail>
-      )}
-
-      {railCats.map((category) => (
-        <Rail
-          key={category.slug}
-          title={category.label}
-          viewAllHref={`/community/${kind}/s/${category.slug}`}
-        >
-          {itemsByCategory(kind, category.slug).map((item) => (
-            <ItemCard key={item.name} item={item} height={220} />
-          ))}
-        </Rail>
-      ))}
-
-      <div className="container-page">
-        <div className="mb-4">
-          <h2 className="text-lg font-semibold tracking-tight">Explore everything</h2>
-          <p className="mt-0.5 text-sm text-muted-foreground">
-            The whole catalogue, ranked for you and reshuffled daily.
-          </p>
-        </div>
-        <ItemGrid items={everything} />
-      </div>
     </div>
   )
 }
@@ -215,7 +201,7 @@ export default async function CatalogPage({
       </div>
 
       <div className="py-10">
-        {active === "featured" && <FeaturedView kind={kind} />}
+        {active === "featured" && <CatalogueView kind={kind} />}
         {active !== "featured" && (
           <div className="container-page">
             {active === "newest" && <ItemGrid items={newest(undefined, kind)} />}

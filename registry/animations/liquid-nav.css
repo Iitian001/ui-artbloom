@@ -1,0 +1,195 @@
+.liquid-nav-stage {
+  position: relative;
+  display: grid;
+  place-content: center;
+  gap: 1.75rem;
+  width: 100%;
+  min-height: 260px;
+  padding: 2.5rem 1.5rem;
+  overflow: hidden;
+  border-radius: 0.75rem;
+  background: radial-gradient(120% 110% at 50% 0%, #101828 0%, #080c14 58%, #05070c 100%);
+  color: #eaf3ff;
+}
+
+.liquid-nav-bar {
+  position: relative;
+  justify-self: center;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+/* The indicator, behind the labels and deaf to the pointer. Every interaction
+   here belongs to a real button; the canvas only ever draws. */
+.liquid-nav-field {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.liquid-nav-field canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* Shares its origin with the field: the bar carries no padding of its own, so an
+   absolute `inset: 0` and this row start at the same pixel and the boxes measured
+   from here are already canvas coordinates. */
+.liquid-nav-tabs {
+  position: relative;
+  display: flex;
+  gap: 0.25rem;
+  padding: 0.5rem;
+}
+
+.liquid-nav-tab {
+  appearance: none;
+  margin: 0;
+  padding: 0.5rem 1.125rem;
+  border: 0;
+  border-radius: 999px;
+  background: none;
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 500;
+  letter-spacing: -0.005em;
+  color: rgba(234, 243, 255, 0.52);
+  cursor: pointer;
+  transition: color 200ms ease;
+}
+
+.liquid-nav-tab:hover {
+  color: rgba(234, 243, 255, 0.82);
+}
+
+.liquid-nav-tab[aria-selected='true'] {
+  color: #f2f8ff;
+}
+
+.liquid-nav-tab:focus-visible {
+  outline: 2px solid rgba(152, 205, 255, 0.7);
+  outline-offset: 2px;
+}
+
+.liquid-nav-panel {
+  margin: 0;
+  justify-self: center;
+  max-width: 34rem;
+  font-size: 0.875rem;
+  line-height: 1.6;
+  text-align: center;
+  text-wrap: pretty;
+  color: rgba(234, 243, 255, 0.58);
+}
+
+.liquid-nav-hint {
+  position: absolute;
+  right: 0.875rem;
+  bottom: 0.75rem;
+  margin: 0;
+  font: 500 0.6875rem/1 ui-monospace, "SFMono-Regular", Menlo, monospace;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(234, 243, 255, 0.28);
+  pointer-events: none;
+}
+
+/*
+ * With the loop stopped the chain never integrates, so the pill stays where
+ * `setup` placed it — on the active tab, at rest, correct. Selecting a tab still
+ * works and still moves the indicator, because a resize or a `requestRender` is
+ * enough to repaint one settled frame; what is gone is the travel between them,
+ * which is exactly what was asked for.
+ */
+@media (prefers-reduced-motion: reduce) {
+  .liquid-nav-tab {
+    transition: none;
+  }
+}
+
+/*
+ * The card variant: the 298x240 catalogue frame, at that real size and never scaled.
+ * The bar was a content-width pill floating in the middle of a 260px stage, which in a
+ * card is a great deal of gradient around a small control. Here it spans the frame and
+ * the four tabs divide it evenly, so the pill is 61px long, 36px thick and travels 195px
+ * end to end: the stretch and the neck are the subject rather than a detail.
+ */
+.liquid-nav-stage[data-compact='true'] {
+  min-height: 0;
+  height: 100%;
+  /* The card frame rounds and clips already. */
+  border-radius: 0;
+  /*
+   * One deterministic column rather than a track sized to the labels, and a bottom
+   * padding that reserves the strip the hint sits in, so the bar reads as centred in
+   * the space above it.
+   */
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0;
+  padding: 0.75rem 0.75rem 2.125rem;
+}
+
+/*
+ * No `touch-action` line here, and none needed: the canvas layer is `pointer-events:
+ * none` and the only pointer targets are four buttons, so this stage never becomes a
+ * full-bleed drag surface that claims the vertical gesture. A touch on the card scrolls
+ * the page as it should, and declaring `pan-y` would only cost the card its pinch-zoom.
+ */
+
+/* Fills the column, so the travel is the card's width instead of the labels'. */
+.liquid-nav-stage[data-compact='true'] .liquid-nav-bar {
+  justify-self: stretch;
+}
+
+/*
+ * The deeper inset is the bar's own chrome, not the tabs': it thickens the capsule
+ * without touching a tab box — and the pill is drawn from the tab boxes — while buying
+ * the pill's end caps a couple of pixels of clearance inside the bar's 999px ends.
+ */
+.liquid-nav-stage[data-compact='true'] .liquid-nav-tabs {
+  padding: 0.75rem 0.5rem;
+}
+
+/*
+ * Equal shares of the bar, and the size is set by the longest label rather than by taste.
+ * Four `flex: 1 1 0` tabs split the 274px bar into 61px each; "Changelog" sets 61px of its
+ * own at 12px, so at the 6px inline padding it has at full size it needed 73px and the bar's
+ * `overflow: hidden` ate the descender. 11px brings the word to 56px and 2px of padding
+ * leaves 3px of slack — measured after the webfont lands, not before, which is what made the
+ * first pass at this look like it fitted.
+ *
+ * `line-height: 1` makes the tab 35px tall. The number that matters is not 35 but that half
+ * of it stays under the 0.32 × width cap `span` insets the pill by — 17.5 against 19.5 — so
+ * the settled pill still covers its own tab to the pixel and never reaches under a
+ * neighbour's label. Nothing here is a `vw`: the card is 298px wide and the viewport is not.
+ */
+.liquid-nav-stage[data-compact='true'] .liquid-nav-tab {
+  flex: 1 1 0;
+  min-width: 0;
+  padding: 0.75rem 0.0625rem;
+  font-size: 0.6875rem;
+  line-height: 1;
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* Four lines of prose about the solver, in a box this size, is the card title's job. */
+.liquid-nav-stage[data-compact='true'] .liquid-nav-panel {
+  display: none;
+}
+
+/*
+ * The one line of text kept: this pill is still until it is hovered or clicked, so the
+ * instruction is the part worth the room. A strip along the bottom edge, clear of the bar
+ * by the stage padding above, at the fixed 0.6875rem it was already set in. The
+ * `pointer-events: none` on the rule above is left alone, so the strip never swallows a
+ * press meant for the bar; the tabs go on taking their own clicks.
+ */
+.liquid-nav-stage[data-compact='true'] .liquid-nav-hint {
+  inset: auto 0 0 0;
+  padding: 0 0.75rem 0.6875rem;
+  text-align: center;
+  color: rgba(234, 243, 255, 0.4);
+}

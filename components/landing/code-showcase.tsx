@@ -18,7 +18,7 @@ import { loadFiles } from "@/lib/registry/source"
  * and the preview tab mounts `DEMOS[name]`, so the item needs an entry in
  * `components/demos.tsx` or the tab reads "No demo yet".
  */
-const SHOWCASE = "kinetic-texture-mesh"
+const SHOWCASE = "chip-pile"
 
 export async function CodeShowcase() {
   const item = getItem(SHOWCASE)
@@ -63,11 +63,11 @@ export async function CodeShowcase() {
           preview={
             <div className="overflow-hidden rounded-xl border border-border bg-card">
               {/* Not inside a link here, so the demo can be dragged and pressed —
-                  the mesh is only legible once you pull on it. */}
+                  the pile only proves itself once you pull a chip out of it. */}
               <ItemPreview
                 name={item.name}
                 kind={item.kind}
-                height={380}
+                height={440}
                 dark={item.previewDark}
                 interactive
               />
@@ -78,7 +78,7 @@ export async function CodeShowcase() {
               code={file.content}
               lang={file.lang}
               filename={file.target}
-              maxHeight="23.75rem"
+              maxHeight="27.5rem"
             />
           }
         />

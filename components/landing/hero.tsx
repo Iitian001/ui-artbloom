@@ -60,7 +60,7 @@ export function Hero() {
         </h1>
 
         <p className="mt-7 max-w-xl text-pretty text-lg leading-relaxed text-muted-foreground">
-          {total} crafted React templates, animations, and components across{" "}
+          {total} crafted React templates and animations across{" "}
           {categoriesWithItems} categories. Copy the code, run one command, ship it.
         </p>
 

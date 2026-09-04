@@ -1,7 +1,7 @@
 import { existsSync, readFileSync, statSync } from "node:fs"
 import path from "node:path"
 
-import type { Config } from "./config.js"
+import type { Config, Paths } from "./config.js"
 import type { Payload } from "./registry.js"
 import { CliError, warn } from "./ui.js"
 
@@ -82,6 +82,61 @@ function resolveTarget(target: string, itemName: string, config: Config) {
   }
 
   return { absolute, rel: inside.replace(/\\/g, "/") }
+}
+
+/**
+ * The alias-relative form of a configured directory.
+ *
+ * A leading `src/` comes off because `@/*` in a `src` project conventionally
+ * maps to `./src/*`, so `src/hooks` is reached as `@/hooks` and not as
+ * `@/src/hooks`. A project that maps `@/*` to `./*` while keeping its code in
+ * `src/` is the one layout this gets wrong — and it is already wrong there
+ * today, with or without a remap, because the default target lands in `src/`
+ * while the payload's own specifier says `@/hooks`.
+ */
+function aliasPath(dir: string) {
+  return dir
+    .replace(/\\/g, "/")
+    .replace(/^\.\//, "")
+    .replace(/^src\//, "")
+    .replace(/\/+$/, "")
+}
+
+/** Every payload prefix that `remap` can move, with where it moves to. */
+const ALIASED: ReadonlyArray<{ payload: string; configured: (paths: Paths) => string }> = [
+  { payload: "components/ui", configured: (paths) => aliasPath(paths.ui) },
+  { payload: "hooks", configured: (paths) => aliasPath(paths.hooks) },
+]
+
+/**
+ * Point the payload's own alias imports at wherever its files are actually going.
+ *
+ * `remap` honours a custom `paths.ui` or `paths.hooks` for the destination, but
+ * the source it writes still says `@/hooks/use-canvas-scene`. Left alone, an
+ * animation installed into a project whose config moved that directory lands as
+ * a file that cannot resolve its own hook — a broken build, from a run that
+ * exited 0.
+ *
+ * Only specifier positions are touched: after `from`, after a bare `import`, or
+ * inside `require(`. A path that happens to appear in prose or in a comment is
+ * not an import and is left exactly as the author wrote it.
+ */
+function rewriteImports(content: string, config: Config) {
+  const moves = ALIASED.map((entry) => ({
+    was: `${config.alias}/${entry.payload}/`,
+    now: `${config.alias}/${entry.configured(config.paths)}/`,
+  })).filter((move) => move.was !== move.now)
+
+  if (moves.length === 0) return content
+
+  return content.replace(
+    /((?:\bfrom|\bimport|\brequire\()\s*)(['"])([^'"\n]+)\2/g,
+    (whole: string, lead: string, quote: string, spec: string) => {
+      const move = moves.find((candidate) => spec.startsWith(candidate.was))
+      if (!move) return whole
+      return `${lead}${quote}${move.now}${spec.slice(move.was.length)}${quote}`
+    },
+  )
 }
 
 /**
@@ -170,7 +225,7 @@ export function buildPlan(items: Payload[], config: Config): Plan {
   for (const item of items) {
     for (const file of item.files) {
       const { absolute, rel } = resolveTarget(file.target, item.name, config)
-      const content = asWritten(file.content)
+      const content = asWritten(rewriteImports(file.content, config))
       if (!claim(claims, absolute, rel, { from: item.name, writes: content })) continue
 
       const exists = existsSync(absolute)

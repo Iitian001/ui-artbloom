@@ -21,6 +21,12 @@ export type AuroraBackgroundProps = {
  * A soft, slowly drifting colour field for hero sections. Pure CSS — two
  * blurred conic layers moving at different rates, so there is no canvas, no
  * rAF loop, and it costs nothing on the main thread.
+ *
+ * Under `prefers-reduced-motion` both layers are paused rather than removed. A
+ * frozen conic gradient is still the colour field the section was designed
+ * around, so the page keeps its ground and only the drift stops. The pause is a
+ * class and the animation is an inline style, so they set different properties
+ * and neither has to out-specify the other.
  */
 export function AuroraBackground({
   children,
@@ -36,7 +42,7 @@ export function AuroraBackground({
     <div className={cn("relative isolate overflow-hidden bg-background", className)}>
       <div
         aria-hidden
-        className="pointer-events-none absolute -inset-[35%] opacity-45 blur-[90px] dark:opacity-40"
+        className="pointer-events-none absolute -inset-[35%] opacity-45 blur-[90px] motion-reduce:[animation-play-state:paused] dark:opacity-40"
         style={
           {
             backgroundImage: `conic-gradient(from 0deg at 50% 50%, ${stops}, ${colors[0]})`,
@@ -46,7 +52,7 @@ export function AuroraBackground({
       />
       <div
         aria-hidden
-        className="pointer-events-none absolute -inset-[25%] opacity-30 blur-[110px] mix-blend-screen"
+        className="pointer-events-none absolute -inset-[25%] opacity-30 blur-[110px] mix-blend-screen motion-reduce:[animation-play-state:paused]"
         style={
           {
             backgroundImage: `conic-gradient(from 180deg at 40% 60%, ${stops}, ${colors[0]})`,

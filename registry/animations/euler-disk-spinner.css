@@ -1,0 +1,256 @@
+.euler-disk-spinner-stage {
+  position: relative;
+  display: block;
+  width: 100%;
+  min-height: 20rem;
+  overflow: hidden;
+  border-radius: 0.75rem;
+  background: radial-gradient(120% 120% at 72% 18%, #14110b 0%, #0a0a0e 58%, #06070a 100%);
+  color: #f6f1e6;
+}
+
+/* The plate is measured off this box, so it carries no border: `inset: 0` is against
+   the padding box and a border would slide the contact circle off the plate. */
+.euler-disk-spinner-surface {
+  position: absolute;
+  inset: 0;
+  touch-action: none;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.07);
+  border-radius: inherit;
+}
+
+.euler-disk-spinner-surface canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* Transparent to the pointer so a press anywhere on the plate spins the coin up;
+   the button takes events back for itself. */
+.euler-disk-spinner-content {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  min-height: 20rem;
+  padding: 1.5rem;
+  pointer-events: none;
+}
+
+.euler-disk-spinner-card {
+  width: min(17.5rem, 100%);
+}
+
+.euler-disk-spinner-status {
+  margin: 0;
+  font-size: 1.0625rem;
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  text-shadow: 0 1px 16px rgba(6, 7, 10, 0.85);
+}
+
+.euler-disk-spinner-detail {
+  margin: 0.375rem 0 0.875rem;
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  color: rgba(246, 241, 230, 0.56);
+  text-shadow: 0 1px 14px rgba(6, 7, 10, 0.8);
+}
+
+.euler-disk-spinner-meter {
+  position: relative;
+  height: 0.25rem;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(246, 241, 230, 0.12);
+  box-shadow: 0 1px 14px rgba(6, 7, 10, 0.6);
+}
+
+.euler-disk-spinner-fill {
+  display: block;
+  width: 0;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, rgba(243, 192, 74, 0.5), #f3c04a);
+}
+
+.euler-disk-spinner-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+  font: 500 0.6875rem/1 ui-monospace, "SFMono-Regular", Menlo, monospace;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.euler-disk-spinner-pct {
+  color: #f3c04a;
+}
+
+.euler-disk-spinner-rate {
+  color: rgba(246, 241, 230, 0.42);
+}
+
+.euler-disk-spinner-button {
+  appearance: none;
+  margin: 1rem 0 0;
+  padding: 0.5rem 1rem;
+  border: 1px solid rgba(243, 192, 74, 0.38);
+  border-radius: 999px;
+  background: rgba(243, 192, 74, 0.1);
+  font: inherit;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: #f8dfa2;
+  cursor: pointer;
+  pointer-events: auto;
+  transition:
+    border-color 160ms ease,
+    background-color 160ms ease,
+    color 160ms ease;
+}
+
+.euler-disk-spinner-button:hover {
+  border-color: rgba(243, 192, 74, 0.7);
+  background: rgba(243, 192, 74, 0.18);
+  color: #fff4dc;
+}
+
+.euler-disk-spinner-button:focus-visible {
+  outline: 2px solid rgba(243, 192, 74, 0.8);
+  outline-offset: 2px;
+}
+
+.euler-disk-spinner-hint {
+  position: absolute;
+  right: 0.875rem;
+  bottom: 0.75rem;
+  margin: 0;
+  font: 500 0.6875rem/1 ui-monospace, "SFMono-Regular", Menlo, monospace;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(246, 241, 230, 0.26);
+  pointer-events: none;
+}
+
+.euler-disk-spinner-button:disabled {
+  border-color: rgba(246, 241, 230, 0.16);
+  background: rgba(246, 241, 230, 0.04);
+  color: rgba(246, 241, 230, 0.4);
+  cursor: default;
+}
+
+/*
+ * The loop never starts, so what is switched off is the run-down itself: the coin is
+ * painted at alpha = 0, omega = 0 — the exact fixed point of the solver — with the job
+ * reported finished. The spin-up control is disabled and the press hint removed rather
+ * than left as an affordance that cannot move, and the button transitions go too.
+ */
+@media (prefers-reduced-motion: reduce) {
+  .euler-disk-spinner-button {
+    transition: none;
+  }
+
+  .euler-disk-spinner-hint {
+    display: none;
+  }
+}
+
+/*
+ * The card variant: the 298x240 catalogue frame, at that real size and never scaled.
+ * The copy comes off the plate and down to a single strip along the bottom edge, and
+ * the coin is given the middle of the box to rattle in.
+ */
+.euler-disk-spinner-stage[data-compact='true'] {
+  min-height: 0;
+  height: 100%;
+  /* The card frame rounds and clips already. */
+  border-radius: 0;
+}
+
+/*
+ * `viewFor` in the tsx puts the plate at 0.32 of the canvas height and bounds the coin's
+ * radius by 0.19 of it — proportions for a 20rem marketing stage, which inside a 240px
+ * card is a 46px radius sitting in the top third with the bottom half of the frame empty.
+ * Nothing is scaled to fix that: the surface is handed a taller box and the empty tail of
+ * it is cropped by the stage's own `overflow: hidden`. 240 / 0.64 = 375, so 0.32 of the
+ * box lands at exactly half the visible height — at any frame height, since the extension
+ * is a percentage of it — and the radius bound becomes 0.297 of it: a 71px radius, and
+ * the plate centred. The canvas stays 1:1 with CSS pixels; below the plate there is
+ * nothing to lose but the outer 2% of the halo gradient, which is what the crop takes.
+ *
+ * `pan-y`, not `none`: a full-bleed drag surface that claims every touch traps the page
+ * inside a scrolling grid of cards, and this mechanism only ever asked for a press —
+ * which still lands, along with every horizontal drag.
+ */
+.euler-disk-spinner-stage[data-compact='true'] .euler-disk-spinner-surface {
+  bottom: -56.25%;
+  touch-action: pan-y;
+  /* Three sides of a 1px inset ring, the fourth cropped away, reads as a seam. */
+  box-shadow: none;
+}
+
+/*
+ * The text layer off the plate and onto the bottom edge. The strip stands 45px tall and
+ * the plate's rim reaches 168px of the 240, so the two never meet. Still deaf to the
+ * pointer, so a press through the strip spins the coin up; the button goes on taking its
+ * own clicks back.
+ */
+.euler-disk-spinner-stage[data-compact='true'] .euler-disk-spinner-content {
+  position: absolute;
+  inset: auto 0 0 0;
+  min-height: 0;
+  padding: 0.75rem;
+  pointer-events: none;
+}
+
+.euler-disk-spinner-stage[data-compact='true'] .euler-disk-spinner-card {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+/* The paragraph, the two numeric readouts the meter already gives visually, and a hint
+   the button makes redundant: a second and a third line of text, all of it. */
+.euler-disk-spinner-stage[data-compact='true'] .euler-disk-spinner-detail,
+.euler-disk-spinner-stage[data-compact='true'] .euler-disk-spinner-row,
+.euler-disk-spinner-stage[data-compact='true'] .euler-disk-spinner-hint {
+  display: none;
+}
+
+/* The one line that stays, at a fixed 13px and held to a single line. It is the heading
+   because the heading is the state readout — it turns over to 'Bundle ready' the instant
+   the coin lies flat, which is the event the mechanism exists to show. */
+.euler-disk-spinner-stage[data-compact='true'] .euler-disk-spinner-status {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  font-size: 0.8125rem;
+  line-height: 1.2;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* The meter out of the row and full-bleed along the very bottom edge, 3px of it: still
+   the live progressbar, but it no longer spends any of the line's width. */
+.euler-disk-spinner-stage[data-compact='true'] .euler-disk-spinner-meter {
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 0.1875rem;
+  border-radius: 0;
+}
+
+/* Kept, and kept clickable: it is the one control that re-runs the spin-up from the top.
+   `tabIndex={-1}` in the component keeps it out of the tab order under the card frame's
+   `aria-hidden`. */
+.euler-disk-spinner-stage[data-compact='true'] .euler-disk-spinner-button {
+  flex: none;
+  margin: 0;
+  padding: 0.25rem 0.625rem;
+  font-size: 0.6875rem;
+  line-height: 1;
+  pointer-events: auto;
+}

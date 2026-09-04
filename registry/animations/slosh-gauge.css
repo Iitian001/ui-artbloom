@@ -1,0 +1,247 @@
+.slosh-gauge-stage {
+  position: relative;
+  display: grid;
+  place-content: center;
+  width: 100%;
+  min-height: 340px;
+  padding: 2.5rem 1.5rem;
+  overflow: hidden;
+  border-radius: 0.75rem;
+  background: radial-gradient(120% 110% at 50% 0%, #0c1620 0%, #070b12 60%, #05070c 100%);
+  color: #eaf5ff;
+}
+
+.slosh-gauge-card {
+  position: relative;
+  width: min(23rem, 100%);
+  height: 19rem;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 1rem;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.015));
+  isolation: isolate;
+}
+
+/* The tank, behind the readout. `overflow: hidden` on the card is what gives the
+   water its rounded corners — the solver knows nothing about the border radius. */
+.slosh-gauge-tank {
+  position: absolute;
+  inset: 0;
+  touch-action: none;
+}
+
+.slosh-gauge-tank canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* Transparent to the pointer, so a move anywhere over the card still tilts the
+   tank. Only the level keys take events back. */
+.slosh-gauge-face {
+  position: relative;
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 1.25rem 1.375rem 1.125rem;
+  pointer-events: none;
+}
+
+.slosh-gauge-label {
+  margin: 0 0 0.5rem;
+  font: 500 0.6875rem/1 ui-monospace, "SFMono-Regular", Menlo, monospace;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(234, 245, 255, 0.5);
+}
+
+.slosh-gauge-read {
+  margin: 0;
+  font-size: 3.25rem;
+  font-weight: 500;
+  line-height: 0.92;
+  letter-spacing: -0.035em;
+  font-variant-numeric: tabular-nums;
+  text-shadow: 0 1px 18px rgba(5, 12, 20, 0.55);
+}
+
+.slosh-gauge-unit {
+  margin-left: 0.15em;
+  font-size: 1.25rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: rgba(234, 245, 255, 0.62);
+}
+
+.slosh-gauge-sub {
+  margin: 0.5rem 0 0;
+  font-size: 0.8125rem;
+  color: rgba(234, 245, 255, 0.52);
+  text-shadow: 0 1px 14px rgba(5, 12, 20, 0.5);
+}
+
+.slosh-gauge-keys {
+  display: flex;
+  gap: 0.3125rem;
+}
+
+.slosh-gauge-key {
+  appearance: none;
+  flex: 1;
+  margin: 0;
+  padding: 0.4375rem 0;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 999px;
+  background: rgba(6, 14, 22, 0.42);
+  font: inherit;
+  font-size: 0.75rem;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  color: rgba(234, 245, 255, 0.72);
+  cursor: pointer;
+  pointer-events: auto;
+  backdrop-filter: blur(6px);
+  transition:
+    border-color 160ms ease,
+    background-color 160ms ease,
+    color 160ms ease;
+}
+
+.slosh-gauge-key:hover {
+  border-color: rgba(186, 246, 255, 0.4);
+  color: #f2fbff;
+}
+
+.slosh-gauge-key[aria-pressed='true'] {
+  border-color: rgba(186, 246, 255, 0.62);
+  background: rgba(186, 246, 255, 0.16);
+  color: #f5fdff;
+}
+
+.slosh-gauge-key:focus-visible {
+  outline: 2px solid rgba(186, 246, 255, 0.75);
+  outline-offset: 2px;
+}
+
+.slosh-gauge-hint {
+  position: absolute;
+  right: 0.875rem;
+  bottom: 0.75rem;
+  margin: 0;
+  font: 500 0.6875rem/1 ui-monospace, "SFMono-Regular", Menlo, monospace;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(234, 245, 255, 0.28);
+  pointer-events: none;
+}
+
+/*
+ * With the loop stopped the tank is placed flat at the requested level and stays
+ * there. Pressing a key still moves the water, because the component asks for one
+ * repaint and the solver is skipped in favour of the settled state — what is gone
+ * is the wave in between, which is the part that was asked to go.
+ */
+@media (prefers-reduced-motion: reduce) {
+  .slosh-gauge-key {
+    transition: none;
+  }
+}
+
+/*
+ * The card variant: the same tank authored for the 298x240 catalogue frame rather
+ * than scaled into it. The section padding goes, the gauge becomes the frame — water
+ * edge to edge — and the readout drops to a strip along the bottom with the level
+ * keys beside it. No `vw` and no `clamp()` anywhere below: the card is 298px wide and
+ * the viewport it sits in is not.
+ */
+.slosh-gauge-stage[data-compact='true'] {
+  min-height: 0;
+  height: 100%;
+  padding: 0;
+  /* The card frame rounds and clips already. */
+  border-radius: 0;
+}
+
+/*
+ * The gauge fills the frame instead of floating centred in it: 298 x 240 of tank,
+ * which at 100% is 192px of water with 48px of headroom left for the crests. Absolute
+ * rather than a stretched grid item, so the height is the frame's and not a track
+ * sized from whatever is left once the copy has gone.
+ */
+.slosh-gauge-stage[data-compact='true'] .slosh-gauge-card {
+  position: absolute;
+  inset: 0;
+  width: auto;
+  height: auto;
+  border: 0;
+  border-radius: 0;
+}
+
+/*
+ * `pan-y`, not `none`. The tank is now the full bleed of the card, and a drag surface
+ * that swallows vertical touches traps the page in a scrolling grid of cards, which is
+ * the worse failure by a distance. Nothing is lost here: the tilt is read from the
+ * pointer's x alone, so a sideways drag still tips the tank its full fifteen degrees.
+ */
+.slosh-gauge-stage[data-compact='true'] .slosh-gauge-tank {
+  touch-action: pan-y;
+}
+
+/*
+ * The readout off the tank's back and onto the bottom edge, one row instead of a
+ * column, so the water and its crests get the box rather than sharing it with a
+ * column of type. Still deaf to the pointer, so a drag across it tilts the tank.
+ */
+.slosh-gauge-stage[data-compact='true'] .slosh-gauge-face {
+  position: absolute;
+  inset: auto 0 0 0;
+  height: auto;
+  flex-direction: row;
+  align-items: flex-end;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  pointer-events: none;
+}
+
+/* Everything but the level: the provisioned figure is a sentence, the section label is
+   what the card's own title already says, and the hint asks for a hover a phone has
+   not got. */
+.slosh-gauge-stage[data-compact='true'] .slosh-gauge-label,
+.slosh-gauge-stage[data-compact='true'] .slosh-gauge-sub,
+.slosh-gauge-stage[data-compact='true'] .slosh-gauge-hint {
+  display: none;
+}
+
+/*
+ * The one line that stays, at a fixed 22px. It is the readout because the readout is
+ * the state — it is the number the water is asked for and settles on, so the card says
+ * what the level means rather than only showing a coloured shape move. From 3.25rem,
+ * which was sized for a 19rem card in a 340px section. The water is behind it at the
+ * upper levels, which is what the text-shadow already on it is for.
+ */
+.slosh-gauge-stage[data-compact='true'] .slosh-gauge-read {
+  font-size: 1.375rem;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.slosh-gauge-stage[data-compact='true'] .slosh-gauge-unit {
+  font-size: 0.6875rem;
+}
+
+/*
+ * The keys stay, because pressing one is the pour — the crest that runs the length of
+ * the tank is the half of this animation a hover cannot show. Sized to sit on the
+ * strip beside the readout, and still the only thing here taking the pointer back.
+ */
+.slosh-gauge-stage[data-compact='true'] .slosh-gauge-keys {
+  gap: 0.25rem;
+}
+
+.slosh-gauge-stage[data-compact='true'] .slosh-gauge-key {
+  flex: 0 0 auto;
+  padding: 0.25rem 0.4375rem;
+  font-size: 0.625rem;
+  pointer-events: auto;
+}

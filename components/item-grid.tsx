@@ -29,7 +29,7 @@ export function ItemGrid({
       )}
     >
       {items.map((item) => (
-        <ItemCard key={item.name} item={item} height={height ?? 220} />
+        <ItemCard key={item.name} item={item} height={height ?? 240} />
       ))}
     </div>
   )

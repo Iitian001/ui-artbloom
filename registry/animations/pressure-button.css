@@ -1,0 +1,226 @@
+.pressure-button-stage {
+  position: relative;
+  display: grid;
+  place-content: center;
+  width: 100%;
+  min-height: 20rem;
+  padding: 2.75rem 1.75rem;
+  overflow: hidden;
+  border-radius: 0.75rem;
+  /* An inset ring rather than a border. The canvas host below is `inset: 0`, which
+     resolves against this element's padding box, so a border here would slide the
+     solver's origin a pixel off the button its ring is wrapped around. */
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.07);
+  background: radial-gradient(120% 105% at 20% 0%, #0d1b18 0%, #070e0d 58%, #040807 100%);
+  color: #eafff8;
+  font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+}
+
+.pressure-button-surface {
+  position: absolute;
+  inset: 0;
+  touch-action: none;
+}
+
+.pressure-button-surface canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* Transparent to the pointer as a whole, so a drag anywhere across the hero still
+   dents the balloon. Only the call to action takes events back. */
+.pressure-button-content {
+  position: relative;
+  width: min(25rem, 100%);
+  pointer-events: none;
+}
+
+.pressure-button-eyebrow {
+  margin: 0 0 0.6875rem;
+  font: 500 0.6875rem/1 ui-monospace, 'SFMono-Regular', Menlo, monospace;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(151, 240, 214, 0.74);
+}
+
+.pressure-button-title {
+  margin: 0 0 0.625rem;
+  font-size: 1.75rem;
+  font-weight: 500;
+  line-height: 1.1;
+  letter-spacing: -0.025em;
+}
+
+.pressure-button-copy {
+  margin: 0 0 1.5rem;
+  max-width: 22rem;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: rgba(234, 255, 248, 0.6);
+}
+
+/* No background, no border, no shadow. The pill you see is the softbody the canvas
+   paints; any CSS box here would sit on top of it as a ghost that refuses to
+   deform. The hit area stays the undeformed rectangle, which is the one part of a
+   button that should never move under the cursor. */
+.pressure-button-cta {
+  display: grid;
+  place-items: center;
+  width: min(13.5rem, 100%);
+  height: 3.25rem;
+  margin: 0;
+  padding: 0;
+  appearance: none;
+  border: 0;
+  border-radius: 999px;
+  background: none;
+  font: inherit;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  color: #f2fff9;
+  cursor: pointer;
+  pointer-events: auto;
+  touch-action: none;
+}
+
+.pressure-button-label {
+  display: block;
+  transform-origin: 50% 50%;
+  text-shadow: 0 1px 12px rgba(4, 18, 14, 0.72);
+  will-change: transform;
+}
+
+.pressure-button-cta:focus-visible {
+  outline: 2px solid rgba(151, 240, 214, 0.82);
+  outline-offset: 5px;
+}
+
+.pressure-button-note {
+  margin: 0.9375rem 0 0;
+  min-height: 1.125rem;
+  font: 500 0.75rem/1.5 ui-monospace, 'SFMono-Regular', Menlo, monospace;
+  letter-spacing: 0.02em;
+  color: rgba(234, 255, 248, 0.44);
+  transition: color 200ms ease;
+}
+
+.pressure-button-note[data-queued='true'] {
+  color: rgba(151, 240, 214, 0.9);
+}
+
+.pressure-button-hint {
+  position: absolute;
+  right: 0.875rem;
+  bottom: 0.75rem;
+  margin: 0;
+  font: 500 0.6875rem/1 ui-monospace, 'SFMono-Regular', Menlo, monospace;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(234, 255, 248, 0.26);
+  pointer-events: none;
+}
+
+/*
+ * With the loop stopped the same solver is still the source of the picture: it is
+ * relaxed to the equilibrium of whichever state the button is in — free, or held
+ * down against the plate — and that one settled frame is painted. The label still
+ * rides the squashed cap, because the shape is real. What is switched off is the
+ * rebound in between, the pointer dent, and the colour fade on the status line.
+ */
+@media (prefers-reduced-motion: reduce) {
+  .pressure-button-note {
+    transition: none;
+  }
+
+  .pressure-button-label {
+    will-change: auto;
+  }
+}
+
+/*
+ * The card variant: the same button authored for the 298x240 catalogue frame rather
+ * than scaled into it. The section copy goes, the pill is centred as the whole
+ * subject with the solver's ring wrapped around it, and one line of type sits along
+ * the bottom edge. Fixed rem sizes only below — this frame is 298px wide and the
+ * viewport is not.
+ */
+.pressure-button-stage[data-compact='true'] {
+  min-height: 0;
+  height: 100%;
+  /* Every layer below is absolute, so this only states the intent: the whole box
+     belongs to the mechanism. The card frame rounds and clips already. */
+  padding: 0;
+  border-radius: 0;
+}
+
+/*
+ * `pan-y`, not `none`. This surface is the full 298x240, and one that swallows every
+ * vertical touch traps the page inside a scrolling grid of cards — the worse failure
+ * by far. A horizontal drag still reaches the balloon and dents it, and a stationary
+ * press-and-hold is never a pan, so both gestures the button is about survive on a
+ * phone; only a vertical drag is handed back to the document.
+ */
+.pressure-button-stage[data-compact='true'] .pressure-button-surface {
+  touch-action: pan-y;
+}
+
+/*
+ * The copy layer stops being a column of text with a button at the end of it and
+ * becomes the pill's centring layer. The bottom inset is the contact shadow: it
+ * hangs below the cap, so the box the pill is centred in stops short of the type
+ * strip and the pill *plus* its shadow reads as centred rather than the pill alone.
+ * `pointer-events: none` is inherited from the base rule and left alone, so a drag
+ * anywhere across the card reaches the canvas; the button takes its own back.
+ */
+.pressure-button-stage[data-compact='true'] .pressure-button-content {
+  position: absolute;
+  inset: 0 0 1.25rem;
+  width: auto;
+  display: grid;
+  place-content: center;
+}
+
+/* Eyebrow, headline and paragraph are the section's, and the card's own title link
+   below the frame already names the item. The status line goes with them: the label
+   on the pill turns over on the same click, so it would be the same news twice. */
+.pressure-button-stage[data-compact='true'] .pressure-button-eyebrow,
+.pressure-button-stage[data-compact='true'] .pressure-button-title,
+.pressure-button-stage[data-compact='true'] .pressure-button-copy,
+.pressure-button-stage[data-compact='true'] .pressure-button-note {
+  display: none;
+}
+
+/*
+ * 216 x 52 of the 298 x 240, and a flat length rather than the section's `min()` so
+ * the ring `setup()` measures is the same box on every card. That leaves 41px at
+ * each side for the waist to bulge into and room under the cap for the contact
+ * shadow, and the plate still presses its authored 9px — a shorter button would only
+ * make the squash deeper, not the pill bigger.
+ */
+.pressure-button-stage[data-compact='true'] .pressure-button-cta {
+  width: 13.5rem;
+  /* The same trade as the surface: 216x52 is a good part of the card, and a thumb
+     that lands on the button should still be able to scroll past it. */
+  touch-action: pan-y;
+}
+
+/*
+ * The one line of type that stays, off the balloon's back and onto the bottom edge.
+ * It is the hint and not the headline because nothing about a pill tells you it can
+ * be held down or dented from the side, and the fixed 0.6875rem it was already set
+ * in is the right size for this box. Lifted out of the hero's whisper — as the only
+ * text in the card it has to be readable — and still deaf to the pointer, so a drag
+ * across it takes hold of the balloon.
+ */
+.pressure-button-stage[data-compact='true'] .pressure-button-hint {
+  inset: auto 0 0 0;
+  padding: 0.75rem;
+  text-align: center;
+  white-space: nowrap;
+  color: rgba(234, 255, 248, 0.48);
+}
+
+
+

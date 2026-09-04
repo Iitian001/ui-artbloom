@@ -1,0 +1,201 @@
+.pull-cord-stage {
+  position: relative;
+  width: 100%;
+  min-height: 340px;
+  overflow: hidden;
+  border-radius: 0.75rem;
+  background: radial-gradient(120% 100% at 78% 4%, #14171d 0%, #0a0c11 58%, #06070a 100%);
+  color: #f2ece0;
+  isolation: isolate;
+}
+
+/* The lamp, as light rather than as a lamp. Behind the cord because a pseudo
+   element paints before its element's children. */
+.pull-cord-stage::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(58% 62% at 78% 2%, rgba(255, 194, 118, 0.32), rgba(255, 194, 118, 0) 72%);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 280ms ease;
+}
+
+.pull-cord-stage[data-on='true']::before {
+  opacity: 1;
+}
+
+.pull-cord-line {
+  position: absolute;
+  inset: 0;
+  cursor: grab;
+  touch-action: none;
+}
+
+.pull-cord-line:active {
+  cursor: grabbing;
+}
+
+.pull-cord-line canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/*
+ * Rides on the knob: the draw loop publishes the knob's position as `--cord-x` and
+ * `--cord-y`, so the focus ring lands on the control instead of on a guess about
+ * where the control usually hangs. Deaf to the pointer, because a press on the knob
+ * belongs to the cord — but still in the tab order, and still activated by Space.
+ */
+.pull-cord-switch {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 2.5rem;
+  height: 2.5rem;
+  appearance: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: none;
+  transform: translate(calc(var(--cord-x, 0px) - 1.25rem), calc(var(--cord-y, 0px) - 1.25rem));
+  pointer-events: none;
+}
+
+.pull-cord-switch:focus-visible {
+  outline: 2px solid rgba(255, 214, 150, 0.85);
+  outline-offset: 3px;
+}
+
+/* Transparent to the pointer, so the cord can be grabbed through the copy. */
+.pull-cord-face {
+  position: relative;
+  max-width: 27rem;
+  padding: 4.5rem 3rem 5.25rem;
+  pointer-events: none;
+}
+
+.pull-cord-eyebrow {
+  margin: 0 0 1rem;
+  font: 500 0.6875rem/1 ui-monospace, "SFMono-Regular", Menlo, monospace;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(255, 196, 122, 0.78);
+}
+
+.pull-cord-face h2 {
+  margin: 0 0 1rem;
+  font-size: clamp(1.625rem, 3.2vw, 2.5rem);
+  font-weight: 500;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+  color: rgba(242, 236, 224, 0.72);
+  transition: color 280ms ease;
+}
+
+.pull-cord-stage[data-on='true'] .pull-cord-face h2 {
+  color: #fff6e6;
+}
+
+.pull-cord-copy {
+  margin: 0;
+  max-width: 24rem;
+  font-size: 0.9375rem;
+  line-height: 1.65;
+  color: rgba(242, 236, 224, 0.5);
+  transition: color 280ms ease;
+}
+
+.pull-cord-stage[data-on='true'] .pull-cord-copy {
+  color: rgba(242, 236, 224, 0.66);
+}
+
+.pull-cord-hint {
+  position: absolute;
+  right: 0.875rem;
+  bottom: 0.75rem;
+  margin: 0;
+  font: 500 0.6875rem/1 ui-monospace, "SFMono-Regular", Menlo, monospace;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(242, 236, 224, 0.28);
+  pointer-events: none;
+}
+
+/*
+ * With the loop stopped the cord hangs straight and refuses to be dragged, because
+ * dragging it would be motion smuggled in through the pointer handler. The switch
+ * button is the whole control here, and it is a real one — Tab to it, Space toggles
+ * it, and the lamp changes state with no travel in between.
+ */
+@media (prefers-reduced-motion: reduce) {
+  .pull-cord-line {
+    cursor: default;
+  }
+
+  .pull-cord-stage::before,
+  .pull-cord-face h2,
+  .pull-cord-copy {
+    transition: none;
+  }
+}
+
+/*
+ * The card variant: the same cord authored for the 298x240 catalogue frame rather
+ * than scaled into it. The section copy goes, one line of state stays pinned along
+ * the bottom edge, and the mechanism — mount, plunger, rope, knob — is given the
+ * whole box. No `vw` anywhere below: the frame is 298px wide and the viewport is not.
+ */
+.pull-cord-stage[data-compact='true'] {
+  min-height: 0;
+  height: 100%;
+  /* The card frame rounds and clips already. */
+  border-radius: 0;
+}
+
+/*
+ * `pan-y`, not `none`, even though pulling a cord is a vertical gesture: a full-bleed
+ * drag surface that swallows vertical touches traps the page in a scrolling grid of
+ * cards, which is the worse failure. Horizontal drags still reach the cord, and about
+ * 85px of sideways swing draws the plunger its full 22px and trips the detent — so
+ * the real behaviour, click included, survives the trade on a phone.
+ */
+.pull-cord-stage[data-compact='true'] .pull-cord-line {
+  touch-action: pan-y;
+}
+
+/*
+ * The text layer off the mechanism's back and onto the bottom edge. Still deaf to the
+ * pointer, so a drag anywhere over it takes hold of the cord.
+ */
+.pull-cord-stage[data-compact='true'] .pull-cord-face {
+  position: absolute;
+  inset: auto 0 0 0;
+  max-width: none;
+  padding: 0.75rem;
+  pointer-events: none;
+}
+
+/* Everything but the state line: a paragraph of prose, a label the card already
+   carries in its own title, and a hint the grab cursor gives for free. */
+.pull-cord-stage[data-compact='true'] .pull-cord-copy,
+.pull-cord-stage[data-compact='true'] .pull-cord-eyebrow,
+.pull-cord-stage[data-compact='true'] .pull-cord-hint {
+  display: none;
+}
+
+/*
+ * The one line that stays, at a fixed size. It is the heading because the heading is
+ * the state readout — it is what turns over when the detent trips, so the card says
+ * whether the pull worked. The rope is 153px of the 240 and the knob cannot swing
+ * past about 191, so this strip is clear of it.
+ */
+.pull-cord-stage[data-compact='true'] .pull-cord-face h2 {
+  margin: 0;
+  font-size: 0.8125rem;
+  line-height: 1.2;
+  white-space: nowrap;
+}

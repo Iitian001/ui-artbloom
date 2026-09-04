@@ -1,0 +1,228 @@
+.balance-progress-stage {
+  position: relative;
+  display: grid;
+  width: 100%;
+  min-height: 20rem;
+  padding: 1.75rem 1.75rem 1.5rem;
+  overflow: hidden;
+  border-radius: 0.75rem;
+  background: radial-gradient(120% 120% at 50% 0%, #111a29 0%, #0a0e17 58%, #06080e 100%);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.07);
+  font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  color: #eef1f7;
+  isolation: isolate;
+}
+
+/* The measured element carries no border: `inset: 0` resolves against the padding
+   box, so one pixel of border would shift the canvas origin and the cart would ride
+   beside the track instead of on it. The hairline lives on the stage as a shadow. */
+.balance-progress-surface {
+  position: absolute;
+  inset: 0;
+  touch-action: none;
+}
+
+.balance-progress-surface canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* Transparent to the pointer so a drag anywhere over the card still reaches the
+   pole. Only the stage buttons take events back, and they can because they are a
+   later sibling of the capture surface rather than a child of it. */
+.balance-progress-content {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  pointer-events: none;
+}
+
+.balance-progress-eyebrow {
+  margin: 0 0 0.625rem;
+  font: 500 0.6875rem/1 ui-monospace, 'SFMono-Regular', Menlo, monospace;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(238, 241, 247, 0.48);
+}
+
+.balance-progress-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.balance-progress-title {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 500;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  text-shadow: 0 1px 16px rgba(6, 8, 14, 0.75);
+}
+
+.balance-progress-percent {
+  font-size: 0.875rem;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+  color: #ffc46b;
+  text-shadow: 0 1px 16px rgba(6, 8, 14, 0.8);
+}
+
+.balance-progress-sub {
+  max-width: 24rem;
+  margin: 0.5rem 0 0;
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  color: rgba(238, 241, 247, 0.55);
+  text-shadow: 0 1px 14px rgba(6, 8, 14, 0.85);
+}
+
+.balance-progress-steps {
+  display: flex;
+  gap: 0.3125rem;
+}
+
+.balance-progress-step {
+  appearance: none;
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  padding: 0.5rem 0.25rem;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  border-radius: 999px;
+  background: rgba(8, 12, 20, 0.5);
+  font: inherit;
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: rgba(238, 241, 247, 0.7);
+  cursor: pointer;
+  pointer-events: auto;
+  backdrop-filter: blur(6px);
+  transition:
+    border-color 160ms ease,
+    background-color 160ms ease,
+    color 160ms ease;
+}
+
+.balance-progress-step:hover {
+  border-color: rgba(255, 196, 107, 0.45);
+  color: #fff6e8;
+}
+
+.balance-progress-step[aria-current='step'] {
+  border-color: rgba(255, 196, 107, 0.65);
+  background: rgba(255, 196, 107, 0.16);
+  color: #fff3e0;
+}
+
+.balance-progress-step:focus-visible {
+  outline: 2px solid rgba(255, 196, 107, 0.8);
+  outline-offset: 2px;
+}
+
+.balance-progress-hint {
+  position: absolute;
+  right: 0.875rem;
+  bottom: 0.75rem;
+  margin: 0;
+  font: 500 0.6875rem/1 ui-monospace, 'SFMono-Regular', Menlo, monospace;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(238, 241, 247, 0.26);
+  pointer-events: none;
+}
+
+@media (max-width: 26rem) {
+  .balance-progress-stage {
+    padding: 1.5rem 1rem 1.375rem;
+  }
+
+  .balance-progress-title {
+    font-size: 1.25rem;
+  }
+
+  .balance-progress-step {
+    padding: 0.5rem 0.125rem;
+    font-size: 0.6875rem;
+    letter-spacing: 0;
+  }
+}
+
+/*
+ * With the loop stopped the cart is placed at the selected stage, upright, and the
+ * bar reads that stage exactly — the analytic rest state of the pair, which is the
+ * one state the controller is trying to reach anyway. What is switched off is the
+ * lean, the backwards step and the settling wobble, plus the button colour fades.
+ * Pressing a stage still repaints, so the picture is never stale, and a drag no
+ * longer does anything because there is no frame in which to recover from it.
+ */
+@media (prefers-reduced-motion: reduce) {
+  .balance-progress-step {
+    transition: none;
+  }
+}
+
+/*
+ * Card variant: the same component authored for the 298x240 catalogue frame, unscaled.
+ * The stage stops being a section — the canvas takes the whole box, the copy collapses
+ * to the eyebrow, and the stage buttons shrink into a strip pinned below the track, so
+ * the cart, the pole and its tip streak are the only things with room.
+ */
+.balance-progress-stage[data-compact='true'] {
+  min-height: 0;
+  height: 100%;
+  padding: 0;
+  border-radius: 0;
+}
+
+/* The surface's `inset: 0` resolves against the padding box, so zeroing the padding
+   above is what hands the canvas all 298x240: the track widens, and the pole and the
+   streak grow with it. `pan-y` rather than `none` because a full-bleed drag surface in
+   a scrolling grid traps a phone on this card, and the disturbance only ever reads
+   horizontal pointer travel — a vertical swipe was never an input here. */
+.balance-progress-stage[data-compact='true'] .balance-progress-surface {
+  touch-action: pan-y;
+}
+
+/* One overlay strip along the bottom instead of a column the mechanism has to share.
+   The base rule's `pointer-events: none` is left alone, so a drag started on the
+   eyebrow still lands on the pole. */
+.balance-progress-stage[data-compact='true'] .balance-progress-content {
+  position: absolute;
+  inset: auto 0 0 0;
+  padding: 0.625rem 0.75rem;
+}
+
+.balance-progress-stage[data-compact='true'] .balance-progress-eyebrow {
+  margin: 0 0 0.375rem;
+}
+
+/* The eyebrow is the one line of text left. The stage name is already the highlighted
+   button, the percent means nothing without the title beside it, and the buttons say
+   plainly enough that they can be pressed. */
+.balance-progress-stage[data-compact='true'] .balance-progress-head,
+.balance-progress-stage[data-compact='true'] .balance-progress-sub,
+.balance-progress-stage[data-compact='true'] .balance-progress-hint {
+  display: none;
+}
+
+.balance-progress-stage[data-compact='true'] .balance-progress-steps {
+  gap: 0.25rem;
+}
+
+/* Pressing a stage is the demo — the wrong-way first step — so the buttons stay, small
+   enough that five of them cross 298px without reaching for the ellipsis. */
+.balance-progress-stage[data-compact='true'] .balance-progress-step {
+  padding: 0.25rem 0.1875rem;
+  font-size: 0.625rem;
+  letter-spacing: 0;
+  pointer-events: auto;
+}

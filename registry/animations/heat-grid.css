@@ -1,0 +1,210 @@
+.heat-grid-stage {
+  position: relative;
+  width: 100%;
+  min-height: 20rem;
+  overflow: hidden;
+  border-radius: 0.875rem;
+  background: #0b0d12;
+  color: #eceef3;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* No border on the measured host: `inset: 0` resolves against the padding box, so a border would
+   slide the canvas origin a pixel off the grid that the pointer-to-cell maths assumes. An inset
+   shadow draws the same hairline without moving anything. */
+.heat-grid-surface {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.055);
+  touch-action: none;
+}
+
+.heat-grid-surface canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* Transparent to the pointer so a drag started anywhere over the header still warms cells; the
+   probe button takes events back. Height is in px, not rem, because the canvas reserves exactly
+   78 device-independent pixels for this band before it lays out the calendar. */
+.heat-grid-content {
+  position: relative;
+  display: flex;
+  min-height: 78px;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.0625rem 1.125rem 0;
+  pointer-events: none;
+}
+
+.heat-grid-titles {
+  min-width: 0;
+}
+
+.heat-grid-title {
+  margin: 0;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.heat-grid-meta {
+  margin: 0.3125rem 0 0;
+  overflow: hidden;
+  color: #99a0ad;
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.heat-grid-probe {
+  display: grid;
+  flex: none;
+  gap: 0.125rem;
+  margin: 0;
+  padding: 0.4375rem 0.6875rem;
+  appearance: none;
+  border: 0;
+  border-radius: 0.5rem;
+  background: rgba(255, 255, 255, 0.05);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.09);
+  color: #eceef3;
+  font: inherit;
+  text-align: right;
+  cursor: pointer;
+  pointer-events: auto;
+  transition:
+    background-color 150ms ease,
+    box-shadow 150ms ease;
+}
+
+.heat-grid-probe:hover {
+  background: rgba(244, 164, 74, 0.14);
+  box-shadow: inset 0 0 0 1px rgba(244, 164, 74, 0.42);
+}
+
+.heat-grid-probe:focus-visible {
+  outline: 2px solid rgba(244, 164, 74, 0.8);
+  outline-offset: 2px;
+}
+
+.heat-grid-probe-day {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+}
+
+.heat-grid-probe-count {
+  color: #f4a44a;
+  font-size: 0.6875rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.heat-grid-hint {
+  position: absolute;
+  right: 0.875rem;
+  bottom: 0.75rem;
+  margin: 0;
+  font: 500 0.6875rem/1 ui-monospace, 'SFMono-Regular', Menlo, monospace;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  pointer-events: none;
+  color: rgba(236, 238, 243, 0.3);
+}
+
+/*
+ * The animation frame loop never starts, so what is switched off is the diffusion in time: no warm
+ * trail following the cursor, no glow decaying after you leave. The canvas still paints the recorded
+ * grid and one already-spread pulse on the selected day, produced by running the same explicit
+ * solver to that point inside setup — a still of the physics rather than a different picture.
+ */
+@media (prefers-reduced-motion: reduce) {
+  .heat-grid-probe {
+    transition: none;
+  }
+}
+
+/*
+ * The card variant: the 298x240 catalogue frame, at that real size and never scaled. The
+ * calendar already lays itself out against the live canvas box, so nothing here resizes it
+ * — all this does is crop the band the header used to occupy and cut the header itself down
+ * to one strip along the bottom, which is the only part of the box the canvas keeps empty.
+ */
+.heat-grid-stage[data-compact='true'] {
+  min-height: 0;
+  height: 100%;
+  /* The card frame rounds and clips already. */
+  border-radius: 0;
+}
+
+/*
+ * `HEAD` in the tsx reserves the top 78px of the canvas for the header that used to sit
+ * there, and in a card the header no longer does. Lifting the measured host by exactly that
+ * band crops it out of view, so the calendar centres in what is left instead of floating in
+ * the lower half under 78px of nothing: at 298 wide the pitch is capped by the width, which
+ * pins the grid at 234x63 however tall the host is, so the lift is the whole of the fix.
+ * In pixels, because that constant is in pixels.
+ *
+ * `pan-y` because a full-bleed drag surface that claims every touch traps the page inside a
+ * scrolling grid. The vertical gesture goes back to the document; a horizontal drag still
+ * warms cells, which is the gesture this mechanism is about.
+ */
+.heat-grid-stage[data-compact='true'] .heat-grid-surface {
+  inset: -78px 0 0 0;
+  touch-action: pan-y;
+}
+
+/*
+ * The strip lands in the gap under the legend: `FOOT` holds the legend 26px clear of the
+ * canvas floor and the lift above leaves it around 150px down, so the two never meet.
+ * `pointer-events: none` is inherited from the rule above and left alone, so a drag started
+ * over the strip still warms cells; the probe goes on taking its own clicks back.
+ */
+.heat-grid-stage[data-compact='true'] .heat-grid-content {
+  position: absolute;
+  inset: auto 0 0 0;
+  min-height: 0;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem;
+}
+
+/* The one line of text that stays, at a fixed rem — never `vw`, which would read the
+   viewport rather than the 298px card. Ellipsised rather than wrapped, so it cannot
+   quietly become two lines next to a long date. */
+.heat-grid-stage[data-compact='true'] .heat-grid-title {
+  overflow: hidden;
+  font-size: 0.8125rem;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* The paragraph would be the second line and the hint the third; the card's own title
+   already says what this is, and the legend on the canvas explains the colour. */
+.heat-grid-stage[data-compact='true'] .heat-grid-meta,
+.heat-grid-stage[data-compact='true'] .heat-grid-hint {
+  display: none;
+}
+
+/* Day and count side by side instead of stacked, so the probe is one line ~20px tall and
+   reads as part of the strip rather than a block sitting on it. It stays because a click
+   on it drops heat on the probed day, which is worth having in a card. */
+.heat-grid-stage[data-compact='true'] .heat-grid-probe {
+  grid-auto-flow: column;
+  align-items: baseline;
+  gap: 0.375rem;
+  padding: 0.1875rem 0.5rem;
+  border-radius: 0.375rem;
+}
+
+.heat-grid-stage[data-compact='true'] .heat-grid-probe-day {
+  font-size: 0.6875rem;
+}
+
+.heat-grid-stage[data-compact='true'] .heat-grid-probe-count {
+  font-size: 0.625rem;
+}

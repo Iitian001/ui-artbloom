@@ -29,6 +29,10 @@ program
   .option("--registry <url>", "read from a different registry origin")
   .option("--dry-run", "print the plan and exit")
   .option("--no-deps", "skip the npm install step")
+  // Commander turns a `--no-x` flag into `x: false`, which is exactly what
+  // track.ts reads. It has to be declared even so: undeclared, the flag the
+  // README documents exits 1 as an unknown option instead of opting out.
+  .option("--no-telemetry", "do not report the install")
   .option("-s, --silent", "no output except errors")
   .action(async (names: string[], options: AddOptions) => {
     await add(names, options)

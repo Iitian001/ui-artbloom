@@ -1,6 +1,8 @@
 import { notFound } from "next/navigation"
 
 import CinematicSupercar from "@/registry/templates/cinematic-supercar/page"
+import MonolithLaunchLayout from "@/registry/templates/monolith-launch/layout"
+import MonolithLaunchHome from "@/registry/templates/monolith-launch/page"
 import PaperPortfolioLayout from "@/registry/templates/paper-portfolio/layout"
 import PaperPortfolioHome from "@/registry/templates/paper-portfolio/page"
 
@@ -17,6 +19,14 @@ function PaperPortfolio() {
   )
 }
 
+function MonolithLaunch() {
+  return (
+    <MonolithLaunchLayout>
+      <MonolithLaunchHome />
+    </MonolithLaunchLayout>
+  )
+}
+
 /**
  * Template name -> the real page component that ships to a consumer. One entry
  * per `kind: "templates"` item in `lib/registry/items.ts`; templates are the only
@@ -30,6 +40,7 @@ function PaperPortfolio() {
  */
 const TEMPLATE_PAGES = new Map<string, () => React.ReactNode>([
   ["cinematic-supercar", CinematicSupercar],
+  ["monolith-launch", MonolithLaunch],
   ["paper-portfolio", PaperPortfolio],
 ])
 

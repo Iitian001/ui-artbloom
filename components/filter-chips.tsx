@@ -4,7 +4,14 @@ import type { Kind } from "@/lib/categories"
 import { categoryCount, populatedCategories } from "@/lib/registry"
 import { cn } from "@/lib/utils"
 
-/** Quick-jump chips for the busiest categories in a kind. */
+/**
+ * Quick-jump chips for the busiest categories in a kind.
+ *
+ * The row wraps rather than scrolling sideways. Ten chips plus a label is a
+ * couple of lines on a phone and one line on a laptop, and a horizontal
+ * scrollbar over a row that fits in two lines hides categories behind a gesture
+ * nobody knows is there.
+ */
 export function FilterChips({
   kind,
   activeSlug,
@@ -20,7 +27,7 @@ export function FilterChips({
   if (categories.length === 0) return null
 
   return (
-    <div className={cn("scrollbar-none flex items-center gap-2 overflow-x-auto", className)}>
+    <div className={cn("flex flex-wrap items-center gap-2", className)}>
       <span className="shrink-0 text-xs font-medium tracking-wide text-muted-foreground uppercase">
         Filters
       </span>

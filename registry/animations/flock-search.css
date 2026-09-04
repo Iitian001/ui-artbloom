@@ -1,0 +1,293 @@
+.flock-search-stage {
+  position: relative;
+  display: grid;
+  place-content: center;
+  width: 100%;
+  min-height: 24rem;
+  padding: 3rem 1.5rem;
+  overflow: hidden;
+  border-radius: 0.75rem;
+  background: radial-gradient(130% 120% at 50% 0%, #101827 0%, #0a0e18 55%, #06080e 100%);
+  color: #eef3fb;
+}
+
+/* No border on the measured element: `inset: 0` is against the padding box, so one
+   pixel of border would slide the canvas origin off the pointer the flock reads. */
+.flock-search-surface {
+  position: absolute;
+  inset: 0;
+  touch-action: none;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+  border-radius: inherit;
+}
+
+.flock-search-surface canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* A later sibling of the canvas host, not a child: the hook captures the pointer on
+   pointerdown, which would eat the field's focus click if this sat inside the stage. */
+.flock-search-content {
+  position: relative;
+  width: min(27rem, 100%);
+  margin: 0 auto;
+  text-align: center;
+  pointer-events: none;
+}
+
+.flock-search-eyebrow {
+  margin: 0 0 0.625rem;
+  font: 500 0.6875rem/1 ui-monospace, 'SFMono-Regular', Menlo, monospace;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255, 201, 120, 0.78);
+}
+
+.flock-search-title {
+  margin: 0 0 0.5rem;
+  font-size: 1.5rem;
+  font-weight: 500;
+  line-height: 1.15;
+  letter-spacing: -0.025em;
+  text-shadow: 0 1px 20px rgba(6, 9, 16, 0.9);
+}
+
+.flock-search-help {
+  margin: 0 auto 1.125rem;
+  max-width: 24rem;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: rgba(238, 243, 251, 0.6);
+  text-shadow: 0 1px 16px rgba(6, 9, 16, 0.85);
+}
+
+.flock-search-field {
+  display: flex;
+  gap: 0.375rem;
+  align-items: stretch;
+}
+
+/* Opaque enough to hold 4.5:1 text over the busiest part of the flock. */
+.flock-search-input {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 0.625rem 0.875rem;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 999px;
+  background: rgba(8, 12, 20, 0.86);
+  font: inherit;
+  font-size: 0.875rem;
+  color: #f4f8ff;
+  pointer-events: auto;
+  backdrop-filter: blur(8px);
+  transition:
+    border-color 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.flock-search-input::placeholder {
+  color: rgba(238, 243, 251, 0.42);
+}
+
+.flock-search-input:focus-visible {
+  outline: none;
+  border-color: rgba(255, 201, 120, 0.72);
+  box-shadow: 0 0 0 3px rgba(255, 201, 120, 0.18);
+}
+
+.flock-search-go {
+  appearance: none;
+  flex: 0 0 auto;
+  padding: 0.625rem 1.0625rem;
+  border: 1px solid rgba(255, 201, 120, 0.55);
+  border-radius: 999px;
+  background: rgba(255, 201, 120, 0.16);
+  font: inherit;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: #ffdca6;
+  cursor: pointer;
+  pointer-events: auto;
+  transition:
+    background-color 160ms ease,
+    color 160ms ease;
+}
+
+.flock-search-go:hover {
+  background: rgba(255, 201, 120, 0.26);
+  color: #fff1d8;
+}
+
+.flock-search-tries {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+  justify-content: center;
+  margin: 0.875rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.flock-search-try {
+  appearance: none;
+  margin: 0;
+  padding: 0.3125rem 0.6875rem;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 999px;
+  background: rgba(8, 12, 20, 0.7);
+  font: inherit;
+  font-size: 0.75rem;
+  color: rgba(238, 243, 251, 0.74);
+  cursor: pointer;
+  pointer-events: auto;
+  backdrop-filter: blur(6px);
+  transition:
+    border-color 160ms ease,
+    color 160ms ease;
+}
+
+.flock-search-try:hover {
+  border-color: rgba(255, 201, 120, 0.45);
+  color: #fff3de;
+}
+
+.flock-search-go:focus-visible,
+.flock-search-try:focus-visible {
+  outline: 2px solid rgba(255, 201, 120, 0.8);
+  outline-offset: 2px;
+}
+
+.flock-search-hint {
+  position: absolute;
+  right: 0.875rem;
+  bottom: 0.75rem;
+  margin: 0;
+  font: 500 0.6875rem/1 ui-monospace, 'SFMono-Regular', Menlo, monospace;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  pointer-events: none;
+  color: rgba(238, 243, 251, 0.26);
+}
+
+@media (max-width: 26rem) {
+  .flock-search-stage {
+    padding: 2.25rem 1rem;
+  }
+
+  .flock-search-field {
+    flex-wrap: wrap;
+  }
+
+  .flock-search-go {
+    flex: 1 1 100%;
+  }
+}
+
+/*
+ * Switched off: the integration loop itself. The flock is still solved — setup runs
+ * about two seconds of it — but only the one warmed frame is painted, so the birds
+ * hold their formation and the cursor no longer splits them. Hover and focus keep
+ * their colour change; only their transitions go.
+ */
+@media (prefers-reduced-motion: reduce) {
+  .flock-search-input,
+  .flock-search-go,
+  .flock-search-try {
+    transition: none;
+  }
+}
+
+/*
+ * Card variant: the same flock re-authored for the catalogue's 298x240 frame. That is the real,
+ * final pixel size — nothing here is scaled. The section copy collapses to the eyebrow and the
+ * search row along the bottom edge, so the four hundred boids get the whole box instead of
+ * sharing it with a 1.5rem heading. The card frame rounds and clips, so this stage does neither.
+ */
+.flock-search-stage[data-compact='true'] {
+  min-height: 0;
+  height: 100%;
+  padding: 0;
+  border-radius: 0;
+}
+
+/* pan-y, not none: the card sits in a scrolling grid, and a full-bleed drag surface that swallows
+   vertical touch traps the page on a phone. Horizontal drags still reach the flock, and the scene
+   hook never calls preventDefault, so touch-action alone decides this. */
+.flock-search-stage[data-compact='true'] .flock-search-surface {
+  touch-action: pan-y;
+}
+
+/* The veil `draw` lays over the birds is there to keep the 1.5rem heading legible, and its radius
+   works out at ~167px inside a 298x240 box: with the heading hidden it is a black hole sitting on
+   the mechanism. `screen` makes a black fill a no-op, so the middle of the flock comes back
+   without the draw call learning anything about the card. */
+.flock-search-stage[data-compact='true'] .flock-search-surface canvas {
+  mix-blend-mode: screen;
+}
+
+/* Off the mechanism entirely: one strip on the bottom edge. `pointer-events: none` is inherited
+   from the base rule, so drags across it still land on the canvas. */
+/* A scrim, because the strip is over the field rather than beside it. At full size the copy
+   sits in a margin the flock never enters; pinned to the bottom edge of a 298px card the birds
+   fly straight through both the label and the input, and neither read. The gradient fades to
+   nothing at its own top edge, so it darkens the bottom ~45px of the field and stops — no band,
+   no visible seam. `pointer-events` is untouched: the base rule leaves this layer deaf and the
+   two controls `auto`, so a drag through the scrim still steers the flock. */
+.flock-search-stage[data-compact='true'] .flock-search-content {
+  position: absolute;
+  inset: auto 0 0 0;
+  width: auto;
+  margin: 0;
+  padding: 0.75rem;
+  background: linear-gradient(
+    to top,
+    rgba(6, 10, 18, 0.94) 0%,
+    rgba(6, 10, 18, 0.78) 55%,
+    rgba(6, 10, 18, 0) 100%
+  );
+}
+
+/* The one line of copy that survives, at a fixed size: `vw` or a `clamp()` with a `vw` term would
+   measure the 1340px viewport rather than this 298px card, which is the bug being fixed.
+
+   The shadow is the whole reason this rule is not just a font size. At full size the eyebrow sits
+   in a wide margin the flock never reaches; in a 298px box the birds fly straight through it, and
+   10px amber caps over a field of pale triangles at the same y was the least readable thing on the
+   card. A tight dark halo pulls it off the field without a scrim rectangle behind it. */
+.flock-search-stage[data-compact='true'] .flock-search-eyebrow {
+  margin: 0 0 0.375rem;
+  font-size: 0.625rem;
+  text-shadow:
+    0 0 3px rgba(6, 10, 18, 0.95),
+    0 1px 8px rgba(6, 10, 18, 0.8);
+}
+
+.flock-search-stage[data-compact='true'] .flock-search-title,
+.flock-search-stage[data-compact='true'] .flock-search-help,
+.flock-search-stage[data-compact='true'] .flock-search-tries,
+.flock-search-stage[data-compact='true'] .flock-search-hint {
+  display: none;
+}
+
+/* The field stays, shrunk: submitting is the second half of the behaviour — a radial kick from the
+   flock's own centroid — so a visitor who clicks Search inside the card sees the flock burst and
+   re-form. Both controls keep the `pointer-events: auto` from their base rules. Held to one row
+   whatever the viewport is, since the 26rem media query would otherwise wrap the button under the
+   field and double the height of this strip. */
+.flock-search-stage[data-compact='true'] .flock-search-field {
+  flex-wrap: nowrap;
+  gap: 0.3125rem;
+}
+
+.flock-search-stage[data-compact='true'] .flock-search-input {
+  padding: 0.375rem 0.625rem;
+  font-size: 0.6875rem;
+}
+
+.flock-search-stage[data-compact='true'] .flock-search-go {
+  flex: 0 0 auto;
+  padding: 0.375rem 0.6875rem;
+  font-size: 0.6875rem;
+}

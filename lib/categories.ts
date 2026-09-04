@@ -12,13 +12,16 @@
  */
 
 /**
- * `components` is still in the union because `RegistryItem.kind`, the published
- * schema at /schema/registry-item.json and the landing hero all name it — but
- * the catalog holds no components, so no category is declared for it below and
- * `isBrowsableKind` 404s `/community/components`. Narrowing the union is a
- * separate change that has to move those call sites first.
+ * Two kinds, and that is the whole catalogue. `components` used to sit in this
+ * union as a promise, which meant `RegistryItem.kind`, the published schema at
+ * /schema/registry-item.json and the landing hero all named a kind nothing could
+ * ever be — so it is gone from all four places together.
+ *
+ * Nothing about routing changed with it: `isBrowsableKind` is
+ * `isKind(value) && kindCount(value) > 0`, so `/community/components` 404s on
+ * the count, exactly as it did while the union still admitted the word.
  */
-export type Kind = "templates" | "animations" | "components"
+export type Kind = "templates" | "animations"
 
 export type Category = {
   /** URL segment under /community/{kind}/s/{slug} */
@@ -47,13 +50,16 @@ export const TEMPLATE_CATEGORIES: Category[] = [
   c("templates", "Agencies", "agency"),
   c("templates", "Personal Sites", "personal"),
   c("templates", "Resumes", "resume"),
+  // No "E-commerce" / `store` slug here on purpose. The four footwear sites that
+  // claimed it were cut, so nothing in `ITEMS` claims it — and listing it anyway
+  // would pre-render /community/templates/s/store as an empty "coming soon" page,
+  // which is the one thing the rule at the top of this file forbids. It comes
+  // back in the same change that adds the first storefront.
 ]
 
 export const ANIMATION_CATEGORIES: Category[] = [
   c("animations", "Text Effects", "text"),
-  c("animations", "Page Transitions", "transitions"),
   c("animations", "Backgrounds", "backgrounds"),
-  c("animations", "Gradients", "gradients", true),
   c("animations", "Loaders", "loaders"),
   c("animations", "Marquees", "marquees"),
   c("animations", "Particles", "particles"),
@@ -89,14 +95,12 @@ export const ALL_CATEGORIES: Category[] = CATEGORY_GROUPS.flatMap((g) => g.categ
 export const KIND_LABEL: Record<Kind, string> = {
   templates: "Templates",
   animations: "Animations",
-  components: "Components",
 }
 
 /** Singular, for detail-page breadcrumbs. */
 export const KIND_SINGULAR: Record<Kind, string> = {
   templates: "Template",
   animations: "Animation",
-  components: "Component",
 }
 
 export function findCategory(kind: Kind, slug: string) {
@@ -108,5 +112,5 @@ export function categoryLabel(kind: Kind, slug: string) {
 }
 
 export function isKind(value: string): value is Kind {
-  return value === "templates" || value === "animations" || value === "components"
+  return value === "templates" || value === "animations"
 }

@@ -1,0 +1,199 @@
+.chip-pile-stage {
+  position: relative;
+  width: 100%;
+  min-height: 27rem;
+  overflow: hidden;
+  border-radius: 0.75rem;
+  background: radial-gradient(120% 100% at 22% 0%, #131824 0%, #0a0d15 58%, #07090f 100%);
+  color: #eef2f9;
+}
+
+.chip-pile-desk {
+  position: absolute;
+  inset: 0;
+  cursor: grab;
+  touch-action: none;
+}
+
+.chip-pile-desk:active {
+  cursor: grabbing;
+}
+
+.chip-pile-desk canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* Transparent to the pointer, so a chip can be grabbed through the copy above it.
+   Only the toss button takes its clicks back. */
+.chip-pile-face {
+  position: relative;
+  max-width: 30rem;
+  padding: 2.75rem 2.5rem 3rem;
+  pointer-events: none;
+}
+
+.chip-pile-eyebrow {
+  margin: 0 0 0.875rem;
+  font: 500 0.6875rem/1 ui-monospace, "SFMono-Regular", Menlo, monospace;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(150, 214, 222, 0.8);
+}
+
+.chip-pile-face h2 {
+  margin: 0 0 0.875rem;
+  font-size: clamp(1.5rem, 2.9vw, 2.125rem);
+  font-weight: 500;
+  line-height: 1.14;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+  color: rgba(245, 249, 255, 0.92);
+}
+
+.chip-pile-copy {
+  margin: 0 0 1.5rem;
+  max-width: 25rem;
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  color: rgba(238, 242, 249, 0.5);
+}
+
+.chip-pile-toss {
+  appearance: none;
+  margin: 0;
+  padding: 0.5rem 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 999px;
+  background: rgba(10, 16, 26, 0.5);
+  font: inherit;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: rgba(238, 242, 249, 0.78);
+  cursor: pointer;
+  pointer-events: auto;
+  backdrop-filter: blur(6px);
+  transition:
+    border-color 160ms ease,
+    background-color 160ms ease,
+    color 160ms ease;
+}
+
+.chip-pile-toss:hover {
+  border-color: rgba(150, 224, 232, 0.45);
+  color: #f4fdff;
+}
+
+.chip-pile-toss:focus-visible {
+  outline: 2px solid rgba(150, 224, 232, 0.8);
+  outline-offset: 2px;
+}
+
+/*
+ * The labels, for anything that is not looking at a canvas. Clipped to a single pixel
+ * rather than `display: none`, because a hidden element is not read out and the point
+ * of the list is that it is.
+ */
+.chip-pile-list {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+  list-style: none;
+}
+
+.chip-pile-hint {
+  position: absolute;
+  right: 0.875rem;
+  bottom: 0.75rem;
+  margin: 0;
+  font: 500 0.6875rem/1 ui-monospace, "SFMono-Regular", Menlo, monospace;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(238, 242, 249, 0.26);
+  pointer-events: none;
+}
+
+/*
+ * With the loop stopped the pile is solved in `setup` instead — three and a half
+ * seconds of the real solver, run before the first paint — so the still is a settled
+ * pile rather than a placed one, and pressing the button re-solves a new one. What is
+ * gone is the fall, which is the part that was asked to go. Dragging goes with it,
+ * because a chip that follows the pointer is motion arriving through another door.
+ */
+@media (prefers-reduced-motion: reduce) {
+  .chip-pile-desk {
+    cursor: default;
+  }
+
+  .chip-pile-toss {
+    transition: none;
+  }
+}
+
+/*
+ * The card variant: the 298x240 catalogue frame, at that real size and never scaled.
+ * The pile itself is already right — it is solved against the live canvas box — so all
+ * this does is get the copy out of its way, down to a single strip along the bottom.
+ */
+.chip-pile-stage[data-compact='true'] {
+  min-height: 0;
+  height: 100%;
+  /* The card frame rounds and clips already. */
+  border-radius: 0;
+}
+
+/*
+ * A full-bleed drag surface that claims every touch traps the page inside a scrolling
+ * grid. `pan-y` hands the vertical gesture back to the document; a horizontal drag
+ * still reaches a chip, which is the gesture this mechanism is about.
+ */
+.chip-pile-stage[data-compact='true'] .chip-pile-desk {
+  touch-action: pan-y;
+}
+
+/*
+ * The strip sits in the band the solver already keeps empty: `DESK` in the tsx holds
+ * the floor 26px above the bottom edge, so nothing ever rests below it. In pixels,
+ * because that constant is in pixels. `pointer-events: none` is inherited from the
+ * rule above and left alone, so a press on the strip still lands on a chip; the toss
+ * button goes on taking its own clicks back.
+ */
+.chip-pile-stage[data-compact='true'] .chip-pile-face {
+  position: absolute;
+  inset: auto 0 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  height: 26px;
+  padding: 0 0.6875rem;
+}
+
+/* One line of text, at the fixed 0.6875rem it was already set in. */
+.chip-pile-stage[data-compact='true'] .chip-pile-eyebrow {
+  margin: 0;
+}
+
+/* The heading is a `vw` size and the paragraph is three lines; the hint would be a
+   second line of text. All of it is the card's own title's job. */
+.chip-pile-stage[data-compact='true'] .chip-pile-face h2,
+.chip-pile-stage[data-compact='true'] .chip-pile-copy,
+.chip-pile-stage[data-compact='true'] .chip-pile-hint {
+  display: none;
+}
+
+/* 18px tall, so it clears the floor line at either end of the strip. It is the one
+   thing in here that re-runs the fall, which is worth keeping in a card. */
+.chip-pile-stage[data-compact='true'] .chip-pile-toss {
+  flex: none;
+  padding: 0.1875rem 0.5rem;
+  font-size: 0.625rem;
+  line-height: 1;
+}

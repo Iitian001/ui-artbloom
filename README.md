@@ -64,7 +64,7 @@ The package is `ui.artbloom`; the executable it installs is `artbloom` (a dotted
 The default registry the CLI talks to is taken from `homepage` in `cli/package.json`. Override per-invocation with `--registry`.
 
 ```bash
-npx ui.artbloom add bubble-burst
+npx ui.artbloom add morphogen-wordmark
 npx ui.artbloom list --kind templates
 npx ui.artbloom info cinematic-supercar
 ```
