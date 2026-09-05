@@ -9,12 +9,21 @@ import { ItemCard } from "@/components/item-card"
 import { PageHeader } from "@/components/page-shell"
 import { buttonVariants } from "@/components/ui/button"
 import { getItem, newest, type RegistryItem } from "@/lib/registry"
+import { pageMeta } from "@/lib/seo"
 import { cn } from "@/lib/utils"
 
-export const metadata: Metadata = {
+/*
+ * `index: false`, because this page's content is one person's saved list — it is
+ * different for every visitor and empty for a crawler, which has no session.
+ * `app/robots.ts` deliberately does not disallow it: a crawler has to fetch the
+ * page to read this.
+ */
+export const metadata: Metadata = pageMeta({
   title: "Bookmarks",
   description: "Everything you saved, in one place.",
-}
+  path: "/bookmarks",
+  index: false,
+})
 
 /**
  * One row of `public.saves` (see `supabase/schema.sql`): the table stores the

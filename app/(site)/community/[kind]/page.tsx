@@ -6,6 +6,7 @@ import { AuthorAvatar } from "@/components/author"
 import { CatalogTabs, type CatalogTab } from "@/components/catalog-tabs"
 import { FilterChips } from "@/components/filter-chips"
 import { ItemGrid } from "@/components/item-grid"
+import { brand } from "@/lib/brand"
 import { CATEGORY_GROUPS, KIND_LABEL, type Kind } from "@/lib/categories"
 import {
   type Author,
@@ -19,6 +20,7 @@ import {
   reshuffled,
 } from "@/lib/registry"
 import { profileHref } from "@/lib/hrefs"
+import { pageMeta } from "@/lib/seo"
 import { formatCount, formatFull } from "@/lib/utils"
 
 /*
@@ -45,7 +47,11 @@ export async function generateMetadata({
   const { kind } = await params
   if (!isBrowsableKind(kind)) return {}
   const group = CATEGORY_GROUPS.find((g) => g.kind === kind)
-  return { title: KIND_LABEL[kind], description: group?.blurb }
+  return pageMeta({
+    title: KIND_LABEL[kind],
+    description: group?.blurb ?? brand.description,
+    path: `/community/${kind}`,
+  })
 }
 
 /** Authors scoped to one kind, so the numbers on this page describe this page. */

@@ -4,7 +4,9 @@ import { notFound } from "next/navigation"
 import { AuthorAvatar } from "@/components/author"
 import { ItemGrid } from "@/components/item-grid"
 import { KIND_LABEL } from "@/lib/categories"
+import { profileHref } from "@/lib/hrefs"
 import { allAuthors, browsableKinds, getAuthor, itemsByAuthor } from "@/lib/registry"
+import { pageMeta } from "@/lib/seo"
 import { formatFull } from "@/lib/utils"
 
 type Params = { handle: string }
@@ -30,10 +32,12 @@ export async function generateMetadata({
   const handle = handleOf(await params)
   const author = handle ? getAuthor(handle) : undefined
   if (!author) return {}
-  return {
+  return pageMeta({
     title: `${author.name} (@${author.handle})`,
-    description: author.bio ?? `${formatFull(author.count)} pieces published by @${author.handle}.`,
-  }
+    description:
+      author.bio ?? `${formatFull(author.count)} pieces published by @${author.handle}.`,
+    path: profileHref(author.handle),
+  })
 }
 
 function Stat({ value, label }: { value: string; label: string }) {

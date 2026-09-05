@@ -8,6 +8,7 @@ import { SiteHeader } from "@/components/site-header"
 import { ThemeProvider } from "@/components/theme-provider"
 import { TooltipProvider } from "@/components/ui/tooltip"
 import { brand, siteOrigin } from "@/lib/brand"
+import { siteCard } from "@/lib/seo"
 
 import "../globals.css"
 
@@ -44,13 +45,21 @@ export const metadata: Metadata = {
     template: `%s | ${brand.name}`,
   },
   description: brand.description,
+  /*
+   * `images` is spelled out even though `app/opengraph-image.tsx` exists, because
+   * that file only contributes to the segment it sits in — `app/` — and this
+   * `openGraph` object replaces the one it contributed to. Without this line the
+   * home page, the only page in the group that does not build its own metadata
+   * through `lib/seo.ts`, is the one page on the site with no card.
+   */
   openGraph: {
     type: "website",
     siteName: brand.name,
     title: `${brand.name} — ${brand.tagline}`,
     description: brand.description,
+    images: [siteCard],
   },
-  twitter: { card: "summary_large_image" },
+  twitter: { card: "summary_large_image", images: [siteCard] },
 }
 
 export const viewport: Viewport = {

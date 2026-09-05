@@ -1,4 +1,5 @@
-import type { RegistryItem } from "@/lib/registry"
+import { isKind } from "@/lib/categories"
+import { getItem, type RegistryItem } from "@/lib/registry"
 
 /**
  * Site URLs for authors and items — one source of truth, because the shape is
@@ -25,4 +26,33 @@ export function itemHref(item: RegistryItem) {
 /** Absolute form, for registry payloads and metadata. */
 export function itemUrl(origin: string, item: RegistryItem) {
   return `${origin}${itemHref(item)}`
+}
+
+/**
+ * The inverse of `itemHref`: three URL segments back to the item, or `null`.
+ *
+ * It lives here because it is the same mapping read backwards, and because two
+ * routes need it — `[handle]/[kind]/[slug]/page.tsx` and the `opengraph-image`
+ * beside it. When those each had their own copy, an item could in principle have
+ * rendered a page and a card that disagreed about which item it was.
+ *
+ * All three segments have to match, not just the slug. `getItem` is keyed on the
+ * install name alone, so without the `kind` and `handle` checks every item would
+ * answer to every author's URL and the catalogue would have 38 items reachable at
+ * as many paths as there are handles.
+ */
+export function itemFromParams({
+  handle,
+  kind,
+  slug,
+}: {
+  handle: string
+  kind: string
+  slug: string
+}): RegistryItem | null {
+  // Bare handle only, for the reason above: a leading `@` never reaches a route.
+  if (handle.startsWith("@") || !isKind(kind)) return null
+  const item = getItem(slug)
+  if (!item || item.kind !== kind || item.author.handle !== handle) return null
+  return item
 }

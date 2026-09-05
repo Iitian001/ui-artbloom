@@ -4,12 +4,14 @@ import Link from "next/link"
 import { CodeBlock } from "@/components/code-block"
 import { PageHeader, Prose } from "@/components/page-shell"
 import { brand } from "@/lib/brand"
+import { pageMeta } from "@/lib/seo"
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMeta({
   title: "Themes",
   description:
     "Every piece reads from the same token contract, so one set of CSS variables restyles the whole catalogue.",
-}
+  path: "/themes",
+})
 
 const SURFACES = [
   { token: "background", cls: "bg-background" },

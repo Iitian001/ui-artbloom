@@ -5,11 +5,13 @@ import { PageHeader, Prose } from "@/components/page-shell"
 import { brand } from "@/lib/brand"
 import { itemHref } from "@/lib/hrefs"
 import { getItem } from "@/lib/registry"
+import { pageMeta } from "@/lib/seo"
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMeta({
   title: "Licence",
   description: `Everything in ${brand.name} is MIT and free — commercial work included, no attribution required.`,
-}
+  path: "/license",
+})
 
 const UPDATED = "3 September 2026"
 

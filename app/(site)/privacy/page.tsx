@@ -3,11 +3,13 @@ import Link from "next/link"
 
 import { PageHeader, Prose } from "@/components/page-shell"
 import { brand } from "@/lib/brand"
+import { pageMeta } from "@/lib/seo"
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMeta({
   title: "Privacy",
   description: `Every cookie ${brand.name} sets, and the one thing the CLI reports back.`,
-}
+  path: "/privacy",
+})
 
 const UPDATED = "4 September 2026"
 

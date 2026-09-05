@@ -13,21 +13,14 @@ import { PreviewCodeTabs } from "@/components/preview-code-tabs"
 import { SaveButton } from "@/components/save-button"
 import { Badge } from "@/components/ui/badge"
 import { registryUrl } from "@/lib/brand"
-import { categoryLabel, isKind, KIND_LABEL, KIND_SINGULAR } from "@/lib/categories"
-import { itemHref, profileHref } from "@/lib/hrefs"
-import { cssText, getItem, ITEMS, relatedItems, type RegistryItem } from "@/lib/registry"
+import { categoryLabel, KIND_LABEL, KIND_SINGULAR } from "@/lib/categories"
+import { itemFromParams, itemHref, profileHref } from "@/lib/hrefs"
+import { cssText, getItem, ITEMS, relatedItems } from "@/lib/registry"
 import { loadFiles, installFootprint } from "@/lib/registry/source"
+import { pageMeta } from "@/lib/seo"
 import { formatBytes, formatFull } from "@/lib/utils"
 
 type Params = { handle: string; kind: string; slug: string }
-
-/** `/handle/kind/name` — bare handle, no `@`; see `lib/hrefs.ts`. */
-function resolve({ handle, kind, slug }: Params): RegistryItem | null {
-  if (handle.startsWith("@") || !isKind(kind)) return null
-  const item = getItem(slug)
-  if (!item || item.kind !== kind || item.author.handle !== handle) return null
-  return item
-}
 
 export function generateStaticParams() {
   return ITEMS.map((item) => ({
@@ -42,9 +35,22 @@ export async function generateMetadata({
 }: {
   params: Promise<Params>
 }): Promise<Metadata> {
-  const item = resolve(await params)
+  const item = itemFromParams(await params)
   if (!item) return {}
-  return { title: `${item.title} by @${item.author.handle}`, description: item.description }
+  return pageMeta({
+    title: `${item.title} by @${item.author.handle}`,
+    description: item.description,
+    path: itemHref(item),
+    /*
+     * The card headline is the item's own name and nothing else. The branded form
+     * `pageMeta` builds by default would spend a third of the line on "by
+     * @artbloom | ui.artbloom", and the wordmark is already drawn on the card that
+     * accompanies it — see `opengraph-image.tsx` beside this file.
+     */
+    ogTitle: item.title,
+    // That same file is the card, so `pageMeta` must not name the site one.
+    ownCard: true,
+  })
 }
 
 function formatDate(iso: string) {
@@ -66,13 +72,20 @@ function MetaRow({ label, children }: { label: string; children: React.ReactNode
 
 export default async function ItemPage({ params }: { params: Promise<Params> }) {
   const resolved = await params
-  const item = resolve(resolved)
+  const item = itemFromParams(resolved)
   if (!item) notFound()
 
   const files = await loadFiles(item)
   const footprint = await installFootprint(item.name)
   const related = relatedItems(item, 8)
   const url = registryUrl(item.name)
+  /*
+   * shadcn's own CLI, not ours, which is why the runner is spelled out here rather
+   * than built by `installCommand`. It takes a registry URL directly and this one
+   * resolves — `shadcn view <url>` against `/r/<name>.json` prints the payload — so
+   * nobody has to install our package to take a component.
+   */
+  const shadcnCommand = `npx shadcn@latest add ${url}`
   const deps = item.dependencies ?? []
   const registryDeps = item.registryDependencies ?? []
 
@@ -234,15 +247,30 @@ export default async function ItemPage({ params }: { params: Promise<Params> }) 
           </dl>
 
           <div>
-            <h2 className="mb-2 text-sm font-medium">Registry endpoint</h2>
+            <h2 className="mb-2 text-sm font-medium">Or the shadcn CLI</h2>
             <div className="flex items-center gap-2 rounded-xl border border-border bg-subtle px-3 py-2.5">
-              <code className="min-w-0 flex-1 overflow-x-auto font-mono text-xs whitespace-nowrap text-muted-foreground">
-                {url}
+              <code className="min-w-0 flex-1 overflow-x-auto font-mono text-xs whitespace-nowrap">
+                {shadcnCommand}
               </code>
-              <CopyButton value={url} label="Copy registry URL" />
+              <CopyButton value={shadcnCommand} label="Copy shadcn command" />
             </div>
+            {/*
+              The URL is a link rather than a second copy box. It used to have one
+              of its own under a "Registry endpoint" heading, which put the same
+              string in two boxes a centimetre apart; a link at least does
+              something the command above cannot, which is show you the JSON.
+            */}
             <p className="mt-2 text-xs text-muted-foreground">
-              Plain JSON. Any shadcn-compatible tool can read it.
+              Writes the same files. The URL in it is this item&rsquo;s{" "}
+              <a
+                href={url}
+                target="_blank"
+                rel="noreferrer"
+                className="underline underline-offset-2 transition-colors hover:text-foreground"
+              >
+                registry endpoint
+              </a>{" "}
+              — plain JSON, no key, readable by any shadcn-compatible tool.
             </p>
           </div>
         </aside>

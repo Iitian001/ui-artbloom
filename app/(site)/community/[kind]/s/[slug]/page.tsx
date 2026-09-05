@@ -12,6 +12,7 @@ import {
   itemsByCategory,
   populatedCategories,
 } from "@/lib/registry"
+import { pageMeta } from "@/lib/seo"
 import { formatFull } from "@/lib/utils"
 
 /*
@@ -43,12 +44,13 @@ export async function generateMetadata({
   const category = findCategory(kind, slug)
   if (!category) return {}
   const count = categoryCount(kind, slug)
-  return {
+  return pageMeta({
     title: `${category.label} — ${KIND_LABEL[kind]}`,
     description: count
       ? `${formatFull(count)} ${category.label.toLowerCase()} you can install with one command.`
       : `${category.label} is coming to the ${KIND_LABEL[kind].toLowerCase()} catalogue.`,
-  }
+    path: `/community/${kind}/s/${slug}`,
+  })
 }
 
 export default async function CategoryPage({

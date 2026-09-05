@@ -3,11 +3,16 @@ import { redirect } from "next/navigation"
 
 import { queryValue, readSession, safePath } from "../auth"
 import { AuthPanel } from "../auth-panel"
+import { pageMeta } from "@/lib/seo"
 
-export const metadata: Metadata = {
+// `index: false`: a sign-in form is not a search result. See `app/robots.ts` for
+// why it is noindexed here rather than disallowed there.
+export const metadata: Metadata = pageMeta({
   title: "Sign in",
   description: "Continue with GitHub to reach your saved list.",
-}
+  path: "/login",
+  index: false,
+})
 
 /** Query shape, inlined to match how the rest of `app/` types its pages. */
 type Search = Promise<Record<string, string | string[] | undefined>>

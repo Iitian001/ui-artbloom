@@ -3,11 +3,13 @@ import Link from "next/link"
 
 import { PageHeader, Prose } from "@/components/page-shell"
 import { brand } from "@/lib/brand"
+import { pageMeta } from "@/lib/seo"
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMeta({
   title: "Terms",
   description: `The terms of use for ${brand.name}.`,
-}
+  path: "/terms",
+})
 
 const UPDATED = "3 September 2026"
 

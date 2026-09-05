@@ -1,3 +1,4 @@
+import type { Metadata } from "next"
 import Link from "next/link"
 
 import { AgentMockups } from "@/components/landing/agent-mockups"
@@ -11,6 +12,20 @@ import { ListsSection } from "@/components/landing/lists-section"
 import { ItemGrid } from "@/components/item-grid"
 import { featured, newest, type RegistryItem } from "@/lib/registry"
 import { cn } from "@/lib/utils"
+
+/*
+ * The canonical URL, and nothing else.
+ *
+ * This is the one page that does not go through `lib/seo.ts`, because the layout's
+ * defaults are already right for it: the untemplated title, the tagline, the
+ * description, the site-wide card. Setting `openGraph` here would replace that
+ * whole object — Next merges metadata shallowly — to say the same thing again.
+ * `alternates` is the only key the layout leaves unset, and it has to be set
+ * somewhere, or the home page is the only URL on the site with no canonical.
+ */
+export const metadata: Metadata = {
+  alternates: { canonical: "/" },
+}
 
 /**
  * A heading, a blurb and a link to the full listing, above a grid.

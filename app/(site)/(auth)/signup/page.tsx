@@ -3,11 +3,15 @@ import { redirect } from "next/navigation"
 
 import { queryValue, readSession, safePath } from "../auth"
 import { AuthPanel } from "../auth-panel"
+import { pageMeta } from "@/lib/seo"
 
-export const metadata: Metadata = {
+// `index: false`, like /login — and for the same reason recorded there.
+export const metadata: Metadata = pageMeta({
   title: "Sign up",
   description: "Your GitHub account is the account. No password, no card.",
-}
+  path: "/signup",
+  index: false,
+})
 
 type Search = Promise<Record<string, string | string[] | undefined>>
 

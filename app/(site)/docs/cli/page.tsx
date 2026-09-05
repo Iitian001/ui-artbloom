@@ -5,11 +5,13 @@ import { CodeBlock } from "@/components/code-block"
 import { PageHeader, Prose } from "@/components/page-shell"
 import { brand } from "@/lib/brand"
 import { browsableKinds } from "@/lib/registry"
+import { pageMeta } from "@/lib/seo"
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMeta({
   title: "CLI reference",
   description: `Every command and flag in the ${brand.npmPackage} CLI.`,
-}
+  path: "/docs/cli",
+})
 
 const COMMANDS = [
   {

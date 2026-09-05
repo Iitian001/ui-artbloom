@@ -7,11 +7,13 @@ import { InstallTabs } from "@/components/install-tabs"
 import { PageHeader, Prose } from "@/components/page-shell"
 import { brand, installCommand, registryUrl } from "@/lib/brand"
 import { cssText, newest, type RegistryItem } from "@/lib/registry"
+import { pageMeta } from "@/lib/seo"
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMeta({
   title: "Docs",
   description: `How to install a template or animation from ${brand.name}, and how the registry behind it works.`,
-}
+  path: "/docs",
+})
 
 const CARDS = [
   {
