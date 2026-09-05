@@ -5,7 +5,7 @@ import { ArrowRightIcon } from "lucide-react"
 import { CodeBlock } from "@/components/code-block"
 import { InstallTabs } from "@/components/install-tabs"
 import { PageHeader, Prose } from "@/components/page-shell"
-import { brand, installCommand, registryUrl } from "@/lib/brand"
+import { brand, installCommand, registryUrl, siteOrigin } from "@/lib/brand"
 import { cssText, newest, type RegistryItem } from "@/lib/registry"
 import { pageMeta } from "@/lib/seo"
 
@@ -137,6 +137,27 @@ export default function DocsPage() {
               fields sit under <code>meta</code>, which shadcn ignores. One thing does not survive
               the trip: shadcn knows nothing about our <code>assets</code>, so a template installed
               that way arrives without the bytes that cannot be inlined as text.
+            </p>
+
+            <h2>If a model is reading this for you</h2>
+            <p>
+              Two endpoints exist so an assistant does not have to scrape the site to answer
+              &ldquo;what is in here, and how do I install it&rdquo;.{" "}
+              <a href="/llms.txt">
+                <code>/llms.txt</code>
+              </a>{" "}
+              is the whole catalogue as one page of plain text: every piece with its
+              description, its category and the exact command that installs it. One fetch, no
+              parsing.
+            </p>
+            <p>
+              <code>/mcp</code> is the same catalogue over the Model Context Protocol, for a
+              client that can call tools rather than read pages — point one at{" "}
+              <code>{siteOrigin}/mcp</code>. It has two tools: <code>search_registry</code> to
+              find something, and <code>get_item</code> to read one piece&rsquo;s install command,
+              its file list with exact sizes, and — on request — its source. No key, no account,
+              and nothing it can write. The endpoint is POST-only, so there is nothing to see by
+              opening it.
             </p>
 
             <h2>Licence</h2>
