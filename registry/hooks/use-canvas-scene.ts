@@ -79,15 +79,26 @@ export function useCanvasScene<State>(options: CanvasSceneOptions<State>): Canva
 
   const stage = useRef<HTMLDivElement | null>(null)
   const canvas = useRef<HTMLCanvasElement | null>(null)
-  const [mounted, setMounted] = useState(0)
 
+  /*
+   * Plain ref assignment, with no state behind it. React attaches refs during
+   * the commit phase, before passive effects run, so the effect below already
+   * sees both nodes on the first mount — which is why these used to bump a
+   * `mounted` counter for nothing: the two `setMounted` calls batched into one
+   * re-render, the counter went 0 → 2, and the effect's dependency on it tore
+   * the live scene down and rebuilt it. Every scene was constructed, measured
+   * and warmed twice on every mount, four times under StrictMode in dev.
+   *
+   * The requirement this trades for that: a consumer must render the stage and
+   * the canvas unconditionally, in the same commit as the component itself. All
+   * thirteen do. Gating the canvas behind a flag would leave the effect bailing
+   * on the null guard with nothing to re-run it.
+   */
   const stageRef = useCallback((node: HTMLDivElement | null) => {
     stage.current = node
-    setMounted((n) => n + 1)
   }, [])
   const canvasRef = useCallback((node: HTMLCanvasElement | null) => {
     canvas.current = node
-    setMounted((n) => n + 1)
   }, [])
 
   /** Set once the scene is live, so `requestRender` before that is a no-op. */
@@ -275,7 +286,7 @@ export function useCanvasScene<State>(options: CanvasSceneOptions<State>): Canva
       stageNode.removeEventListener("pointercancel", onUp)
       stageNode.removeEventListener("pointerleave", onLeave)
     }
-  }, [mounted, reduced])
+  }, [reduced])
 
   return { stageRef, canvasRef, requestRender }
 }

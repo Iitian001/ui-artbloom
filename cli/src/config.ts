@@ -4,7 +4,7 @@ import path from "node:path"
 import { DEFAULT_REGISTRY, NAME, BIN } from "./pkg.js"
 import { CliError } from "./ui.js"
 
-export type Paths = { ui: string; pages: string; hooks: string; css: string }
+export type Paths = { ui: string; pages: string; hooks: string; lib: string; css: string }
 
 export type Config = {
   cwd: string
@@ -38,7 +38,13 @@ export function detect(cwd: string): Paths {
       `${src}index.css`,
     ]) ?? `${src}app/globals.css`
 
-  return { ui: `${src}components/ui`, pages: `${src}app`, hooks: `${src}hooks`, css }
+  return {
+    ui: `${src}components/ui`,
+    pages: `${src}app`,
+    hooks: `${src}hooks`,
+    lib: `${src}lib`,
+    css,
+  }
 }
 
 export function loadConfig(overrides: Overrides = {}): Config {
@@ -72,6 +78,7 @@ export function loadConfig(overrides: Overrides = {}): Config {
       ui: overrides.ui ?? onDisk.paths?.ui ?? detected.ui,
       pages: onDisk.paths?.pages ?? detected.pages,
       hooks: onDisk.paths?.hooks ?? detected.hooks,
+      lib: onDisk.paths?.lib ?? detected.lib,
       css: overrides.css ?? onDisk.paths?.css ?? detected.css,
     },
   }

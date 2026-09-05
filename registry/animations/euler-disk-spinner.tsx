@@ -414,7 +414,10 @@ export function EulerDiskSpinner({ compact = false }: EulerDiskSpinnerProps) {
             {reduced ? 'Bundle ready' : 'Compiling template bundle'}
           </p>
           <p className="euler-disk-spinner-detail">
-            24 registry items, one lockfile, no network. The coin holds the work that is left.
+            {/* No item count here. It read "24 registry items" — a number that was
+                never checked against the catalogue and was wrong by the time anyone
+                read it. The line describes the kind of work, which stays true. */}
+            One bundle, one lockfile, no network. The coin holds the work that is left.
           </p>
           <div
             ref={meterRef}

@@ -11,26 +11,32 @@ import { publicRest } from "./server"
 /**
  * Reading the counters.
  *
- * WHAT HAPPENS BEFORE THE KEYS ARE PASTED IN: `publicSupabaseReady` is false, no
- * request is made, and every number comes from `lib/registry/items.ts`. The site
- * builds, deploys and renders exactly as it does today. The same path is taken if
- * Supabase is configured but down, slow, or returns garbage.
+ * NOTHING IMPORTS THIS YET, AND THAT IS THE CURRENT STATE OF THE FEATURE, NOT AN
+ * OVERSIGHT. `/api/track/install` writes real numbers into `public.items` on every
+ * install; this is the read side, kept working and kept out of the UI. What used to
+ * be on the pages instead was `item.installs`, a literal `0` on every entry in
+ * `lib/registry/items.ts`, rendered as a download count on every card and summed
+ * into "0 components installed by builders" on the landing page. Those fields are
+ * gone (see the note in `lib/registry/schema.ts`), so the site now says nothing
+ * about install counts at all — which is the honest position until there is traffic
+ * worth showing. Wiring `getItemCounts()` into a card is the change to make then.
  *
- * THE FALLBACK IS PER ITEM, NOT GLOBAL. An item with a row in `public.items`
- * shows its real count; an item without one shows its seed number from the
- * registry. That normally risks one rail mixing a real 3 with a seeded 12,480,
- * which would make "popular" sort two different kinds of number — but not here:
- * every one of the 17 entries in `lib/registry/items.ts` currently carries
- * `installs: 0` and `bookmarks: 0`, so the seed path renders honest zeroes and
- * there is nothing to un-seed before switching Supabase on. `ItemCounts.source`
- * is exposed anyway, so the UI can label or hide a number it did not get from the
- * database, and so this stays true if somebody hand-writes a seed number later.
+ * WHAT HAPPENS BEFORE THE KEYS ARE PASTED IN: `publicSupabaseReady` is false, no
+ * request is made, and every number comes back `0` with `source: "unknown"`. The
+ * same path is taken if Supabase is configured but down, slow, or returns garbage.
+ *
+ * THE FALLBACK IS PER ITEM, NOT GLOBAL. An item with a row in `public.items` shows
+ * its real count; an item without one is `0`/`"unknown"`. There is no seed number to
+ * mix with a real one — the registry carries no counts, so an unknown count is
+ * unknown rather than a plausible-looking twelve thousand. `source` is exposed so a
+ * caller can hide or label a number it did not get from the database, which is the
+ * difference between "nobody has installed this" and "we do not know".
  */
 export type ItemCounts = {
   installs: number
   saves: number
-  /** `"seed"` means this number is from lib/registry/items.ts, not from the database. */
-  source: "live" | "seed"
+  /** `"unknown"` means no row in `public.items`, or the read failed. Not "zero installs". */
+  source: "live" | "unknown"
 }
 
 /** `installs` and `saves` are `bigint`; some PostgREST versions serialise those as strings. */
@@ -62,11 +68,8 @@ async function fetchCountRows(): Promise<CountRow[] | null> {
   return result.data ?? []
 }
 
-/** The seed numbers. `bookmarks` in the registry is the same idea as `saves` in the database. */
-function seedCounts(name: string): ItemCounts {
-  const item = ITEMS.find((candidate) => candidate.name === name)
-  return { installs: item?.installs ?? 0, saves: item?.bookmarks ?? 0, source: "seed" }
-}
+/** No row, or no database. Zero, and labelled as not-a-measurement. */
+const UNKNOWN: ItemCounts = { installs: 0, saves: 0, source: "unknown" }
 
 /**
  * Counts for every item in the registry, keyed by name.
@@ -87,7 +90,7 @@ export async function getItemCounts(): Promise<Map<string, ItemCounts>> {
       item.name,
       row
         ? { installs: toCount(row.installs), saves: toCount(row.saves), source: "live" }
-        : seedCounts(item.name),
+        : UNKNOWN,
     )
   }
   return counts
@@ -96,13 +99,16 @@ export async function getItemCounts(): Promise<Map<string, ItemCounts>> {
 /** One item. Same fallback rules as `getItemCounts`. */
 export async function getCountsFor(name: string): Promise<ItemCounts> {
   const counts = await getItemCounts()
-  return counts.get(name) ?? seedCounts(name)
+  return counts.get(name) ?? UNKNOWN
 }
 
 /**
- * The marketing total. Mirrors `totalInstalls()` in `lib/registry/index.ts` but
- * over live numbers where they exist — so the two will disagree once Supabase is
- * on, and this is the one to show.
+ * Every install this deployment has recorded, across every item.
+ *
+ * Only counts rows that exist, so this is a floor, not a total: an item with no row
+ * contributes 0 whether it has never been installed or the read failed. Pair it with
+ * `hasLiveCounts()` before putting it on a page — a "0" from an unconfigured
+ * deployment is the sentence that got the old `totalInstalls()` deleted.
  */
 export async function getTotalInstalls(): Promise<number> {
   const counts = await getItemCounts()

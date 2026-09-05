@@ -45,8 +45,15 @@ export type Plan = {
  * Windows the package manager has to be spawned through a shell (Node refuses
  * to exec a `.cmd` without one), so a range containing `>`, `|` or a space
  * would be a shell-injection vector. Registry items pin exact versions anyway.
+ *
+ * The first character of each name position excludes `-`, which npm forbids
+ * there anyway. It has to be excluded here too because these strings are spliced
+ * straight into the argv of a spawned `install`: while a leading `-` was legal,
+ * a payload could declare a "dependency" of `-g` or `--ignore-scripts` and have
+ * the package manager read it as a flag rather than a package. `apply.ts`
+ * asserts the same invariant again where it spawns.
  */
-const DEP_RE = /^(@[a-z0-9-~][a-z0-9-._~]*\/)?[a-z0-9-~][a-z0-9-._~]*(@[a-zA-Z0-9.\-+~^*]+)?$/
+const DEP_RE = /^(@[a-z0-9~][a-z0-9-._~]*\/)?[a-z0-9~][a-z0-9-._~]*(@[a-zA-Z0-9.\-+~^*]+)?$/
 
 function remap(target: string, config: Config) {
   const clean = target.replace(/\\/g, "/").replace(/^\.\//, "")
@@ -58,6 +65,16 @@ function remap(target: string, config: Config) {
   }
   if (clean.startsWith("app/")) {
     return `${config.paths.pages}/${clean.slice("app/".length)}`
+  }
+  /**
+   * `lib/` moves for the same reason `hooks/` does, and its absence was a real
+   * break rather than a cosmetic one: three items ship `lib/utils.ts` and import
+   * it as `@/lib/utils`. Without this branch a `src/` project got the file at the
+   * repo root while `@/*` pointed inside `src/`, so `add` exited 0 and the next
+   * build could not resolve `cn`.
+   */
+  if (clean.startsWith("lib/")) {
+    return `${config.paths.lib}/${clean.slice("lib/".length)}`
   }
   return clean
 }
@@ -106,6 +123,7 @@ function aliasPath(dir: string) {
 const ALIASED: ReadonlyArray<{ payload: string; configured: (paths: Paths) => string }> = [
   { payload: "components/ui", configured: (paths) => aliasPath(paths.ui) },
   { payload: "hooks", configured: (paths) => aliasPath(paths.hooks) },
+  { payload: "lib", configured: (paths) => aliasPath(paths.lib) },
 ]
 
 /**

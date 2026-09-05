@@ -2,6 +2,7 @@ import "server-only"
 
 import type { NextRequest } from "next/server"
 
+import { ACCESS_COOKIE } from "@/app/(site)/(auth)/auth"
 import { getItem } from "@/lib/registry"
 
 import { authEndpoint, publicSupabaseReady, SUPABASE_ANON_KEY } from "./env"
@@ -38,19 +39,6 @@ export function bearerToken(headers: Headers): string | undefined {
   if (!token) return undefined
   return /^[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+$/.test(token) ? token : undefined
 }
-
-/**
- * The name of the httpOnly cookie the site's own session lives in.
- *
- * COUPLING, DELIBERATE AND WORTH KNOWING ABOUT: this string is declared a second
- * time, as a private `const ACCESS_COOKIE` in `app/(site)/(auth)/auth.ts`, which
- * is the file that writes it (`writeSession()` stores the raw Supabase access
- * token in it, so the value here is a token this module can send straight on to
- * PostgREST). That file is owned by another workstream and does not export the
- * name, so it is repeated rather than imported. Rename it there and saves stop
- * being read; the handoff asks for it to be exported so this copy can go.
- */
-const ACCESS_COOKIE = "ab-access"
 
 /**
  * The caller's access token, from the session cookie or from an explicit bearer.

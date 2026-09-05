@@ -3,15 +3,23 @@ import type { ReactNode } from "react"
 import { Logo } from "@/components/logo"
 import { AuroraBackground } from "@/registry/animations/aurora-background"
 import { brand } from "@/lib/brand"
-import { kindCount, totalInstalls } from "@/lib/registry"
-import { formatCount, formatFull } from "@/lib/utils"
+import { ALL_CATEGORIES } from "@/lib/categories"
+import { categoryCount, kindCount } from "@/lib/registry"
+import { formatFull } from "@/lib/utils"
 
 /** Shared two-pane shell for /login and /signup. */
 export default function AuthLayout({ children }: { children: ReactNode }) {
+  /**
+   * All three derived from `lib/registry/items.ts`. The third used to be
+   * `formatCount(totalInstalls())`, which summed an `installs` field that was `0`
+   * on every item — so the panel beside the sign-in button advertised "0 installs"
+   * to somebody deciding whether this library is worth an account.
+   */
+  const categories = ALL_CATEGORIES.filter((c) => categoryCount(c.kind, c.slug) > 0).length
   const stats = [
     { value: formatFull(kindCount("templates")), label: "templates" },
     { value: formatFull(kindCount("animations")), label: "animations" },
-    { value: formatCount(totalInstalls()), label: "installs" },
+    { value: formatFull(categories), label: "categories" },
   ]
 
   return (

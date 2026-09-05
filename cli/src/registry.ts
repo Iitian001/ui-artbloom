@@ -80,6 +80,52 @@ function isStringArray(value: unknown): value is string[] {
   return Array.isArray(value) && value.every((entry) => typeof entry === "string")
 }
 
+/**
+ * Turn the payload's `css` into the CSS text the rest of the CLI appends.
+ *
+ * The wire format is nested — `{ "@keyframes x": { from: { transform: "…" } } }` —
+ * because that is the shape shadcn's registry-item schema declares, and every item
+ * this registry serves is meant to install with either CLI. Everything downstream of
+ * here works on text: `plan.ts` collects it, `apply.ts` splits it into top-level
+ * blocks and skips any `@keyframes` the project already has. So the conversion
+ * happens once, at the edge.
+ *
+ * A plain string is still accepted. Older deployments served one, and a registry the
+ * user points `--registry` at may still.
+ */
+function cssRule(selector: string, value: unknown, indent: string): string | null {
+  if (typeof value === "string") return `${indent}${selector} { ${value} }`
+  if (typeof value !== "object" || value === null) return null
+
+  const inner: string[] = []
+  for (const [key, nested] of Object.entries(value as Record<string, unknown>)) {
+    if (typeof nested === "string") {
+      // A property, not a selector: `transform: translateX(0);`
+      inner.push(`${indent}  ${key}: ${nested};`)
+      continue
+    }
+    const block = cssRule(key, nested, `${indent}  `)
+    if (block) inner.push(block)
+  }
+
+  // An at-rule with no body is legal CSS — `@layer base;` — so an empty object is
+  // written out rather than dropped.
+  if (inner.length === 0) return `${indent}${selector} {}`
+  return `${indent}${selector} {\n${inner.join("\n")}\n${indent}}`
+}
+
+function parseCss(value: unknown): string | undefined {
+  if (typeof value === "string") return value.trim() || undefined
+  if (typeof value !== "object" || value === null || Array.isArray(value)) return undefined
+
+  const rules: string[] = []
+  for (const [selector, rule] of Object.entries(value as Record<string, unknown>)) {
+    const block = cssRule(selector, rule, "")
+    if (block) rules.push(block)
+  }
+  return rules.length > 0 ? rules.join("\n\n") : undefined
+}
+
 /** A single asset must not exceed this, and the whole set must not either. */
 const MAX_ASSET_BYTES = 200 * 1024 * 1024
 const MAX_TOTAL_ASSET_BYTES = 600 * 1024 * 1024
@@ -190,7 +236,7 @@ function parsePayload(raw: unknown, name: string, registry: string): Payload {
       typeof value.cssVars === "object" && value.cssVars !== null
         ? (value.cssVars as Record<string, string>)
         : undefined,
-    css: typeof value.css === "string" ? value.css : undefined,
+    css: parseCss(value.css),
     meta: typeof value.meta === "object" && value.meta !== null ? (value.meta as Payload["meta"]) : undefined,
   }
 }

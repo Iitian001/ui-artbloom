@@ -1,0 +1,288 @@
+/*
+ * Two colours and a tint: near-white ink, one accent, and that accent under a tenth of an
+ * alpha for the outgoing bubble, the avatar and the pill the dots live in. Nothing here
+ * animates — every moving pixel is painted by the solver in the .tsx, and the one geometric
+ * number this file shares with it is the indicator row's centre line, which the canvas
+ * derives as `height - 64` from the row's own `bottom` and `height`.
+ */
+
+.relaxation-typing-stage {
+  position: relative;
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  min-height: 22rem;
+  padding: 2rem 1.5rem;
+  overflow: hidden;
+  border-radius: 0.75rem;
+  background: radial-gradient(120% 110% at 50% 0%, #0c1620 0%, #070b12 60%, #05070c 100%);
+  color: #eaf3ff;
+}
+
+.relaxation-typing-card {
+  position: relative;
+  width: min(23rem, 100%);
+  height: 16.5rem;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 1rem;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.015));
+  isolation: isolate;
+}
+
+/* The canvas layer. It owns the pointer, which is why every layer above it is inert. */
+.relaxation-typing-well {
+  position: absolute;
+  inset: 0;
+  touch-action: none;
+}
+
+.relaxation-typing-well canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+/* Transparent to the pointer, so a press over the transcript still takes the cadence pot.
+   The bottom padding is the control's room: the indicator row and the pot both live inside
+   it and nothing in the flow may reach them. */
+.relaxation-typing-face {
+  position: relative;
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  padding: 1.25rem 1.375rem 5.25rem;
+  pointer-events: none;
+}
+
+.relaxation-typing-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.relaxation-typing-label {
+  font: 500 0.625rem/1 ui-monospace, "SFMono-Regular", Menlo, monospace;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(234, 243, 255, 0.5);
+  white-space: nowrap;
+}
+
+/* `justify-content: flex-end` plus `overflow: hidden` is what makes this a transcript: if the
+   messages ever outgrow the space — three lines a bubble on a narrow phone — the oldest one
+   clips off the top rather than pushing the indicator row down onto the pot. */
+.relaxation-typing-log {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  list-style: none;
+}
+
+.relaxation-typing-note {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.25rem;
+}
+.relaxation-typing-note-mine {
+  align-items: flex-end;
+}
+
+.relaxation-typing-who {
+  font: 500 0.625rem/1 ui-monospace, "SFMono-Regular", Menlo, monospace;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(234, 243, 255, 0.34);
+}
+
+.relaxation-typing-said {
+  max-width: 88%;
+  margin: 0;
+  padding: 0.5rem 0.6875rem;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 0.625rem 0.625rem 0.625rem 0.1875rem;
+  background: rgba(255, 255, 255, 0.04);
+  font-size: 0.78125rem;
+  line-height: 1.4;
+  color: rgba(234, 243, 255, 0.78);
+}
+
+/* The tint, and the only place the accent carries a whole surface. */
+.relaxation-typing-note-mine .relaxation-typing-said {
+  border-color: rgba(158, 205, 255, 0.2);
+  border-radius: 0.625rem 0.625rem 0.1875rem;
+  background: rgba(158, 205, 255, 0.09);
+  color: rgba(234, 243, 255, 0.9);
+}
+
+/* The indicator row: 2.5rem tall, 2.75rem up, so its centre sits 4rem — 64px — above the
+   bottom of the card, which is the line the canvas draws the pill and the dots on. */
+.relaxation-typing-live {
+  position: absolute;
+  right: 1.375rem;
+  bottom: 2.75rem;
+  left: 1.375rem;
+  display: flex;
+  height: 2.5rem;
+  align-items: center;
+  gap: 0.625rem;
+  margin: 0;
+  font-size: 0.78125rem;
+  color: rgba(234, 243, 255, 0.62);
+  pointer-events: none;
+}
+
+.relaxation-typing-avatar {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  border: 1px solid rgba(158, 205, 255, 0.28);
+  border-radius: 50%;
+  background: rgba(158, 205, 255, 0.09);
+  font: 600 0.625rem/1 ui-monospace, "SFMono-Regular", Menlo, monospace;
+  letter-spacing: 0.06em;
+  color: rgba(234, 243, 255, 0.82);
+}
+
+/* Reserves the 3.75rem the canvas paints the pill into. Deliberately empty: the dots are the
+   three lamps, and CSS has no business drawing them. */
+.relaxation-typing-dots {
+  flex: none;
+  width: 3.75rem;
+  height: 1.5rem;
+}
+
+/*
+ * The pot's knob. Its `transform` is written by the solver every frame from the same track
+ * geometry the canvas drew the rail with, so the only thing CSS owns here is the second
+ * translate that centres it on the point it is handed. `pointer-events: none` is what keeps
+ * the press on the canvas, where the capture is; focus still lands here, so Tab and the arrow
+ * keys reach the real slider.
+ */
+.relaxation-typing-knob {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1.75rem;
+  height: 1.125rem;
+  border: 1px solid rgba(158, 205, 255, 0.45);
+  border-radius: 0.3125rem;
+  background: linear-gradient(180deg, rgba(158, 205, 255, 0.22), rgba(8, 14, 22, 0.74));
+  box-shadow:
+    0 2px 10px rgba(4, 9, 16, 0.6),
+    inset 0 1px 0 rgba(234, 243, 255, 0.18);
+  pointer-events: none;
+  opacity: 0;
+  will-change: transform;
+  transition: border-color 160ms ease;
+}
+
+/* Knurl, so the plate reads as something a hand holds rather than a rounded rectangle. */
+.relaxation-typing-knob::after {
+  content: "";
+  position: absolute;
+  inset: 0.3125rem 0.625rem;
+  border-left: 1px solid rgba(234, 243, 255, 0.26);
+  border-right: 1px solid rgba(234, 243, 255, 0.26);
+}
+
+.relaxation-typing-knob:focus-visible {
+  border-color: rgba(158, 205, 255, 0.8);
+  outline: 2px solid rgba(158, 205, 255, 0.75);
+  outline-offset: 3px;
+}
+
+/* Outside the card, in the stage's second grid row, so it stays the card's width at any
+   viewport instead of spreading to the edges of a 1340px stage. */
+.relaxation-typing-hint {
+  display: flex;
+  width: min(23rem, 100%);
+  justify-content: center;
+  margin: 0;
+  font: 500 0.625rem/1 ui-monospace, "SFMono-Regular", Menlo, monospace;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(234, 243, 255, 0.28);
+  pointer-events: none;
+}
+
+/*
+ * With the loop stopped the chain is solved to its locked state and held there, so the dots
+ * still sit at the phases the coupling put them in — what is gone is the sweep. Dragging the
+ * pot and the arrow keys both still re-solve it, which is why the dots still rearrange under
+ * this rule.
+ */
+@media (prefers-reduced-motion: reduce) {
+  .relaxation-typing-knob {
+    transition: none;
+  }
+}
+
+/*
+ * The card variant: the 298x240 catalogue frame, at that real size and never scaled.
+ *
+ * Three numbers in this file are shared with the canvas and none of them appears below.
+ * `.relaxation-typing-live`'s `bottom: 2.75rem` and `height: 2.5rem` put its centre 4rem up,
+ * which is the `height − 64` the pill and the dots are drawn on; its `1.375rem` side inset is
+ * `INSET`, off which the pill's left edge and the pot's rail are measured. Move any of them
+ * here and the dots leave the gap the row reserves for them. So the bottom padding stays at
+ * 5.25rem too — it is that row's room — and everything below is the top half of the card.
+ */
+.relaxation-typing-stage[data-compact='true'] {
+  min-height: 0;
+  height: 100%;
+  /* Centring leaves the row and the column auto-sized, and a track sized from its content is
+     what the card's `height: 100%` and `width: 100%` would then resolve against. Stretched,
+     the single track is the frame and the card is the track. */
+  align-content: stretch;
+  justify-items: stretch;
+  gap: 0;
+  padding: 0.625rem;
+  /* The card frame rounds and clips already. */
+  border-radius: 0;
+}
+
+.relaxation-typing-stage[data-compact='true'] .relaxation-typing-card {
+  width: 100%;
+  height: 100%;
+}
+
+/* A full-bleed drag surface that claims every touch traps the page inside a scrolling grid.
+   `pan-y` hands the vertical gesture back to the document; the horizontal drag the pot is
+   about still arrives. */
+.relaxation-typing-stage[data-compact='true'] .relaxation-typing-well {
+  touch-action: pan-y;
+}
+
+/* 12px of head room rather than 20, and the sides and the floor left alone. */
+.relaxation-typing-stage[data-compact='true'] .relaxation-typing-face {
+  padding-top: 0.75rem;
+}
+
+.relaxation-typing-stage[data-compact='true'] .relaxation-typing-head {
+  margin-bottom: 0.5rem;
+}
+
+/* Two bubbles have 106px between the head and the indicator row here. At the full size they
+   would want 104 of it, which the transcript would survive — it clips from the top by design
+   — but only by losing a name. A smaller bubble is the better trade. */
+.relaxation-typing-stage[data-compact='true'] .relaxation-typing-said {
+  padding: 0.4375rem 0.625rem;
+  font-size: 0.75rem;
+}
+
+/* It is outside the card, in the stage's second row, and the card's own title says it. */
+.relaxation-typing-stage[data-compact='true'] .relaxation-typing-hint {
+  display: none;
+}

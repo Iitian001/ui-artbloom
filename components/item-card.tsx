@@ -1,12 +1,14 @@
 import Link from "next/link"
-import { ArrowUpRightIcon, BookmarkIcon, DownloadIcon } from "lucide-react"
+import { ArrowUpRightIcon } from "lucide-react"
 
 import { AuthorAvatar } from "@/components/author"
 import { ItemPreview } from "@/components/item-preview"
+import { SaveButton } from "@/components/save-button"
 import { Badge } from "@/components/ui/badge"
+import { categoryLabel } from "@/lib/categories"
 import { itemHref } from "@/lib/hrefs"
 import type { RegistryItem } from "@/lib/registry"
-import { cn, formatCount } from "@/lib/utils"
+import { cn } from "@/lib/utils"
 
 export { itemHref }
 
@@ -21,8 +23,6 @@ export type ItemCardProps = {
    */
   height?: number
   className?: string
-  /** Show bookmarks next to installs. */
-  showBookmarks?: boolean
 }
 
 /**
@@ -40,8 +40,18 @@ export type ItemCardProps = {
  * corner of the frame. The pill is what the pointer finds; the title is what a
  * screen reader and the keyboard find.
  */
-export function ItemCard({ item, height, className, showBookmarks }: ItemCardProps) {
+export function ItemCard({ item, height, className }: ItemCardProps) {
   const href = itemHref(item)
+  /**
+   * The primary category, where an install count used to sit.
+   *
+   * That chip read `formatCount(item.installs)` behind a download glyph, and
+   * `installs` was `0` on every item in the catalogue — so every card in every
+   * grid carried the same "0" next to a download icon, which says "nobody has
+   * ever installed this" about 29 things at once. The category is true, it differs
+   * between cards, and it tells a browser something they can act on.
+   */
+  const primary = item.categories[0]
 
   return (
     <article className={cn("group flex min-w-0 flex-col gap-2.5", className)}>
@@ -92,19 +102,13 @@ export function ItemCard({ item, height, className, showBookmarks }: ItemCardPro
           {item.title}
         </Link>
 
-        <span className="flex shrink-0 items-center gap-1 font-mono text-[11px] text-muted-foreground tabular-nums">
-          <DownloadIcon className="size-3" aria-hidden />
-          {formatCount(item.installs)}
-          <span className="sr-only">installs</span>
-        </span>
-
-        {showBookmarks && (
-          <span className="flex shrink-0 items-center gap-1 font-mono text-[11px] text-muted-foreground tabular-nums">
-            <BookmarkIcon className="size-3" aria-hidden />
-            {formatCount(item.bookmarks)}
-            <span className="sr-only">bookmarks</span>
+        {primary && (
+          <span className="shrink-0 text-[11px] text-muted-foreground">
+            {categoryLabel(item.kind, primary)}
           </span>
         )}
+
+        <SaveButton name={item.name} title={item.title} className="-mr-1" />
       </div>
     </article>
   )

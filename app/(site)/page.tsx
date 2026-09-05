@@ -1,13 +1,13 @@
 import Link from "next/link"
 
 import { AgentMockups } from "@/components/landing/agent-mockups"
+import { CatalogueScale } from "@/components/landing/catalogue-scale"
 import { ClosingCta } from "@/components/landing/closing-cta"
 import { CodeShowcase } from "@/components/landing/code-showcase"
 import { CollectionsGrid } from "@/components/landing/collections-grid"
 import { Faq } from "@/components/landing/faq"
 import { Hero } from "@/components/landing/hero"
 import { ListsSection } from "@/components/landing/lists-section"
-import { SocialProof } from "@/components/landing/social-proof"
 import { ItemGrid } from "@/components/item-grid"
 import { featured, newest, type RegistryItem } from "@/lib/registry"
 import { cn } from "@/lib/utils"
@@ -105,7 +105,7 @@ export default function HomePage() {
         items={fresh}
       />
 
-      <SocialProof />
+      <CatalogueScale />
       <AgentMockups />
       <CodeShowcase />
       <ListsSection />

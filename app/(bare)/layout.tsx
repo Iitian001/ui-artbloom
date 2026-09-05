@@ -6,10 +6,12 @@ import { ThemeProvider } from "@/components/theme-provider"
 import "../globals.css"
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" })
+// Italic only, for the reason spelled out in app/(site)/layout.tsx: nothing in
+// the tree sets `font-serif` without `italic` beside it.
 const instrument = Instrument_Serif({
   subsets: ["latin"],
   weight: "400",
-  style: ["italic", "normal"],
+  style: ["italic"],
   variable: "--font-instrument",
   display: "swap",
 })

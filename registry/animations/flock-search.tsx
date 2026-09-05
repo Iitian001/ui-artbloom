@@ -451,7 +451,10 @@ export function FlockSearch({ compact = false }: FlockSearchProps) {
             type="search"
             name="q"
             aria-label="Search the catalogue"
-            placeholder="Search 214 components"
+            // Was "Search 214 components". This library has never had 214 of
+            // anything, and a placeholder is not the place to invent a catalogue
+            // size — the consumer who installs this gets whatever it says.
+            placeholder="Search the catalogue"
             defaultValue="verlet nav"
             tabIndex={compact ? -1 : undefined}
           />

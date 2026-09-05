@@ -1,0 +1,225 @@
+/*
+ * lloyd-avatars — a reviewer group whose packing is solved rather than authored: each
+ * face owns the part of the frame nearer to it than to anyone else. The canvas draws the
+ * frame itself — the rounded rectangle, the seams, the monograms — from the same polygon
+ * the solver clips, so there is no CSS radius or inset here for a canvas constant to
+ * drift away from.
+ */
+
+.lloyd-avatars-stage {
+  position: relative;
+  display: grid;
+  place-content: center;
+  width: 100%;
+  min-height: 26rem;
+  padding: 2rem 1.5rem 3rem;
+  overflow: hidden;
+  border-radius: 0.75rem;
+  background: radial-gradient(120% 110% at 50% 0%, #0b1a1e 0%, #070d11 60%, #05080b 100%);
+  color: #eaf3ff;
+}
+
+.lloyd-avatars-card {
+  display: grid;
+  width: min(23.5rem, 100%);
+  gap: 0.875rem;
+}
+
+.lloyd-avatars-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.lloyd-avatars-label {
+  margin: 0;
+  font: 500 0.6875rem/1 ui-monospace, 'SFMono-Regular', Menlo, monospace;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(234, 243, 255, 0.5);
+}
+
+/* The seat gauge. A `meter` treats its own children as presentational, so the tally
+   beside the pips restates the value text rather than adding a second reading. */
+.lloyd-avatars-seats {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.lloyd-avatars-pips {
+  display: flex;
+  gap: 0.1875rem;
+}
+
+.lloyd-avatars-pip {
+  width: 0.25rem;
+  height: 0.6875rem;
+  border-radius: 1px;
+  background: rgba(234, 243, 255, 0.14);
+}
+
+.lloyd-avatars-pip-on {
+  background: rgba(134, 224, 203, 0.72);
+}
+
+.lloyd-avatars-tally {
+  font: 500 0.6875rem/1 ui-monospace, 'SFMono-Regular', Menlo, monospace;
+  font-variant-numeric: tabular-nums;
+  color: rgba(234, 243, 255, 0.45);
+}
+
+/*
+ * The canvas host. It takes pointer capture on press — a drag has to survive leaving the
+ * frame — so nothing that needs a click of its own can live inside it. The roster below
+ * is a sibling for exactly that reason.
+ */
+.lloyd-avatars-frame {
+  position: relative;
+  height: 12rem;
+  touch-action: none;
+  cursor: grab;
+}
+
+.lloyd-avatars-frame:active {
+  cursor: grabbing;
+}
+
+.lloyd-avatars-frame canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.lloyd-avatars-names {
+  margin: 0;
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  color: rgba(234, 243, 255, 0.55);
+}
+
+.lloyd-avatars-names strong {
+  font-weight: 500;
+  color: rgba(234, 243, 255, 0.85);
+}
+
+.lloyd-avatars-roster {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+}
+
+.lloyd-avatars-chip {
+  appearance: none;
+  margin: 0;
+  padding: 0.3125rem 0.6875rem;
+  border: 1px solid rgba(234, 243, 255, 0.12);
+  border-radius: 999px;
+  background: rgba(6, 12, 16, 0.5);
+  font: inherit;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: rgba(234, 243, 255, 0.46);
+  cursor: pointer;
+  transition:
+    border-color 160ms ease,
+    background-color 160ms ease,
+    color 160ms ease;
+}
+
+.lloyd-avatars-chip:hover {
+  border-color: rgba(134, 224, 203, 0.4);
+  color: rgba(234, 243, 255, 0.8);
+}
+
+.lloyd-avatars-chip[aria-pressed='true'] {
+  border-color: rgba(134, 224, 203, 0.55);
+  background: rgba(134, 224, 203, 0.13);
+  color: #eefaf5;
+}
+
+.lloyd-avatars-chip:focus-visible {
+  outline: 2px solid rgba(134, 224, 203, 0.8);
+  outline-offset: 2px;
+}
+
+.lloyd-avatars-hint {
+  position: absolute;
+  right: 1.25rem;
+  bottom: 1rem;
+  margin: 0;
+  font: 500 0.6875rem/1 ui-monospace, 'SFMono-Regular', Menlo, monospace;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  pointer-events: none;
+  color: rgba(234, 243, 255, 0.26);
+}
+
+/*
+ * What reduced motion switches off is the descent, not the control. The loop is stopped
+ * and every repaint instead runs the same iteration to its fixed point, so the frame is
+ * always showing a solved tessellation: dragging a face re-solves the other seven around
+ * it between one pointer event and the next, seating an eighth opens its tile
+ * immediately, and the arrow keys still walk the face they are pointed at.
+ */
+@media (prefers-reduced-motion: reduce) {
+  .lloyd-avatars-chip {
+    transition: none;
+  }
+}
+
+/*
+ * The card variant: the 298x240 catalogue frame, at that real size and never scaled.
+ * The packing is scale-free — every seat is kept as a fraction of the frame and the frame
+ * polygon is measured off the canvas box on every resize — so a 278x148 frame is the same
+ * tessellation with the same eight cells, not a cropped one. What goes is the sentence that
+ * names the reviewers and the hint; the head, the frame and all eight chips stay, because
+ * they are the control.
+ */
+.lloyd-avatars-stage[data-compact='true'] {
+  min-height: 0;
+  height: 100%;
+  /* `place-content: center` leaves the single row auto-sized, and a row sized from its
+     content is what the card's `height: 100%` would then resolve against — so the frame
+     would collapse to nothing. Stretched, the row is the card frame. */
+  place-content: stretch;
+  padding: 0.5rem 0.625rem;
+  /* The card frame rounds and clips already. */
+  border-radius: 0;
+}
+
+/* The frame takes what the head and the roster leave. `minmax(0, 1fr)` and not `1fr`: the
+   canvas is a min-content floor otherwise and the row would refuse to shrink. */
+.lloyd-avatars-stage[data-compact='true'] .lloyd-avatars-card {
+  width: 100%;
+  height: 100%;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  gap: 0.4375rem;
+}
+
+/* Takes what the head and the roster leave, rather than a fixed 12rem it has no room for.
+   And `pan-y`: a full-bleed surface that claims every touch traps the page inside a
+   scrolling grid, so the vertical gesture goes back to the document while dragging a face
+   still arrives. */
+.lloyd-avatars-stage[data-compact='true'] .lloyd-avatars-frame {
+  height: auto;
+  min-height: 0;
+  touch-action: pan-y;
+}
+
+/* Eight chips on two rows, and the rows are what the frame is paying for. */
+.lloyd-avatars-stage[data-compact='true'] .lloyd-avatars-roster {
+  gap: 0.3125rem;
+}
+
+.lloyd-avatars-stage[data-compact='true'] .lloyd-avatars-chip {
+  padding: 0.25rem 0.5625rem;
+  font-size: 0.6875rem;
+}
+
+/* The roll call and the hint. The card's own title carries what both were for. */
+.lloyd-avatars-stage[data-compact='true'] .lloyd-avatars-names,
+.lloyd-avatars-stage[data-compact='true'] .lloyd-avatars-hint {
+  display: none;
+}

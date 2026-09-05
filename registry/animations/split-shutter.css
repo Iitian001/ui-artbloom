@@ -87,7 +87,7 @@
   left: 50%;
   top: 50%;
   color: #f0ede6;
-  font: 700 10px var(--font-geist-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+  font: 700 10px ui-monospace, SFMono-Regular, Menlo, monospace;
   letter-spacing: 0.2em;
   writing-mode: vertical-rl;
   transform: translate(-50%, -50%);
@@ -98,7 +98,7 @@
   z-index: 4;
   left: 16px;
   bottom: 15px;
-  font: 8px var(--font-geist-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+  font: 8px ui-monospace, SFMono-Regular, Menlo, monospace;
   font-style: normal;
   letter-spacing: 0.1em;
   mix-blend-mode: difference;
@@ -205,4 +205,25 @@
  */
 .split-shutter-stage[data-compact='true'] .split-shutter > em {
   font-size: 10px;
+}
+
+/*
+ * The two loops are locked to each other: slats closed while the headline is blurred out,
+ * slats open while it is legible. Freezing at the closed end would leave a card with no
+ * readable content on it, so this pins the open end — slats retracted, headline at its
+ * 44%–67% pose. Reduced motion sees the reveal's result, which is the point of a reveal.
+ */
+@media (prefers-reduced-motion: reduce) {
+  .split-shutter i {
+    animation: none;
+    transform: scaleY(0);
+  }
+
+  .split-shutter > b {
+    animation: none;
+    letter-spacing: 0.02em;
+    scale: 1;
+    filter: blur(0);
+    opacity: 1;
+  }
 }

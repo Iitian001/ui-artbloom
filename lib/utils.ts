@@ -20,6 +20,20 @@ export function formatFull(n: number) {
   return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
 }
 
+/**
+ * Bytes for a human: "980 KB", "14.6 MB".
+ *
+ * Decimal units, not binary, because this labels a download the way a browser
+ * does. Deliberately locale-free — the same string has to come out of the server
+ * render and the client one.
+ */
+export function formatBytes(bytes: number) {
+  if (bytes < 1000) return `${bytes} B`
+  if (bytes < 1_000_000) return `${Math.round(bytes / 1000)} KB`
+  const mb = bytes / 1_000_000
+  return `${mb < 10 ? mb.toFixed(1) : Math.round(mb)} MB`
+}
+
 /** "Ravi Katiyar" -> "RK", "shadcn" -> "SH" */
 export function monogram(name: string) {
   const parts = name.trim().split(/[\s_-]+/).filter(Boolean)

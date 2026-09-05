@@ -59,8 +59,25 @@ export function GET() {
           },
         },
       },
-      cssVars: { type: "object", additionalProperties: { type: "string" } },
-      css: { type: "string", description: "Keyframes and utilities to append to globals.css." },
+      assets: {
+        type: "array",
+        description:
+          "Files delivered as bytes rather than inlined text. Read by this CLI only; shadcn writes the code and downloads none of the media.",
+        items: {
+          type: "object",
+          required: ["url", "target", "bytes"],
+          properties: {
+            url: { type: "string", format: "uri" },
+            target: { type: "string" },
+            bytes: { type: "integer", minimum: 0 },
+          },
+        },
+      },
+      css: {
+        $ref: "#/$defs/cssBlock",
+        description:
+          "Keyframes, custom properties and other global CSS to append to the project stylesheet. Keyed by at-rule or selector, values nest — the same shape shadcn declares, so `shadcn add` accepts it. There is no `cssVars`: variables go under `:root` or `@theme` here.",
+      },
       meta: {
         type: "object",
         properties: {
@@ -68,6 +85,16 @@ export function GET() {
           categories: { type: "array", items: { type: "string" } },
           docs: { type: "string", format: "uri" },
         },
+      },
+    },
+    $defs: {
+      cssBlock: {
+        type: "object",
+        additionalProperties: { $ref: "#/$defs/cssValue" },
+      },
+      cssValue: {
+        description: "A declaration value, or a nested block.",
+        oneOf: [{ type: "string" }, { $ref: "#/$defs/cssBlock" }],
       },
     },
   })

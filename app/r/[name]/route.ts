@@ -12,6 +12,14 @@ import { buildPayload } from "@/lib/registry/source"
  */
 export const dynamic = "force-static"
 
+/**
+ * Anything not in `generateStaticParams` 404s instead of being rendered on
+ * demand. `force-static` alone still let an unlisted `/r/<anything>.json` reach
+ * this handler at request time, so a crawler or a loop could mint arbitrary
+ * cache entries against a route whose entire answer set is known at build time.
+ */
+export const dynamicParams = false
+
 export function generateStaticParams() {
   return [{ name: "registry.json" }, ...ITEMS.map((item) => ({ name: `${item.name}.json` }))]
 }

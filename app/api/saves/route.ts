@@ -117,7 +117,9 @@ function failureStatus(reason: "unconfigured" | "unauthorized" | "unknown-item" 
 
 /**
  * The item name a write is about: a string in the body (POST) or the query string
- * (DELETE), and in both cases one of the 17 names in `lib/registry/items.ts`.
+ * (DELETE), and in both cases a name that `lib/registry/items.ts` actually declares.
+ * The count is deliberately not written down here — it changes every time an item is
+ * added, and a number in a comment is one more thing to be wrong.
  *
  * The registry check is not decoration. `item_name` has no foreign key to
  * `public.items` — a user can save something nobody has installed — so without this

@@ -9,6 +9,9 @@ import { templatePublicSpace } from "@/lib/registry/template-public"
  */
 export const dynamic = "force-static"
 
+/** Unlisted paths 404 rather than reaching the handler — see app/r/[name]/route.ts. */
+export const dynamicParams = false
+
 const space = templatePublicSpace("cinematic-supercar")
 
 export function generateStaticParams() {

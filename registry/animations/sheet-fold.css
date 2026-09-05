@@ -1,0 +1,250 @@
+.sheet-fold-stage {
+  position: relative;
+  width: 100%;
+  /* Two panels are open at once during a swap — a 118 px row closing while a 99 px row
+     falls — and the tallest transient plus the heads and the heading is 480 px. Reserving
+     it here is what keeps the card from breathing every time a row is opened. */
+  min-height: 31rem;
+  overflow: hidden;
+  border-radius: 0.75rem;
+  background: radial-gradient(118% 100% at 14% 0%, #121721 0%, #0a0d14 58%, #06080c 100%);
+  color: #e8eef7;
+}
+
+/* Nothing is drawn here. The frame loop that moves the panels is attached to this element
+   and dies with it, so the stage and its canvas stay mounted at full bleed. */
+.sheet-fold-section {
+  position: absolute;
+  inset: 0;
+  touch-action: none;
+}
+
+.sheet-fold-section canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* One column, and it starts at the padding edge: the rows are the whole card. */
+.sheet-fold-face {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  padding: 1.25rem 1.25rem 2.5rem;
+  pointer-events: none;
+}
+
+/* Capped, and not only for the reading measure: the leaf lengths are the measured heights of
+   these paragraphs, so an uncapped column would re-wrap four lines into two on a wide stage
+   and quietly re-specify every hinge. */
+.sheet-fold-col {
+  min-width: 0;
+  max-width: 34rem;
+}
+
+.sheet-fold-eyebrow {
+  margin: 0 0 0.375rem;
+  font: 500 0.6875rem/1 ui-monospace, "SFMono-Regular", Menlo, monospace;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(232, 238, 247, 0.4);
+}
+
+.sheet-fold-title {
+  margin: 0 0 1.125rem;
+  font-size: 1.375rem;
+  font-weight: 500;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+
+.sheet-fold-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.sheet-fold-row {
+  box-shadow: inset 0 1px 0 rgba(232, 238, 247, 0.09);
+}
+
+/* pointer-events back on: the face is transparent to the pointer so the stage keeps its
+   capture, and these four buttons are the only things inside it that take a click. */
+.sheet-fold-head {
+  display: flex;
+  width: 100%;
+  align-items: baseline;
+  gap: 0.75rem;
+  appearance: none;
+  margin: 0;
+  padding: 0.875rem 0.25rem;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  line-height: 1.35;
+  text-align: left;
+  color: rgba(232, 238, 247, 0.86);
+  cursor: pointer;
+  pointer-events: auto;
+  transition: color 140ms linear;
+}
+
+.sheet-fold-head:hover {
+  color: #f4f9ff;
+}
+
+.sheet-fold-head:focus-visible {
+  outline: 2px solid rgba(143, 188, 224, 0.85);
+  outline-offset: 1px;
+}
+
+.sheet-fold-name {
+  flex: 1;
+  min-width: 0;
+}
+
+.sheet-fold-value {
+  flex: none;
+  font: 500 0.6875rem/1 ui-monospace, "SFMono-Regular", Menlo, monospace;
+  letter-spacing: 0.06em;
+  color: rgba(232, 238, 247, 0.38);
+}
+
+/*
+ * The height is L·sin θ, arriving from the solver as --sheet-fold-h on this element. No
+ * transition and no max-height: a transition would blend two solver frames and put easing
+ * back on screen after all the trouble taken to get rid of it. overflow keeps the copy from
+ * spilling out of a plate that is only part way down, and the inner box below is what holds
+ * the layout so nothing re-wraps as the height changes.
+ */
+.sheet-fold-panel {
+  height: var(--sheet-fold-h, 0px);
+  overflow: hidden;
+  visibility: hidden;
+}
+
+.sheet-fold-inner {
+  padding: 0 3rem 1.125rem 0;
+}
+
+.sheet-fold-copy {
+  margin: 0;
+  font-size: 0.8125rem;
+  line-height: 1.55;
+  color: rgba(232, 238, 247, 0.56);
+}
+
+.sheet-fold-vars {
+  margin: 0.5rem 0 0;
+  padding: 0;
+  font: 500 0.75rem/1.5 ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+
+.sheet-fold-var {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.sheet-fold-var dt {
+  flex: 1;
+  min-width: 0;
+  color: rgba(232, 238, 247, 0.6);
+}
+
+.sheet-fold-var dd {
+  flex: none;
+  margin: 0;
+  color: rgba(143, 188, 224, 0.62);
+}
+
+.sheet-fold-hint {
+  position: absolute;
+  right: 0.875rem;
+  bottom: 0.75rem;
+  margin: 0;
+  font: 500 0.6875rem/1 ui-monospace, "SFMono-Regular", Menlo, monospace;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(232, 238, 247, 0.26);
+  pointer-events: none;
+}
+
+@media (max-width: 34rem) {
+  .sheet-fold-title {
+    font-size: 1.125rem;
+  }
+
+  .sheet-fold-inner {
+    padding-right: 0.75rem;
+  }
+
+  .sheet-fold-vars {
+    font-size: 0.6875rem;
+  }
+}
+
+/*
+ * Switched off: the fall. With the loop stopped every leaf is placed at the angle its row
+ * asks for — 0 or the hinge stop, nothing in between — so opening a row costs one repaint
+ * and the panel is simply at its height. The colour the head fades to on hover stays,
+ * because it is a colour; the fade is cut, since it is the only animation the stylesheet
+ * owns.
+ */
+@media (prefers-reduced-motion: reduce) {
+  .sheet-fold-head {
+    transition: none;
+  }
+}
+
+/*
+ * The card variant: the 298x240 catalogue frame, at that real size and never scaled.
+ * The four hinges are the subject and all four stay; what goes is everything written
+ * around them, because a 31rem stage's worth of heading and variable tables in a 15rem
+ * box leaves no room for a leaf to fall through.
+ *
+ * The panel height is not touched here. `.sheet-fold-inner` is watched by a
+ * `ResizeObserver` and its `offsetHeight` is what the solver opens to, so hiding the
+ * tables below shortens the stroke by itself — the number is read, never written.
+ */
+.sheet-fold-stage[data-compact='true'] {
+  min-height: 0;
+  height: 100%;
+  /* The card frame rounds and clips already. */
+  border-radius: 0;
+}
+
+/* A full-bleed surface that claims every touch traps the page inside a scrolling grid.
+   `pan-y` hands the vertical gesture back to the document. */
+.sheet-fold-stage[data-compact='true'] .sheet-fold-section {
+  touch-action: pan-y;
+}
+
+.sheet-fold-stage[data-compact='true'] .sheet-fold-face {
+  padding: 0.5rem 0.875rem;
+}
+
+/* The heading, the tables and the hint. The card's own title carries the first, and the
+   other two are what four rows plus an open leaf need the room back from. */
+.sheet-fold-stage[data-compact='true'] .sheet-fold-eyebrow,
+.sheet-fold-stage[data-compact='true'] .sheet-fold-title,
+.sheet-fold-stage[data-compact='true'] .sheet-fold-vars,
+.sheet-fold-stage[data-compact='true'] .sheet-fold-hint {
+  display: none;
+}
+
+/* 33px a row rather than 47, so four heads and one open panel clear 240px. */
+.sheet-fold-stage[data-compact='true'] .sheet-fold-head {
+  padding: 0.4375rem 0.25rem;
+  font-size: 0.875rem;
+}
+
+.sheet-fold-stage[data-compact='true'] .sheet-fold-inner {
+  padding: 0 1rem 0.625rem 0;
+}
+
+.sheet-fold-stage[data-compact='true'] .sheet-fold-copy {
+  font-size: 0.75rem;
+}
+

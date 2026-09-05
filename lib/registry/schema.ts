@@ -45,6 +45,21 @@ export type Author = {
   bio?: string
 }
 
+/**
+ * Nested CSS, in the shape shadcn's registry-item schema declares for its `css`
+ * field: an object keyed by at-rule or selector, whose values are either a
+ * declaration value or a further nested block.
+ *
+ * NOT A STRING, WHICH IS WHAT IT USED TO BE. `cli/README.md` says every item here
+ * is also a valid shadcn registry item, and `marquee` was the counter-example: it
+ * carried its two `@keyframes` as one minified line of CSS text, and shadcn's schema
+ * declares `css` as an object. So `shadcn add …/marquee.json` had a schema error
+ * waiting for it while the README promised it would work. The object form says the
+ * same thing in the shape both tools accept.
+ */
+export type CssValue = string | { [key: string]: CssValue }
+export type CssBlock = Record<string, CssValue>
+
 export type RegistryItem = {
   /** The install name: `npx ui.artbloom add <name>`. Unique across all kinds. */
   name: string
@@ -61,14 +76,37 @@ export type RegistryItem = {
   dependencies?: string[]
   /** Other registry items pulled in transitively, by `name`. */
   registryDependencies?: string[]
-  /** CSS vars / keyframes this item needs appended to globals.css. */
-  cssVars?: Record<string, string>
-  css?: string
+  /**
+   * Keyframes, custom properties and any other global CSS this item needs appended
+   * to the consumer's stylesheet. Put variables under `":root"` or `"@theme"` here.
+   *
+   * There is deliberately no `cssVars` field. shadcn has one, but it is grouped —
+   * `{ theme, light, dark }`, each a flat map — and ours was a single flat map, which
+   * would not have validated against its schema. Nothing in the registry ever set it,
+   * so rather than keep two ways to declare a variable and have one of them quietly
+   * break `shadcn add`, there is one. The CLI still reads `cssVars` off a payload for
+   * compatibility with anything already deployed.
+   */
+  css?: CssBlock
   /** ISO dates. */
   createdAt: string
   updatedAt?: string
-  installs: number
-  bookmarks: number
+  /*
+   * No `installs` or `bookmarks` here on purpose.
+   *
+   * They used to be required fields, and every one of the 29 entries in
+   * `items.ts` carried `0` — because the real counters live in `public.items`
+   * (see `supabase/schema.sql`) and are moved by `/api/track/install`, not by a
+   * literal in this repo. So the field was a seed for a number nobody had: the
+   * cards rendered "0", `popular()` sorted by a key that was equal for every
+   * item, and `totalInstalls()` fed the landing page the sentence "0 components
+   * installed by builders".
+   *
+   * The read path for the live numbers already exists in
+   * `lib/analytics/counts.ts` — `getItemCounts()` falls back per item and tags each
+   * result `"live"` or `"unknown"`. Wiring it into the UI is the change to make when
+   * there is traffic worth showing; adding a zero back to this type is not.
+   */
   featured?: boolean
   /** Renders the "New" pill in rails. */
   isNew?: boolean
@@ -98,8 +136,7 @@ export type RegistryPayload = {
    * and refuse a response that is not the size it was promised.
    */
   assets?: { url: string; target: string; bytes: number }[]
-  cssVars?: Record<string, string>
-  css?: string
+  css?: CssBlock
   meta: {
     kind: Kind
     categories: string[]

@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 import Link from "next/link"
 import { notFound } from "next/navigation"
-import { ArrowUpRightIcon, BookmarkIcon, ChevronRightIcon, DownloadIcon } from "lucide-react"
+import { ArrowUpRightIcon, ChevronRightIcon } from "lucide-react"
 
 import { AuthorAvatar } from "@/components/author"
 import { CodeBlock } from "@/components/code-block"
@@ -10,13 +10,14 @@ import { InstallTabs } from "@/components/install-tabs"
 import { ItemCard } from "@/components/item-card"
 import { ItemPreview } from "@/components/item-preview"
 import { PreviewCodeTabs } from "@/components/preview-code-tabs"
+import { SaveButton } from "@/components/save-button"
 import { Badge } from "@/components/ui/badge"
 import { registryUrl } from "@/lib/brand"
 import { categoryLabel, isKind, KIND_LABEL, KIND_SINGULAR } from "@/lib/categories"
 import { itemHref, profileHref } from "@/lib/hrefs"
-import { getItem, ITEMS, relatedItems, type RegistryItem } from "@/lib/registry"
-import { loadFiles } from "@/lib/registry/source"
-import { formatCount, formatFull } from "@/lib/utils"
+import { cssText, getItem, ITEMS, relatedItems, type RegistryItem } from "@/lib/registry"
+import { loadFiles, installFootprint } from "@/lib/registry/source"
+import { formatBytes, formatFull } from "@/lib/utils"
 
 type Params = { handle: string; kind: string; slug: string }
 
@@ -69,6 +70,7 @@ export default async function ItemPage({ params }: { params: Promise<Params> }) 
   if (!item) notFound()
 
   const files = await loadFiles(item)
+  const footprint = await installFootprint(item.name)
   const related = relatedItems(item, 8)
   const url = registryUrl(item.name)
   const deps = item.dependencies ?? []
@@ -110,29 +112,24 @@ export default async function ItemPage({ params }: { params: Promise<Params> }) 
               <AuthorAvatar author={item.author} />
               <span>{item.author.name}</span>
             </Link>
-            <span className="flex items-center gap-1.5">
-              <DownloadIcon className="size-3.5" aria-hidden />
-              <span className="font-mono tabular-nums">{formatCount(item.installs)}</span> installs
-            </span>
-            <span className="flex items-center gap-1.5">
-              <BookmarkIcon className="size-3.5" aria-hidden />
-              <span className="font-mono tabular-nums">{formatCount(item.bookmarks)}</span> saved
-            </span>
             <span>Updated {formatDate(item.updatedAt ?? item.createdAt)}</span>
           </div>
         </div>
 
-        {item.kind === "templates" && (
-          <Link
-            href={`/preview/${item.name}`}
-            target="_blank"
-            rel="noreferrer"
-            className="flex shrink-0 items-center gap-1.5 rounded-lg border border-border px-3 py-2 text-[13px] font-medium transition-colors hover:border-foreground/25 hover:bg-secondary/50"
-          >
-            Open full preview
-            <ArrowUpRightIcon className="size-3.5" aria-hidden />
-          </Link>
-        )}
+        <div className="flex shrink-0 items-center gap-2">
+          <SaveButton name={item.name} title={item.title} variant="wide" />
+          {item.kind === "templates" && (
+            <Link
+              href={`/preview/${item.name}`}
+              target="_blank"
+              rel="noreferrer"
+              className="flex shrink-0 items-center gap-1.5 rounded-lg border border-border px-3 py-2 text-[13px] font-medium transition-colors hover:border-foreground/25 hover:bg-secondary/50"
+            >
+              Open full preview
+              <ArrowUpRightIcon className="size-3.5" aria-hidden />
+            </Link>
+          )}
+        </div>
       </div>
 
       <div className="mt-8 grid grid-cols-1 items-start gap-8 lg:grid-cols-[minmax(0,1fr)_19rem]">
@@ -161,7 +158,7 @@ export default async function ItemPage({ params }: { params: Promise<Params> }) 
                 />
               ))}
               {item.css && (
-                <CodeBlock code={item.css} lang="css" filename="app/globals.css" />
+                <CodeBlock code={cssText(item.css)} lang="css" filename="app/globals.css" />
               )}
             </div>
           }
@@ -172,8 +169,11 @@ export default async function ItemPage({ params }: { params: Promise<Params> }) 
             <h2 className="mb-2 text-sm font-medium">Install</h2>
             <InstallTabs itemName={item.name} />
             <p className="mt-2 text-xs text-muted-foreground">
-              Writes {files.length === 1 ? "one file" : `${files.length} files`} into your project.
-              {registryDeps.length > 0 && " Pulls its registry dependencies with it."}
+              Writes {footprint.files === 1 ? "one file" : `${footprint.files} files`}
+              {footprint.assets > 0 &&
+                ` and ${footprint.assets === 1 ? "one asset" : `${footprint.assets} assets`} (${formatBytes(footprint.assetBytes)})`}{" "}
+              into your project.
+              {registryDeps.length > 0 && " Registry dependencies are included in that count."}
             </p>
           </div>
 
@@ -225,8 +225,11 @@ export default async function ItemPage({ params }: { params: Promise<Params> }) 
               </MetaRow>
             )}
             <MetaRow label="Published">{formatDate(item.createdAt)}</MetaRow>
-            <MetaRow label="Installs">
-              <span className="font-mono tabular-nums">{formatFull(item.installs)}</span>
+            <MetaRow label="Writes">
+              <span className="font-mono tabular-nums">
+                {formatFull(footprint.files)} {footprint.files === 1 ? "file" : "files"}
+                {footprint.assets > 0 && ` + ${formatBytes(footprint.assetBytes)}`}
+              </span>
             </MetaRow>
           </dl>
 
@@ -250,7 +253,7 @@ export default async function ItemPage({ params }: { params: Promise<Params> }) 
           <h2 className="text-lg font-semibold tracking-tight">More like this</h2>
           <div className="mt-4 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {related.map((other) => (
-              <ItemCard key={other.name} item={other} height={200} />
+              <ItemCard key={other.name} item={other} />
             ))}
           </div>
         </section>

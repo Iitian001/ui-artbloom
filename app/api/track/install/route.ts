@@ -15,8 +15,11 @@ import { getItem } from "@/lib/registry"
  * prerendered at build time and served from the CDN. Our code does not run when
  * somebody installs, and making it run would mean trading the CDN for a function
  * invocation on the hottest path the site has. So counting is a separate,
- * deliberate call: `cli/src/track.ts` posts here after the files are on disk, and
- * `reportInstall()` in `lib/analytics/client.ts` posts here from the copy button.
+ * deliberate call, and `cli/src/track.ts` is the only thing that makes it — after
+ * the files are on disk, so the number means an install that happened. A browser
+ * reporter used to sit in `lib/analytics/client.ts` for the copy button to call;
+ * nothing ever called it, and it was deleted rather than wired up, because "copied
+ * a command" and "installed" in one column is a number with two meanings.
  *
  * WHAT AN ATTACKER CAN DO WITH IT is written out at the bottom of
  * `supabase/schema.sql`. The short version: this is a client-reported number, and
@@ -117,14 +120,40 @@ export async function POST(request: NextRequest) {
    * because no keys are configured — is not knowable here and this route never
    * claims otherwise. `recordInstall()` returns a value for every one of those
    * cases and throws in none of them.
+   *
+   * The outcome is read rather than discarded, because two of its cases were
+   * otherwise invisible from outside the process. `recordInstall` already logs the
+   * two that carry an operator action: `unconfigured` warns once per process, and
+   * `error` goes through `logRestFailure`. What is left is covered here.
    */
   after(async () => {
-    await recordInstall({
+    const outcome = await recordInstall({
       name,
       ipHash,
       version: stringField(body.value, "version"),
       runner: stringField(body.value, "runner"),
     })
+
+    /**
+     * Cannot happen: the same `getItem(name)` ran above and 404'd. If it ever
+     * does, the check and the writer disagree about what is in the registry —
+     * worth a line, because the symptom on its own is a counter that ignores one
+     * item while every other one moves.
+     */
+    if (!outcome.accepted && outcome.reason === "unknown-item") {
+      console.warn(`[track/install] accepted "${name}" at the route but the writer rejected it`)
+      return
+    }
+
+    /**
+     * A 200 from PostgREST whose body was not a number. The row may well have
+     * been written, so this is not an error path — but it means
+     * `increment_install` is no longer returning the new total, which is the one
+     * thing this endpoint exists to move.
+     */
+    if (outcome.accepted && outcome.installs === null) {
+      console.warn(`[track/install] increment_install returned no usable count for "${name}"`)
+    }
   })
 
   return reply(202, { ok: true, name, queued: true })

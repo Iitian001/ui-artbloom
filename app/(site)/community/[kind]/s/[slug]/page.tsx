@@ -3,7 +3,6 @@ import Link from "next/link"
 import { notFound } from "next/navigation"
 import { ChevronRightIcon } from "lucide-react"
 
-import { CatalogTabs, type CatalogTab } from "@/components/catalog-tabs"
 import { FilterChips } from "@/components/filter-chips"
 import { ItemGrid } from "@/components/item-grid"
 import { ALL_CATEGORIES, findCategory, KIND_LABEL } from "@/lib/categories"
@@ -15,10 +14,16 @@ import {
 } from "@/lib/registry"
 import { formatFull } from "@/lib/utils"
 
-const TABS: CatalogTab[] = [
-  { value: "newest", label: "Newest" },
-  { value: "popular", label: "Popular" },
-]
+/*
+ * No tab strip here any more.
+ *
+ * It was two tabs, "Newest" and "Popular", and Popular sorted by `b.installs -
+ * a.installs` over a field that was `0` on all twenty-nine items — so picking it
+ * re-rendered the same grid in the same order and told the visitor they were now
+ * looking at a ranking. With that gone there is one ordering left, and a tab strip
+ * offering a single choice is not a control. The heading already says what the sort
+ * is, and `CatalogTabs` is still used by /community/[kind], where the tabs differ.
+ */
 
 /** Only categories of a kind you can still browse — see `isBrowsableKind`. */
 export function generateStaticParams() {
@@ -48,10 +53,8 @@ export async function generateMetadata({
 
 export default async function CategoryPage({
   params,
-  searchParams,
 }: {
   params: Promise<{ kind: string; slug: string }>
-  searchParams: Promise<{ tab?: string }>
 }) {
   const { kind, slug } = await params
   if (!isBrowsableKind(kind)) notFound()
@@ -59,16 +62,9 @@ export default async function CategoryPage({
   const category = findCategory(kind, slug)
   if (!category) notFound()
 
-  const { tab } = await searchParams
-  const active = tab === "popular" ? "popular" : "newest"
-
-  const items = itemsByCategory(kind, slug)
-  const sorted =
-    active === "popular"
-      ? [...items].sort((a, b) => b.installs - a.installs)
-      : [...items].sort((a, b) =>
-          (b.updatedAt ?? b.createdAt).localeCompare(a.updatedAt ?? a.createdAt),
-        )
+  const items = [...itemsByCategory(kind, slug)].sort((a, b) =>
+    (b.updatedAt ?? b.createdAt).localeCompare(a.updatedAt ?? a.createdAt),
+  )
 
   const siblings = populatedCategories(kind)
     .filter((other) => other.slug !== slug)
@@ -95,7 +91,7 @@ export default async function CategoryPage({
           {items.length > 0 ? (
             <>
               <span className="font-mono tabular-nums">{formatFull(items.length)}</span>{" "}
-              {items.length === 1 ? "piece" : "pieces"} in this category
+              {items.length === 1 ? "piece" : "pieces"} in this category, newest first
             </>
           ) : (
             <>Nothing in this category yet.</>
@@ -103,14 +99,11 @@ export default async function CategoryPage({
         </p>
 
         <FilterChips kind={kind} activeSlug={slug} className="mt-7" />
-        {items.length > 1 && (
-          <CatalogTabs tabs={TABS} defaultValue="newest" className="mt-6" />
-        )}
       </div>
 
       <div className="container-page py-10">
         <ItemGrid
-          items={sorted}
+          items={items}
           emptyMessage={`No ${category.label.toLowerCase()} in the catalogue yet.`}
         />
 

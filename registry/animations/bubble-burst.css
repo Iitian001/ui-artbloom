@@ -199,3 +199,26 @@
   width: 210px;
   height: 210px;
 }
+
+/*
+ * `bubble-rise` starts below the frame at opacity 0, so stopping the loop where it begins
+ * would empty the card. Instead each bubble is parked at a different altitude inside the
+ * band where the loop has it at full size and opacity — `--b` is already the per-bubble
+ * index, so four bubbles spread across the rise and read as a still of the same scene.
+ *
+ * The other two need nothing but the loop switched off: the drops' base transform is
+ * `scaleY(0)`, which is already invisible, and the ring's base is its full-size resting
+ * state, which is the frame worth keeping.
+ */
+@media (prefers-reduced-motion: reduce) {
+  .bubble-burst .bubble::before {
+    animation: none;
+    transform: translateY(calc(35px - var(--b) * 26px));
+    opacity: 1;
+  }
+
+  .bubble-burst .bubble-drop,
+  .bubble-burst::before {
+    animation: none;
+  }
+}

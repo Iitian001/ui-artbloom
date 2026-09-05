@@ -106,15 +106,21 @@
   left: 18px;
   bottom: 16px;
   color: #79908e;
-  font: 8px var(--font-geist-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+  font: 8px ui-monospace, SFMono-Regular, Menlo, monospace;
   letter-spacing: 0.13em;
 }
 
 /*
  * Card variant: the catalogue frame, at real pixels and never scaled. 298x240 in the
- * main grids, and the frame asks for 200px on a profile, in bookmarks and in the
- * related strip, 260px in the landing lists — so nothing below is allowed to assume a
- * height. Widths run about 285-360px across the breakpoints.
+ * main grids — 240px is the floor every card surface uses, on a profile, in bookmarks
+ * and in the related strip as well, and the landing lists ask for 260px — so nothing
+ * below is allowed to assume a height. Widths run about 285-360px across the
+ * breakpoints.
+ *
+ * (These notes used to describe a 200px frame on the profile, bookmarks and related
+ * surfaces. There is no 200px frame: `ItemCard` and `ItemGrid` both default `height`
+ * to 240 and every one of those surfaces goes through the grid. The arithmetic below
+ * is redone against 240, which is the smallest frame that exists.)
  *
  * Most of this loom already answers to its container — the sheet's width, the gap
  * between threads and the wordmark are all `cqw`, and the wash and the centre seam are
@@ -128,11 +134,12 @@
  */
 
 /*
- * The 240px floor goes first, and it is not tidying: at the 200px frames above, a
- * stage held open to 240px inside an `overflow: hidden` box loses 20px off each end of
- * the loom instead of fitting it. The height comes from the frame, as it already did.
- * Nothing to unround — the stage sets no radius of its own and the card frame clips
- * its own corners.
+ * The 240px floor goes first, and it is not tidying: a stage held open to its own
+ * 240px `min-height` inside an `overflow: hidden` box that is exactly 240px tall has
+ * no room for the frame's own padding, and any surface that ever asks for less than
+ * 240 loses the difference off both ends of the loom instead of fitting it. The height
+ * comes from the frame, as it already did. Nothing to unround — the stage sets no
+ * radius of its own and the card frame clips its own corners.
  */
 .aurora-thread-loom-stage[data-compact='true'] {
   min-height: 0;
@@ -173,8 +180,8 @@
  *
  * A percentage and not `cqh`: the stage is an `inline-size` container, so `cqh` has no
  * block-axis container to resolve against here. A fraction also follows the frame,
- * which is the thing that varies — 200px, 240px, 260px depending on the surface. At the
- * 200px end the cut is back to the stage's own 15%, which is the worst it gets.
+ * which is the thing that varies — 240px in every grid, 260px in the landing lists. At
+ * the 240px end the cut is the 10% worked through above, which is the worst it gets.
  */
 .aurora-thread-loom-stage[data-compact='true'] .aurora-thread-loom > div {
   height: 80%;
@@ -204,4 +211,20 @@
  */
 .aurora-thread-loom-stage[data-compact='true'] .aurora-thread-loom > span {
   display: none;
+}
+
+/*
+ * The loop's own resting pose (0%/100%) is a dim flat bundle at scaleY(0.22) — freezing
+ * there would read as a broken component rather than a still one. So this pins every
+ * thread to the 50% pose instead: full height, full opacity, each one's own rotation and
+ * hue offset intact. The wave stops moving and stays woven.
+ */
+@media (prefers-reduced-motion: reduce) {
+  .aurora-thread-loom div > i {
+    animation: none;
+    transform: translateY(calc((var(--i) - 24) * 1.8px)) scaleY(1)
+      rotate(calc((var(--i) - 24) * 0.35deg));
+    opacity: 1;
+    filter: hue-rotate(calc(var(--i) * 5deg));
+  }
 }

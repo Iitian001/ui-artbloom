@@ -1,0 +1,193 @@
+.detent-slider-stage {
+  position: relative;
+  display: grid;
+  place-content: center;
+  width: 100%;
+  min-height: 21.5rem;
+  padding: 2.25rem 1.5rem;
+  overflow: hidden;
+  border-radius: 0.75rem;
+  background: radial-gradient(120% 110% at 50% 0%, #0c1620 0%, #070b12 60%, #05070c 100%);
+  color: #eaf3ff;
+}
+
+.detent-slider-card {
+  position: relative;
+  width: min(23rem, 100%);
+  height: 17rem;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 1rem;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.015));
+  isolation: isolate;
+}
+
+/* The track, behind the readout. This and the handle are both positioned against the
+   card's padding box, which is the whole reason the handle's transform can be written
+   straight from the pixel the canvas drew the track to. */
+.detent-slider-well {
+  position: absolute;
+  inset: 0;
+  touch-action: none;
+}
+
+.detent-slider-well canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* Transparent to the pointer, so a press over the copy still takes hold of the handle.
+   The bottom padding is the track's room: the handle sits on the track, 40px up from the
+   card's bottom edge, and nothing in the flow may reach it. */
+.detent-slider-face {
+  position: relative;
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  padding: 1.25rem 1.375rem 4.5rem;
+  pointer-events: none;
+}
+
+.detent-slider-label {
+  margin: 0 0 0.5rem;
+  font: 500 0.6875rem/1 ui-monospace, "SFMono-Regular", Menlo, monospace;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(234, 243, 255, 0.5);
+}
+
+.detent-slider-read {
+  margin: 0;
+  font-size: 2.75rem;
+  font-weight: 500;
+  line-height: 0.92;
+  letter-spacing: -0.035em;
+  font-variant-numeric: tabular-nums;
+  text-shadow: 0 1px 18px rgba(5, 12, 20, 0.55);
+}
+
+.detent-slider-unit {
+  margin-left: 0.35em;
+  font-size: 1rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: rgba(234, 243, 255, 0.6);
+}
+
+.detent-slider-copy {
+  margin: 0.625rem 0 0;
+  max-width: 19rem;
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  color: rgba(234, 243, 255, 0.52);
+  text-shadow: 0 1px 14px rgba(5, 12, 20, 0.5);
+}
+
+/*
+ * The handle. Its `transform` is written by the solver every frame, so the only geometry
+ * CSS owns here is the second translate that centres it on the point it is handed — no
+ * `left` matched by hand to a canvas constant, which is a pair of numbers that drift.
+ * `pointer-events: none` is what keeps the press on the canvas, where the capture is;
+ * focus still lands here, so Tab and the arrow keys reach the real slider.
+ */
+.detent-slider-handle {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 2.125rem;
+  height: 1.125rem;
+  border: 1px solid rgba(158, 205, 255, 0.45);
+  border-radius: 0.3125rem;
+  background: linear-gradient(180deg, rgba(158, 205, 255, 0.22), rgba(8, 14, 22, 0.74));
+  box-shadow:
+    0 2px 10px rgba(4, 9, 16, 0.6),
+    inset 0 1px 0 rgba(234, 243, 255, 0.18);
+  pointer-events: none;
+  opacity: 0;
+  will-change: transform;
+  transition: border-color 160ms ease;
+}
+
+/* Knurl, so the handle reads as something a hand holds rather than a rounded rectangle. */
+.detent-slider-handle::after {
+  content: "";
+  position: absolute;
+  inset: 0.3125rem 0.75rem;
+  border-left: 1px solid rgba(234, 243, 255, 0.26);
+  border-right: 1px solid rgba(234, 243, 255, 0.26);
+}
+
+.detent-slider-handle:focus-visible {
+  border-color: rgba(158, 205, 255, 0.8);
+  outline: 2px solid rgba(158, 205, 255, 0.75);
+  outline-offset: 3px;
+}
+
+.detent-slider-hint {
+  position: absolute;
+  right: 0.875rem;
+  bottom: 0.75rem;
+  margin: 0;
+  font: 500 0.6875rem/1 ui-monospace, "SFMono-Regular", Menlo, monospace;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(234, 243, 255, 0.28);
+  pointer-events: none;
+}
+
+/*
+ * With the loop stopped the value is placed on its notch instead of travelling to it, so
+ * the handle arrives in one step — what is gone is the crossing, which is the part that was
+ * asked to go. Dragging and the arrow keys both still change the value.
+ */
+@media (prefers-reduced-motion: reduce) {
+  .detent-slider-handle {
+    transition: none;
+  }
+}
+
+/*
+ * The card variant: the 298x240 catalogue frame, at that real size and never scaled.
+ * The rail is laid out from the live canvas box — `railY` is `height − SKIRT` — so the
+ * notches, the ball and the handle all follow the card down without being told. All this
+ * does is take the paragraph and the hint out and let the reading breathe.
+ */
+.detent-slider-stage[data-compact='true'] {
+  min-height: 0;
+  height: 100%;
+  /* `place-content: center` leaves the single row auto-sized, and a row sized from its
+     content is what a card's `height: 100%` would then resolve against. Stretched, the row
+     is the frame and the card is the row. */
+  place-content: stretch;
+  padding: 0.75rem;
+  /* The card frame rounds and clips already. */
+  border-radius: 0;
+}
+
+.detent-slider-stage[data-compact='true'] .detent-slider-card {
+  width: 100%;
+  height: 100%;
+}
+
+/* A full-bleed drag surface that claims every touch traps the page inside a scrolling
+   grid. `pan-y` hands the vertical gesture back to the document; the horizontal drag is
+   the one this mechanism is about, and it still arrives. */
+.detent-slider-stage[data-compact='true'] .detent-slider-well {
+  touch-action: pan-y;
+}
+
+/* The rail keeps its skirt: the padding below is what the notch numbers sit in. */
+.detent-slider-stage[data-compact='true'] .detent-slider-face {
+  padding: 0.8125rem 0.9375rem 4.5rem;
+}
+
+.detent-slider-stage[data-compact='true'] .detent-slider-read {
+  font-size: 2.25rem;
+}
+
+/* Three lines of prose and a hint, both of which the card's own title already covers. */
+.detent-slider-stage[data-compact='true'] .detent-slider-copy,
+.detent-slider-stage[data-compact='true'] .detent-slider-hint {
+  display: none;
+}

@@ -2,7 +2,6 @@
 
 import Link from "next/link"
 
-import { Badge } from "@/components/ui/badge"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { CATEGORY_GROUPS } from "@/lib/categories"
 import { categoryCount, kindCount } from "@/lib/registry"
@@ -59,11 +58,7 @@ export function CategoryPanel({ onNavigate }: { onNavigate?: () => void }) {
                         className="flex items-center justify-between rounded-md px-2 py-1.5 text-[13px] text-muted-foreground/45"
                       >
                         <span className="truncate">{category.label}</span>
-                        {category.isNew ? (
-                          <Badge variant="new" className="opacity-60">Soon</Badge>
-                        ) : (
-                          <span className="font-mono text-[11px]">—</span>
-                        )}
+                        <span className="font-mono text-[11px]">—</span>
                       </li>
                     )
                   }
@@ -76,13 +71,9 @@ export function CategoryPanel({ onNavigate }: { onNavigate?: () => void }) {
                         className="flex items-center justify-between gap-2 rounded-md px-2 py-1.5 text-[13px] text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
                       >
                         <span className="truncate">{category.label}</span>
-                        {category.isNew ? (
-                          <Badge variant="new">New</Badge>
-                        ) : (
-                          <span className="font-mono text-[11px] tabular-nums">
-                            {formatCount(count)}
-                          </span>
-                        )}
+                        <span className="font-mono text-[11px] tabular-nums">
+                          {formatCount(count)}
+                        </span>
                       </Link>
                     </li>
                   )

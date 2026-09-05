@@ -15,7 +15,7 @@ import {
 import { CONFIG_FILE, loadConfig, type Overrides } from "./config.js"
 import { NAME, BIN } from "./pkg.js"
 import { buildPlan, clashes, type Plan } from "./plan.js"
-import { fetchIndex, fetchItem, type Payload } from "./registry.js"
+import { fetchIndex, fetchItem, assertName, type Payload } from "./registry.js"
 import { reportInstalls } from "./track.js"
 import { c, CliError, heading, line, ok, restoreCursorOnExit, setSilent, step, warn } from "./ui.js"
 
@@ -32,8 +32,18 @@ export type AddOptions = Overrides & {
  * Walk `registryDependencies` so the CLI also works against a registry that
  * does not pre-flatten them. Ours does, so the extra payloads are usually
  * redundant — the plan dedupes files, packages, and keyframes either way.
+ *
+ * Every name that was *typed* is validated here, before the first fetch. The
+ * loop below skips a falsy name so a registry that lists `""` among an item's
+ * dependencies cannot stall the queue, and that skip used to swallow the typed
+ * name too: `add ""` reached `assertName` never, wrote nothing, and exited 0 as
+ * though it had installed something. A root name is a request, so a malformed
+ * one is an error; a dependency name is someone else's data, so a malformed one
+ * is a warning at worst.
  */
 async function collect(registry: string, names: string[]): Promise<Payload[]> {
+  for (const name of names) assertName(name)
+
   const out: Payload[] = []
   const seen = new Set<string>()
   const queue = [...names]
@@ -79,6 +89,12 @@ function cssSummary(plan: Plan) {
 /**
  * The whole plan, printed before anything is written. `names` is what was asked
  * for, so everything else can be summarised as what it is: a dependency.
+ *
+ * Three states per target, not two. `exists` alone was printed as "(exists)" in
+ * yellow, which read as a warning over a file already holding exactly the bytes
+ * the plan would write — and read as merely informational over one that `add`
+ * was about to refuse. `identical` separates them: already installed is dim and
+ * settled, a true clash is yellow and names the flag that resolves it.
  */
 function describe(plan: Plan, cssFileRel: string, names: string[]) {
   const roots = plan.items.filter((item) => names.includes(item.name))
@@ -96,23 +112,26 @@ function describe(plan: Plan, cssFileRel: string, names: string[]) {
   }
 
   heading("will write")
-  for (const file of plan.files) {
-    line(`    ${file.exists ? c.yellow(file.rel) : file.rel}${file.exists ? c.dim(" (exists)") : ""}`)
-  }
+  for (const file of plan.files) line(`    ${state(file.rel, file)}`)
 
   if (plan.assets.length > 0) {
     const total = plan.assets.reduce((sum, asset) => sum + asset.bytes, 0)
     heading(`will download ${plan.assets.length} ${plan.assets.length === 1 ? "asset" : "assets"} · ${humanBytes(total)}`)
     for (const asset of plan.assets) {
-      line(
-        `    ${asset.exists ? c.yellow(asset.rel) : asset.rel} ${c.dim(humanBytes(asset.bytes))}${asset.exists ? c.dim(" (exists)") : ""}`,
-      )
+      line(`    ${state(`${asset.rel} ${c.dim(humanBytes(asset.bytes))}`, asset)}`)
     }
   }
 
   const css = cssSummary(plan)
   if (css) line(`  will append ${css} to ${cssFileRel}`)
   if (plan.dependencies.length > 0) line(`  will install ${plan.dependencies.join(", ")}`)
+}
+
+/** One planned target, labelled by which of the three things it is. */
+function state(label: string, entry: { exists: boolean; identical: boolean }) {
+  if (entry.identical) return `${c.dim(label)}${c.dim(" (already installed)")}`
+  if (entry.exists) return `${c.yellow(label)}${c.yellow(" (will be replaced)")}`
+  return label
 }
 
 /**
@@ -174,17 +193,22 @@ export async function add(names: string[], options: AddOptions = {}) {
   describe(plan, cssFileRel, names)
   line()
 
-  if (options.dryRun) {
-    ok("dry run — nothing written")
-    return
-  }
-
+  /**
+   * The clash check runs before the --dry-run return, not after it. A dry run
+   * whose whole purpose is "tell me what this would do" must not print a plan and
+   * exit 0 for a run that would immediately exit 1 on the same inputs.
+   */
   const existing = clashes(plan)
   if (existing.length > 0 && !options.overwrite) {
     throw new CliError(
       `${existing.length} ${existing.length === 1 ? "file already exists" : "files already exist"}.`,
       `Pass --overwrite to replace ${existing.length === 1 ? "it" : "them"}, or move ${existing.length === 1 ? "it" : "them"} aside first.`,
     )
+  }
+
+  if (options.dryRun) {
+    ok("dry run — nothing written")
+    return
   }
 
   if (!options.yes) {
@@ -371,6 +395,7 @@ export async function init(options: InitOptions = {}) {
       { type: "text", name: "ui", message: "Components go in", initial: config.paths.ui },
       { type: "text", name: "pages", message: "Pages go in", initial: config.paths.pages },
       { type: "text", name: "hooks", message: "Hooks go in", initial: config.paths.hooks },
+      { type: "text", name: "lib", message: "Helpers go in", initial: config.paths.lib },
       { type: "text", name: "css", message: "Stylesheet", initial: config.paths.css },
     ])
 
@@ -378,6 +403,7 @@ export async function init(options: InitOptions = {}) {
       typeof answers.ui !== "string" ||
       typeof answers.pages !== "string" ||
       typeof answers.hooks !== "string" ||
+      typeof answers.lib !== "string" ||
       typeof answers.css !== "string"
     ) {
       throw new CliError("Cancelled. Nothing was written.")
@@ -387,6 +413,7 @@ export async function init(options: InitOptions = {}) {
       ui: cleanPath(answers.ui, config.paths.ui),
       pages: cleanPath(answers.pages, config.paths.pages),
       hooks: cleanPath(answers.hooks, config.paths.hooks),
+      lib: cleanPath(answers.lib, config.paths.lib),
       css: cleanPath(answers.css, config.paths.css),
     }
   }
@@ -394,7 +421,13 @@ export async function init(options: InitOptions = {}) {
   const contents = {
     registry: config.registry,
     alias: config.alias,
-    paths: { ui: paths.ui, pages: paths.pages, hooks: paths.hooks, css: paths.css },
+    paths: {
+      ui: paths.ui,
+      pages: paths.pages,
+      hooks: paths.hooks,
+      lib: paths.lib,
+      css: paths.css,
+    },
   }
   writeFileSync(target, `${JSON.stringify(contents, null, 2)}\n`, "utf8")
 
@@ -403,6 +436,7 @@ export async function init(options: InitOptions = {}) {
   step(`components → ${paths.ui}`)
   step(`pages → ${paths.pages}`)
   step(`hooks → ${paths.hooks}`)
+  step(`helpers → ${paths.lib}`)
   step(`stylesheet → ${paths.css}`)
 
   if (!existsSync(path.join(config.cwd, paths.css))) {

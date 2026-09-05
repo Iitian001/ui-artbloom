@@ -5,12 +5,15 @@ import type { Author, RegistryItem } from "./schema"
 
 export type {
   Author,
+  CssBlock,
+  CssValue,
   RegistryAsset,
   RegistryItem,
   RegistryFile,
   RegistryPayload,
 } from "./schema"
 export { ITEMS, AUTHORS } from "./items"
+export { cssText } from "./css"
 
 const BY_NAME = new Map(ITEMS.map((item) => [item.name, item]))
 
@@ -66,28 +69,36 @@ export function newest(limit?: number, kind?: Kind) {
   return limit ? sorted.slice(0, limit) : sorted
 }
 
-export function popular(limit?: number, kind?: Kind) {
-  const pool = kind ? itemsByKind(kind) : ITEMS
-  const sorted = [...pool].sort((a, b) => b.installs - a.installs)
-  return limit ? sorted.slice(0, limit) : sorted
-}
+/*
+ * No `popular()` here any more.
+ *
+ * It sorted by `item.installs`, a field every entry declared as `0` — so the
+ * comparator returned 0 for every pair and the "result" was whatever order
+ * `items.ts` happens to list things in, presented to the visitor as a ranking.
+ * Its two callers (the /bookmarks rail and the catalogue's third tab) now sort by
+ * date, which is a real signal this repo actually has. See the note in
+ * `schema.ts` for where the true counts live and what it would take to rank by
+ * them.
+ */
 
+/** Hand-picked via `featured: true`. Newest first — nothing here is ranked. */
 export function featured(limit?: number, kind?: Kind) {
   const pool = (kind ? itemsByKind(kind) : ITEMS).filter((item) => item.featured)
-  const sorted = [...pool].sort((a, b) => b.installs - a.installs)
+  const sorted = [...pool].sort(byDateDesc)
   return limit ? sorted.slice(0, limit) : sorted
 }
 
 /**
- * "Ranked for you and reshuffled daily" — a deterministic daily shuffle so SSR
- * and the client agree, and so the order is stable for a whole day.
+ * "Reshuffled daily" — a deterministic daily shuffle so SSR and the client agree,
+ * and so the order is stable for a whole day. Purely positional: the seed is the
+ * item's index and the day, which is the only honest thing to shuffle by.
  */
 export function reshuffled(limit?: number, kind?: Kind) {
   const pool = kind ? itemsByKind(kind) : ITEMS
   const day = Math.floor(Date.now() / 86_400_000)
   const scored = pool.map((item, i) => {
     const seed = (day * 9301 + (i + 1) * 49297) % 233280
-    return { item, score: seed / 233280 + item.installs / 1_000_000 }
+    return { item, score: seed / 233280 }
   })
   scored.sort((a, b) => b.score - a.score)
   const out = scored.map((s) => s.item)
@@ -106,18 +117,18 @@ export function search(query: string, kind?: Kind) {
   )
 }
 
-export function allAuthors(): (Author & { count: number; installs: number })[] {
-  const map = new Map<string, Author & { count: number; installs: number }>()
+/** Everyone with something in the catalogue, most items first. */
+export function allAuthors(): (Author & { count: number })[] {
+  const map = new Map<string, Author & { count: number }>()
   for (const item of ITEMS) {
     const existing = map.get(item.author.handle)
     if (existing) {
       existing.count += 1
-      existing.installs += item.installs
     } else {
-      map.set(item.author.handle, { ...item.author, count: 1, installs: item.installs })
+      map.set(item.author.handle, { ...item.author, count: 1 })
     }
   }
-  return [...map.values()].sort((a, b) => b.installs - a.installs)
+  return [...map.values()].sort((a, b) => b.count - a.count || a.name.localeCompare(b.name))
 }
 
 export function getAuthor(handle: string) {
@@ -126,11 +137,6 @@ export function getAuthor(handle: string) {
 
 export function itemsByAuthor(handle: string) {
   return ITEMS.filter((item) => item.author.handle === handle).sort(byDateDesc)
-}
-
-/** Total installs across the catalog — the marketing counter. */
-export function totalInstalls() {
-  return ITEMS.reduce((sum, item) => sum + item.installs, 0)
 }
 
 /** Resolve `registryDependencies` transitively, in install order. */
@@ -142,15 +148,20 @@ export function resolveTree(name: string, seen = new Set<string>()): RegistryIte
   return [...deps, item]
 }
 
-/** Other items a visitor is likely to want next. */
+/**
+ * Other items a visitor is likely to want next: shared categories first, then
+ * same kind, then recency as the tiebreak. The tiebreak used to be
+ * `other.installs / 1_000_000`, which was zero for every item and therefore
+ * decided nothing.
+ */
 export function relatedItems(item: RegistryItem, limit = 6) {
   return ITEMS.filter((other) => other.name !== item.name)
     .map((other) => {
       const shared = other.categories.filter((c) => item.categories.includes(c)).length
       const sameKind = other.kind === item.kind ? 1 : 0
-      return { other, score: shared * 3 + sameKind + other.installs / 1_000_000 }
+      return { other, score: shared * 3 + sameKind }
     })
-    .sort((a, b) => b.score - a.score)
+    .sort((a, b) => b.score - a.score || byDateDesc(a.other, b.other))
     .slice(0, limit)
     .map((s) => s.other)
 }

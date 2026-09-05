@@ -15,17 +15,21 @@ import {
   itemsByKind,
   kindCount,
   newest,
-  popular,
   populatedCategories,
   reshuffled,
 } from "@/lib/registry"
 import { profileHref } from "@/lib/hrefs"
 import { formatCount, formatFull } from "@/lib/utils"
 
+/*
+ * Three tabs, not four. The fourth was "Popular", backed by `popular()`, which
+ * sorted on an `installs` field that was `0` for every item — so the tab showed
+ * the same set as the others in registry order and called it a ranking. It comes
+ * back in the same change that reads the real counters out of `public.items`.
+ */
 const TABS: CatalogTab[] = [
   { value: "featured", label: "Featured" },
   { value: "newest", label: "Newest" },
-  { value: "popular", label: "Popular" },
   { value: "authors", label: "Authors" },
 ]
 
@@ -45,18 +49,17 @@ export async function generateMetadata({
 }
 
 /** Authors scoped to one kind, so the numbers on this page describe this page. */
-function authorsForKind(kind: Kind): (Author & { count: number; installs: number })[] {
-  const map = new Map<string, Author & { count: number; installs: number }>()
+function authorsForKind(kind: Kind): (Author & { count: number })[] {
+  const map = new Map<string, Author & { count: number }>()
   for (const item of itemsByKind(kind)) {
     const found = map.get(item.author.handle)
     if (found) {
       found.count += 1
-      found.installs += item.installs
     } else {
-      map.set(item.author.handle, { ...item.author, count: 1, installs: item.installs })
+      map.set(item.author.handle, { ...item.author, count: 1 })
     }
   }
-  return [...map.values()].sort((a, b) => b.installs - a.installs)
+  return [...map.values()].sort((a, b) => b.count - a.count || a.name.localeCompare(b.name))
 }
 
 function Stat({ value, label }: { value: string; label: string }) {
@@ -147,9 +150,9 @@ function AuthorsView({ kind }: { kind: Kind }) {
             <p className="truncate text-xs text-muted-foreground">@{author.handle}</p>
           </div>
           <div className="shrink-0 text-right">
-            <p className="font-mono text-sm tabular-nums">{formatCount(author.installs)}</p>
+            <p className="font-mono text-sm tabular-nums">{formatCount(author.count)}</p>
             <p className="text-[11px] text-muted-foreground">
-              {author.count} {author.count === 1 ? "item" : "items"}
+              {author.count === 1 ? "item" : "items"}
             </p>
           </div>
         </Link>
@@ -174,7 +177,7 @@ export default async function CatalogPage({
   const group = CATEGORY_GROUPS.find((g) => g.kind === kind)
   const total = kindCount(kind)
   const cats = populatedCategories(kind)
-  const installs = itemsByKind(kind).reduce((sum, item) => sum + item.installs, 0)
+  const authorCount = authorsForKind(kind).length
 
   return (
     <>
@@ -193,7 +196,10 @@ export default async function CatalogPage({
             value={formatFull(cats.length)}
             label={cats.length === 1 ? "category" : "categories"}
           />
-          <Stat value={formatFull(installs)} label="installs" />
+          <Stat
+            value={formatFull(authorCount)}
+            label={authorCount === 1 ? "author" : "authors"}
+          />
         </div>
 
         <FilterChips kind={kind} className="mt-7" />
@@ -205,7 +211,6 @@ export default async function CatalogPage({
         {active !== "featured" && (
           <div className="container-page">
             {active === "newest" && <ItemGrid items={newest(undefined, kind)} />}
-            {active === "popular" && <ItemGrid items={popular(undefined, kind)} />}
             {active === "authors" && <AuthorsView kind={kind} />}
           </div>
         )}

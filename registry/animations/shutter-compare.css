@@ -1,0 +1,267 @@
+/* shutter-compare — a before/after divider carried by the two curtains of a
+   focal-plane shutter, each a mass on a spring released by its own latch. */
+
+.shutter-compare-stage {
+  position: relative;
+  width: 100%;
+  min-height: 23rem;
+  padding: 1.5rem 1.375rem 1.25rem;
+  overflow: hidden;
+  border-radius: 0.875rem;
+  background: radial-gradient(130% 120% at 50% 0%, #0d1420 0%, #080c15 58%, #05070c 100%);
+  color: #ecf3ff;
+  /* Hairline as an inset shadow rather than a border: the canvas host is inset 0
+     against the padding box and the handle is positioned as a percentage of that
+     same box, so a 1px border would slide the drawn curtain edge off the grip
+     the user is holding. */
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.075);
+}
+
+.shutter-compare-frame {
+  position: absolute;
+  inset: 0;
+  touch-action: none;
+}
+
+.shutter-compare-frame canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* Transparent to the pointer so a press anywhere in the frame commands the
+   divider. Only the shutter-speed buttons take events back. */
+.shutter-compare-ui {
+  position: relative;
+  display: flex;
+  min-height: 19.5rem;
+  flex-direction: column;
+  justify-content: space-between;
+  pointer-events: none;
+}
+
+.shutter-compare-label {
+  margin: 0;
+  font: 500 0.6875rem/1 ui-monospace, 'SFMono-Regular', Menlo, monospace;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(236, 243, 255, 0.5);
+}
+
+.shutter-compare-read {
+  margin: 0.5rem 0 0;
+  font-size: 2rem;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+  text-shadow: 0 1px 18px rgba(5, 8, 14, 0.65);
+}
+
+.shutter-compare-unit {
+  margin-left: 0.25em;
+  font-size: 0.875rem;
+  font-weight: 500;
+  letter-spacing: 0;
+  color: rgba(236, 243, 255, 0.5);
+}
+
+/* Both bottom rows in one child, so the flex `space-between` above pins them to
+   the floor together instead of stranding the labels over the drawing. */
+.shutter-compare-base {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.shutter-compare-foot {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.shutter-compare-tag {
+  margin: 0;
+  font: 500 0.625rem/1.45 ui-monospace, 'SFMono-Regular', Menlo, monospace;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(236, 243, 255, 0.32);
+  text-shadow: 0 1px 12px rgba(5, 8, 14, 0.75);
+}
+
+.shutter-compare-tag b {
+  font-weight: 500;
+  color: rgba(236, 243, 255, 0.6);
+}
+
+.shutter-compare-tag-end {
+  text-align: right;
+}
+
+.shutter-compare-speeds {
+  display: flex;
+  gap: 0.3125rem;
+}
+
+.shutter-compare-speed {
+  appearance: none;
+  margin: 0;
+  padding: 0.375rem 0.5625rem;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 999px;
+  background: rgba(6, 12, 20, 0.5);
+  font: inherit;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  color: rgba(236, 243, 255, 0.7);
+  cursor: pointer;
+  pointer-events: auto;
+  backdrop-filter: blur(6px);
+  transition:
+    border-color 160ms ease,
+    background-color 160ms ease,
+    color 160ms ease;
+}
+
+.shutter-compare-speed:hover {
+  border-color: rgba(255, 201, 120, 0.42);
+  color: #fff6e8;
+}
+
+.shutter-compare-speed[aria-pressed='true'] {
+  border-color: rgba(255, 201, 120, 0.62);
+  background: rgba(255, 201, 120, 0.16);
+  color: #fff3df;
+}
+
+.shutter-compare-speed:focus-visible {
+  outline: 2px solid rgba(255, 201, 120, 0.8);
+  outline-offset: 2px;
+}
+
+/* The grip the pointer and the arrow keys both move. It is drawn at the commanded
+   position while the canvas draws the curtains where the solver has them, so the
+   gap between this and the bright edge during a drag is the lag of a real mass on
+   a spring and not a rendering slip. `pointer-events` stays none so a press falls
+   through to the canvas host, which owns the hook's pointer capture. */
+.shutter-compare-handle {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2.75rem;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.shutter-compare-handle::before {
+  content: '';
+  position: absolute;
+  top: 3.5rem;
+  bottom: 4.75rem;
+  left: 50%;
+  width: 1px;
+  background: repeating-linear-gradient(
+    180deg,
+    rgba(255, 201, 120, 0.5) 0 3px,
+    rgba(255, 201, 120, 0) 3px 7px
+  );
+}
+
+.shutter-compare-handle::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 1.375rem;
+  height: 1.375rem;
+  border: 1px solid rgba(255, 201, 120, 0.55);
+  border-radius: 999px;
+  background: rgba(8, 13, 22, 0.85);
+  box-shadow:
+    0 0 0 4px rgba(8, 13, 22, 0.45),
+    0 0 16px rgba(255, 201, 120, 0.22);
+  transform: translate(-50%, -50%);
+}
+
+/* The ring belongs on the grip, not on the full-height strip the strip has to be
+   to stay easy to hit. */
+.shutter-compare-handle:focus-visible {
+  outline: none;
+}
+
+.shutter-compare-handle:focus-visible::after {
+  outline: 2px solid rgba(255, 201, 120, 0.85);
+  outline-offset: 3px;
+}
+
+.shutter-compare-hint {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.375rem;
+  margin: 0;
+  font: 500 0.6875rem/1 ui-monospace, 'SFMono-Regular', Menlo, monospace;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  pointer-events: none;
+  color: rgba(236, 243, 255, 0.26);
+}
+
+/*
+ * What is switched off is the travel, not the shutter. With the loop stopped the
+ * two curtains are painted parted by exactly the gap the selected exposure implies
+ * at full travel, so the still carries both treatments, the divider between them
+ * and the real width of the slit — at 1/60 that slit reaches the frame edge, at
+ * 1/4000 it is a band a sixteenth of the frame wide. Every arrow key and every
+ * speed change repaints that still in its new place.
+ */
+@media (prefers-reduced-motion: reduce) {
+  .shutter-compare-speed {
+    transition: none;
+  }
+}
+
+/*
+ * The card variant: the 298x240 catalogue frame, at that real size and never scaled.
+ * The curtains are laid out from the canvas box — the top and bottom margins are
+ * `height * 0.2` and `height * 0.24` under clamps — so the frame follows the card down
+ * and the slit stays the width the selected exposure makes it. All this does is drop the
+ * two corner tags and the hint and bring the reading down a size.
+ */
+.shutter-compare-stage[data-compact='true'] {
+  min-height: 0;
+  height: 100%;
+  padding: 0.75rem 0.875rem;
+  /* The card frame rounds and clips already. */
+  border-radius: 0;
+}
+
+/* A full-bleed drag surface that claims every touch traps the page inside a scrolling
+   grid. `pan-y` hands the vertical gesture back to the document; the horizontal drag is
+   the one this mechanism is about, and it still arrives. */
+.shutter-compare-stage[data-compact='true'] .shutter-compare-frame {
+  touch-action: pan-y;
+}
+
+/* The full stage reserves 19.5rem for this column. In a card it takes what is left. */
+.shutter-compare-stage[data-compact='true'] .shutter-compare-ui {
+  min-height: 0;
+  height: 100%;
+}
+
+.shutter-compare-stage[data-compact='true'] .shutter-compare-read {
+  margin-top: 0.25rem;
+  font-size: 1.625rem;
+}
+
+/* Both are the card's own title's job, and the tags are what the speed row needs the
+   room back from. */
+.shutter-compare-stage[data-compact='true'] .shutter-compare-foot,
+.shutter-compare-stage[data-compact='true'] .shutter-compare-hint {
+  display: none;
+}
+
+.shutter-compare-stage[data-compact='true'] .shutter-compare-speed {
+  padding: 0.25rem 0.4375rem;
+  font-size: 0.625rem;
+}

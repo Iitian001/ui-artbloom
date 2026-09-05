@@ -1,0 +1,242 @@
+.toast-stack-stage {
+  position: relative;
+  width: 100%;
+  min-height: 25rem;
+  overflow: hidden;
+  border-radius: 0.75rem;
+  background: radial-gradient(120% 110% at 24% 0%, #101823 0%, #090d15 58%, #05070c 100%);
+  color: #e8f1fb;
+}
+
+/* The tracked element. Nothing but the canvas is in here, so pointer capture during a
+   drag cannot reach anything that owns a click. */
+.toast-stack-surface {
+  position: absolute;
+  inset: 0;
+  touch-action: none;
+}
+
+.toast-stack-surface canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* The readable layer, over the canvas. Transparent to the pointer as a whole; the cards
+   and the Add button take their own events back. */
+.toast-stack-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.toast-stack-controls {
+  position: absolute;
+  left: 1.25rem;
+  bottom: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.toast-stack-add {
+  appearance: none;
+  margin: 0;
+  padding: 0.4375rem 0.9375rem;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 999px;
+  background: rgba(10, 16, 26, 0.5);
+  font: inherit;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: rgba(232, 241, 251, 0.78);
+  cursor: pointer;
+  pointer-events: auto;
+  backdrop-filter: blur(6px);
+  transition:
+    border-color 160ms ease,
+    background-color 160ms ease,
+    color 160ms ease;
+}
+
+.toast-stack-add:hover {
+  border-color: rgba(150, 214, 222, 0.45);
+  background: rgba(150, 214, 222, 0.12);
+  color: #f4fdff;
+}
+
+.toast-stack-add:focus-visible {
+  outline: 2px solid rgba(150, 214, 222, 0.8);
+  outline-offset: 2px;
+}
+
+.toast-stack-hint {
+  margin: 0;
+  font: 500 0.6875rem/1 ui-monospace, "SFMono-Regular", Menlo, monospace;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(232, 241, 251, 0.26);
+}
+
+/*
+ * The corner is `inset: 0` on purpose. Every card is placed by a transform the solver
+ * writes and that transform carries the corner inset with it, so there is no number in this
+ * file that has to be kept in step with a number in the component.
+ */
+.toast-stack-corner {
+  position: absolute;
+  inset: 0;
+}
+
+/* The width and the height come from the solver, which is the only thing that knows the
+   stack's pitch. The fallbacks are the sizes it settles on at a comfortable width. */
+.toast-stack-toast {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-content: center;
+  gap: 0.1875rem 0.5rem;
+  width: var(--toast-stack-w, 300px);
+  height: var(--toast-stack-h, 58px);
+  padding: 0 0.5rem 0 0.75rem;
+  border: 1px solid rgba(232, 241, 251, 0.12);
+  border-radius: 0.5rem;
+  background: linear-gradient(180deg, #171d28 0%, #10151e 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(232, 241, 251, 0.05),
+    0 6px 18px rgba(3, 6, 11, 0.5);
+  pointer-events: auto;
+  will-change: transform;
+}
+
+.toast-stack-title {
+  grid-column: 1;
+  margin: 0;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: -0.005em;
+  color: rgba(232, 241, 251, 0.94);
+}
+
+/* One line, clipped rather than wrapped: the card's height is the solver's pitch, and a
+   second line of body would push content out of a box the physics has already sized. */
+.toast-stack-body {
+  grid-column: 1;
+  margin: 0;
+  overflow: hidden;
+  font-size: 0.75rem;
+  line-height: 1.3;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: rgba(232, 241, 251, 0.48);
+}
+
+.toast-stack-dismiss {
+  appearance: none;
+  grid-row: 1 / 3;
+  grid-column: 2;
+  align-self: center;
+  display: grid;
+  place-items: center;
+  width: 1.875rem;
+  height: 1.875rem;
+  margin: 0;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: none;
+  font: inherit;
+  font-size: 1.0625rem;
+  line-height: 1;
+  color: rgba(232, 241, 251, 0.42);
+  cursor: pointer;
+  transition:
+    border-color 160ms ease,
+    background-color 160ms ease,
+    color 160ms ease;
+}
+
+.toast-stack-dismiss:hover {
+  border-color: rgba(150, 214, 222, 0.4);
+  background: rgba(150, 214, 222, 0.12);
+  color: #f4fdff;
+}
+
+.toast-stack-dismiss:focus-visible {
+  outline: 2px solid rgba(150, 214, 222, 0.8);
+  outline-offset: 1px;
+}
+
+/*
+ * Opacity, and only opacity. The card becoming visible is not the same event as the card
+ * arriving, and this one cannot fight the other because it never touches the transform —
+ * which is the property the solver owns.
+ */
+@media (prefers-reduced-motion: no-preference) {
+  .toast-stack-toast {
+    animation: toast-stack-appear 140ms ease-out both;
+  }
+}
+
+@keyframes toast-stack-appear {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+/*
+ * With the loop stopped the cards are seated on the stack's own geometry and stay there.
+ * Adding and dismissing still work, because each one asks for a single repaint and the
+ * solver is skipped in favour of the answer. What is gone is the fall in between, which is
+ * the part that was asked to go.
+ */
+@media (prefers-reduced-motion: reduce) {
+  .toast-stack-add,
+  .toast-stack-dismiss {
+    transition: none;
+  }
+}
+
+/*
+ * The card variant: the 298x240 catalogue frame, at that real size and never scaled.
+ * The stack needs no help — `--toast-stack-w` is measured off the live layer every
+ * resize, so the cards are as wide as the card lets them be and the gap solve runs on
+ * the real geometry. All this does is tighten the strip the button sits in.
+ */
+.toast-stack-stage[data-compact='true'] {
+  min-height: 0;
+  height: 100%;
+  /* The card frame rounds and clips already. */
+  border-radius: 0;
+}
+
+/* A full-bleed surface that claims every touch traps the page inside a scrolling grid.
+   `pan-y` hands the vertical gesture back to the document. */
+.toast-stack-stage[data-compact='true'] .toast-stack-surface {
+  touch-action: pan-y;
+}
+
+.toast-stack-stage[data-compact='true'] .toast-stack-controls {
+  left: 0.6875rem;
+  bottom: 0.6875rem;
+}
+
+/* One line of copy, and it is the card's own title's job. */
+.toast-stack-stage[data-compact='true'] .toast-stack-hint {
+  display: none;
+}
+
+/* 22px tall, so the button clears the bottom card in the stack. */
+.toast-stack-stage[data-compact='true'] .toast-stack-add {
+  padding: 0.25rem 0.5625rem;
+  font-size: 0.6875rem;
+  line-height: 1;
+}

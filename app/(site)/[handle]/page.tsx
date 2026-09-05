@@ -53,7 +53,16 @@ export default async function AuthorPage({ params }: { params: Promise<Params> }
   if (!author) notFound()
 
   const items = itemsByAuthor(handle)
-  const bookmarks = items.reduce((sum, item) => sum + item.bookmarks, 0)
+  /**
+   * Three stats used to sit here; two of them were `installs` and `saved`, summed
+   * from per-item fields that were `0` on every item in the catalogue. A profile
+   * header reading "29 pieces / 0 installs / 0 saved" is worse than one that says
+   * nothing about installs at all, so the two zeroes are replaced by counts this
+   * repo can actually derive.
+   */
+  const byKind = browsableKinds()
+    .map((kind) => ({ kind, count: items.filter((item) => item.kind === kind).length }))
+    .filter((entry) => entry.count > 0)
 
   return (
     <div className="container-page py-12">
@@ -73,15 +82,19 @@ export default async function AuthorPage({ params }: { params: Promise<Params> }
 
         <div className="flex shrink-0 gap-8">
           <Stat value={formatFull(items.length)} label={items.length === 1 ? "piece" : "pieces"} />
-          <Stat value={formatFull(author.installs)} label="installs" />
-          <Stat value={formatFull(bookmarks)} label="saved" />
+          {byKind.map((entry) => (
+            <Stat
+              key={entry.kind}
+              value={formatFull(entry.count)}
+              label={KIND_LABEL[entry.kind].toLowerCase()}
+            />
+          ))}
         </div>
       </header>
 
       <div className="mt-12 flex flex-col gap-12">
-        {browsableKinds().map((kind) => {
+        {byKind.map(({ kind }) => {
           const owned = items.filter((item) => item.kind === kind)
-          if (owned.length === 0) return null
           return (
             <section key={kind}>
               <div className="mb-4 flex items-baseline gap-2">
@@ -90,7 +103,7 @@ export default async function AuthorPage({ params }: { params: Promise<Params> }
                   {owned.length}
                 </span>
               </div>
-              <ItemGrid items={owned} height={200} />
+              <ItemGrid items={owned} />
             </section>
           )
         })}

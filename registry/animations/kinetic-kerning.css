@@ -80,7 +80,7 @@
   left: 16px;
   bottom: 15px;
   color: #9a9a92;
-  font: 8px var(--font-geist-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+  font: 8px ui-monospace, SFMono-Regular, Menlo, monospace;
   letter-spacing: 0.13em;
 }
 
@@ -153,4 +153,19 @@
  */
 .kinetic-kerning-stage[data-compact='true'] .kinetic-kerning > span {
   display: none;
+}
+
+/*
+ * The loop spends its ends scattered and blurred at opacity 0.18 and its middle locked
+ * into place, so the still has to be the middle — the 38%–66% pose, where every letter is
+ * at translateX(0), unblurred and fully opaque. Reduced motion gets the kerned wordmark,
+ * which is the thing the animation exists to arrive at.
+ */
+@media (prefers-reduced-motion: reduce) {
+  .kinetic-kerning > i {
+    animation: none;
+    transform: none;
+    filter: none;
+    opacity: 1;
+  }
 }

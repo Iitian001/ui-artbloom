@@ -115,7 +115,7 @@
   position: absolute;
   left: 0;
   bottom: -27px;
-  font: 8px var(--font-geist-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+  font: 8px ui-monospace, SFMono-Regular, Menlo, monospace;
   font-style: normal;
   letter-spacing: 0.13em;
 }
@@ -155,9 +155,9 @@
   --w: 100cqw;
   /*
    * 70% is 168px of 240, where the aspect ratio above would have given the plate 109. A
-   * percentage and not `168px` because the same card is rendered 200 and 260 tall
-   * elsewhere; the chain is definite either way, since the preview frame carries a pixel
-   * height and this stage is `height: 100%` of it.
+   * percentage and not `168px` because the same card is rendered 260 tall in the landing
+   * lists and taller again on an item page; the chain is definite either way, since the
+   * preview frame carries a pixel height and this stage is `height: 100%` of it.
    */
   height: 70%;
 }
@@ -193,4 +193,27 @@
  */
 .lenticular-shift-stage[data-compact='true'] .lenticular-shift > em {
   display: none;
+}
+
+/*
+ * A lenticular print only ever shows one face at a time, so the still is one face, held:
+ * the ridges parked at the loop's own rest angle and the front layer opaque with the back
+ * hidden. Leaving both layers to their base opacity would cross-fade them into a double
+ * exposure, which is the one thing the effect is not.
+ */
+@media (prefers-reduced-motion: reduce) {
+  .lenticular-shift > i {
+    animation: none;
+    transform: rotateY(-28deg);
+  }
+
+  .lenticular-shift i > span {
+    animation: none;
+    opacity: 1;
+  }
+
+  .lenticular-shift i > b {
+    animation: none;
+    opacity: 0;
+  }
 }

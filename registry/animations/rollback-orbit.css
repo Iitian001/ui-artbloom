@@ -89,7 +89,7 @@
   position: absolute;
   right: 17px;
   top: 15px;
-  font: 7px var(--font-geist-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+  font: 7px ui-monospace, SFMono-Regular, Menlo, monospace;
   letter-spacing: 0.14em;
 }
 
@@ -149,7 +149,7 @@
 .rollback-orbit > em {
   position: absolute;
   margin-top: 132px;
-  font: 8px var(--font-geist-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+  font: 8px ui-monospace, SFMono-Regular, Menlo, monospace;
   font-style: normal;
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -257,4 +257,25 @@
   font-size: 10px;
   text-align: center;
   color: #111;
+}
+
+/*
+ * Two different kinds of motion live in this file and they get different answers.
+ *
+ * The ground shadow's `roll-rail-shadow` runs forever whether or not anyone is looking,
+ * and the rail's hover transition is decoration; both go.
+ *
+ * The three `.running` animations stay. They are finite, and they only exist because the
+ * visitor pressed the button — refusing to run them would leave the press with no answer
+ * at all, which is a broken control rather than a calm one. `prefers-reduced-motion` asks
+ * for less ambient movement, not for interactive parts to stop reporting what they did.
+ */
+@media (prefers-reduced-motion: reduce) {
+  .rollback-orbit::before {
+    animation: none;
+  }
+
+  .rollback-orbit .roll-rail {
+    transition: none;
+  }
 }

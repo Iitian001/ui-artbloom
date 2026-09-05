@@ -196,3 +196,14 @@
   filter: blur(calc(var(--tile) * 0.2857));
   transform: translateY(calc(var(--tile) * 1.2143)) rotateX(70deg);
 }
+
+/*
+ * `domino-fall` rests upright — 0%, 19%, 91% and 100% are all `rotateX(0) translateY(0)` —
+ * so switching the loop off leaves every tile standing and the word readable. That is the
+ * right still for a domino: fallen tiles are the transient state, not the subject.
+ */
+@media (prefers-reduced-motion: reduce) {
+  .domino-word > span {
+    animation: none;
+  }
+}

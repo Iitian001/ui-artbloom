@@ -227,9 +227,11 @@ function varName(key: string, value: string, itemName: string) {
 /**
  * Split CSS into top-level blocks by tracking brace depth.
  *
- * Registry CSS is minified onto one line, so there is no line structure to lean
- * on. Slicing only at depth zero means a block is never cut in half — anything
- * unrecognised comes back whole and is kept.
+ * The text comes from `parseCss` in `registry.ts`, which flattens the payload's
+ * nested `css` object — so it is pretty-printed now and was minified onto one line
+ * before, and neither shape has structure worth parsing. Slicing only at depth zero
+ * means a block is never cut in half — anything unrecognised comes back whole and is
+ * kept.
  */
 function topLevelBlocks(css: string): string[] {
   const blocks: string[] = []
@@ -343,12 +345,34 @@ function exactFlag(manager: Manager) {
   return manager === "yarn" || manager === "bun" ? "--exact" : "--save-exact"
 }
 
+/**
+ * Refuse a dependency spec that a package manager would read as a flag.
+ *
+ * `plan.ts`'s `DEP_RE` already rejects a leading `-`, so nothing should ever
+ * reach here. This is the second half of that: these strings are spliced into
+ * the argv of a spawned `install` (and into the copy-pasteable command printed
+ * beside it), so the invariant is asserted again at the boundary that acts on
+ * it. A bare `--` is not used to separate them instead, because only npm and
+ * yarn are documented to accept one before positional package specs.
+ */
+function assertNoFlags(deps: string[]) {
+  const flag = deps.find((dep) => dep.startsWith("-"))
+  if (flag) {
+    throw new CliError(
+      `Refusing to pass "${flag}" to the package manager.`,
+      "A dependency name cannot begin with a dash; it would be read as a flag.",
+    )
+  }
+}
+
 export function installCommand(manager: Manager, deps: string[]) {
+  assertNoFlags(deps)
   const verb = manager === "npm" ? "install" : "add"
   return `${manager} ${verb} ${exactFlag(manager)} ${deps.join(" ")}`
 }
 
 export function runInstall(manager: Manager, deps: string[], cwd: string): Promise<number> {
+  assertNoFlags(deps)
   const args = [manager === "npm" ? "install" : "add", exactFlag(manager), ...deps]
 
   /**

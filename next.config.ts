@@ -8,9 +8,15 @@ const nextConfig: NextConfig = {
   // Without this, Turbopack walks up looking for a lockfile and lands on the
   // home directory, which it would then try to treat as the workspace root.
   turbopack: { root: here },
-  images: {
-    remotePatterns: [{ protocol: "https", hostname: "**" }],
-  },
+  // No `images.remotePatterns` on purpose. Nothing in the repo imports
+  // `next/image` — every asset is served by a template's own route or straight
+  // out of `public/` — so a pattern list would authorize nothing we use. The
+  // entry that used to sit here was `{ protocol: "https", hostname: "**" }`,
+  // which let anyone hand `/_next/image` an arbitrary https URL and have this
+  // deployment fetch, re-encode and cache it: an open image proxy on our
+  // bandwidth. With the block gone the default empty list refuses every remote
+  // URL while local optimization still works. If a remote image is ever needed,
+  // list that one host — never a wildcard.
   async headers() {
     return [
       {

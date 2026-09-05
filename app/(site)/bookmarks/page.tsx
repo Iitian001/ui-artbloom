@@ -8,7 +8,7 @@ import { readSession, restSelect } from "@/app/(site)/(auth)/auth"
 import { ItemCard } from "@/components/item-card"
 import { PageHeader } from "@/components/page-shell"
 import { buttonVariants } from "@/components/ui/button"
-import { getItem, popular, type RegistryItem } from "@/lib/registry"
+import { getItem, newest, type RegistryItem } from "@/lib/registry"
 import { cn } from "@/lib/utils"
 
 export const metadata: Metadata = {
@@ -77,19 +77,23 @@ function BrowseLinks() {
 }
 
 /**
- * `popular()` sorts by an item's total install count, so it cannot support a
- * "this week" or a "for you" heading. The label says what the numbers are.
+ * Something to look at on a page that is otherwise one empty panel.
+ *
+ * This was "Most installed", rendering `popular(8)`. `popular()` sorted by
+ * `item.installs`, which was `0` on every item — so the heading named a ranking
+ * and the grid showed the first eight items in file order. Newest is a real
+ * ordering, and the subtitle now says exactly what the sort is.
  */
-function MostInstalled() {
+function RecentlyAdded() {
   return (
     <section className="mt-14">
-      <h2 className="text-lg font-semibold tracking-tight">Most installed</h2>
+      <h2 className="text-lg font-semibold tracking-tight">Recently added</h2>
       <p className="mt-1 text-sm text-muted-foreground">
-        Ranked by total installs across the catalogue — not a weekly chart, and not personalised.
+        The newest eight pieces in the catalogue — not a chart, and not personalised.
       </p>
       <div className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        {popular(8).map((item) => (
-          <ItemCard key={item.name} item={item} height={200} />
+        {newest(8).map((item) => (
+          <ItemCard key={item.name} item={item} />
         ))}
       </div>
     </section>
@@ -182,7 +186,7 @@ export default async function BookmarksPage() {
         <PageHeader eyebrow="Bookmarks" title="Saved" />
         <div className="container-page pb-20">
           <NoList status={session.status} />
-          <MostInstalled />
+          <RecentlyAdded />
         </div>
       </>
     )
@@ -234,7 +238,7 @@ export default async function BookmarksPage() {
                 ? `Your ${retired === 1 ? "one save is" : `${retired} saves are`} no longer in the catalogue, so there is nothing to open.`
                 : "Save anything from the catalogue and it lands here, on your account rather than in this browser."}
             </Panel>
-            <MostInstalled />
+            <RecentlyAdded />
           </>
         ) : (
           <>
@@ -246,7 +250,7 @@ export default async function BookmarksPage() {
             </p>
             <div className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {saved.map((item) => (
-                <ItemCard key={item.name} item={item} height={200} showBookmarks />
+                <ItemCard key={item.name} item={item} />
               ))}
             </div>
           </>

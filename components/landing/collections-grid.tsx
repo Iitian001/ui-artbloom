@@ -1,14 +1,15 @@
 import Link from "next/link"
 
-import { ALL_CATEGORIES, KIND_LABEL } from "@/lib/categories"
+import { ALL_CATEGORIES, KIND_LABEL, type Kind } from "@/lib/categories"
 import { profileHref } from "@/lib/hrefs"
 import { allAuthors, categoryCount } from "@/lib/registry"
 import { formatCount, monogram } from "@/lib/utils"
 
-const KIND_TONE: Record<string, string> = {
+/** Keyed by `Kind`, and `Kind` is the whole list — `components` was removed from
+ *  the union in `lib/categories.ts`, so a tone for it could never be looked up. */
+const KIND_TONE: Record<Kind, string> = {
   templates: "bg-violet-500/12 text-violet-600 dark:text-violet-300",
   animations: "bg-sky-500/12 text-sky-600 dark:text-sky-300",
-  components: "bg-emerald-500/12 text-emerald-600 dark:text-emerald-300",
 }
 
 export function CollectionsGrid() {

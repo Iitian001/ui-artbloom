@@ -9,7 +9,7 @@ import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog"
 import { CATEGORY_GROUPS, KIND_LABEL } from "@/lib/categories"
 import { itemHref } from "@/lib/hrefs"
 import { ITEMS, categoryCount } from "@/lib/registry"
-import { cn, formatCount } from "@/lib/utils"
+import { cn } from "@/lib/utils"
 
 export function CommandMenu() {
   const router = useRouter()
@@ -81,11 +81,8 @@ export function CommandMenu() {
                     className="flex cursor-pointer items-center gap-3 rounded-lg px-3 py-2 text-sm data-[selected=true]:bg-accent"
                   >
                     <span className="truncate font-medium">{item.title}</span>
-                    <span className="shrink-0 text-[11px] text-muted-foreground">
+                    <span className="ml-auto shrink-0 text-[11px] text-muted-foreground">
                       {KIND_LABEL[item.kind]}
-                    </span>
-                    <span className="ml-auto shrink-0 font-mono text-[11px] text-muted-foreground tabular-nums">
-                      {formatCount(item.installs)}
                     </span>
                   </Command.Item>
                 ))}

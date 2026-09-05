@@ -1,0 +1,243 @@
+/*
+ * No border on the card, deliberately: the canvas is `inset: 0`, which positions it
+ * against the padding box, so a border would offset every drawn pixel from the box the
+ * switch was measured in — the pill would sit a pixel out of its own focus ring. The
+ * hairline is an inset shadow instead, which takes no space.
+ */
+.snap-toggle-stage {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  min-height: 20rem;
+  padding: 2.5rem 1.5rem;
+  overflow: hidden;
+  border-radius: 0.75rem;
+  background: radial-gradient(120% 110% at 50% 0%, #0d1421 0%, #080b12 58%, #05070c 100%);
+  color: #e9f1fb;
+}
+
+.snap-toggle-card {
+  position: relative;
+  width: min(23rem, 100%);
+  border-radius: 1rem;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.045),
+    rgba(255, 255, 255, 0.012)
+  );
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.075);
+}
+
+/*
+ * The mechanism, behind the card's copy and owning the pointer, because the knob is
+ * dragged here rather than on the button that names it. The hook takes pointer capture,
+ * so a drag survives leaving the card — which is what lets a finger hold the knob
+ * balanced between the two states without having to keep aiming at it.
+ */
+.snap-toggle-mech {
+  position: absolute;
+  inset: 0;
+  cursor: grab;
+  touch-action: none;
+}
+
+.snap-toggle-mech:active {
+  cursor: grabbing;
+}
+
+.snap-toggle-mech canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/*
+ * Transparent to the pointer all the way down, the switch included: a press on the knob
+ * belongs to the drag. The switch stays in the tab order and still takes Space and
+ * Enter, which is how the keyboard reaches the mechanism.
+ */
+.snap-toggle-face {
+  position: relative;
+  padding: 1.125rem 1.25rem 1rem;
+  pointer-events: none;
+}
+
+.snap-toggle-eyebrow {
+  margin: 0 0 0.875rem;
+  font: 500 0.6875rem/1 ui-monospace, "SFMono-Regular", Menlo, monospace;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(143, 198, 255, 0.72);
+}
+
+.snap-toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  min-height: 3.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.055);
+}
+
+/* The list's first row: the eyebrow above it is the divider, so it carries no rule. */
+.snap-toggle-live {
+  border-top: 0;
+}
+
+.snap-toggle-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+.snap-toggle-name {
+  font-size: 0.875rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: rgba(233, 241, 251, 0.92);
+}
+
+.snap-toggle-note {
+  font-size: 0.75rem;
+  line-height: 1.45;
+  color: rgba(233, 241, 251, 0.44);
+}
+
+/*
+ * The live switch is an empty box. Everything inside it is drawn on the canvas, and the
+ * box exists so that the layout decides where the control is and how big — 6.5rem by
+ * 2.5rem, mirrored in BOX in the .tsx as the first frame's fallback and measured for
+ * real after that.
+ */
+.snap-toggle-switch {
+  flex: none;
+  width: 6.5rem;
+  height: 2.5rem;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: none;
+  appearance: none;
+}
+
+.snap-toggle-switch:focus-visible {
+  outline: 2px solid rgba(143, 198, 255, 0.85);
+  outline-offset: 3px;
+}
+
+/*
+ * The two rows below are furniture, so their switches are plain CSS: same box, same pill,
+ * knob parked at 26px — which is where the solver's own detent, 36 mechanism units, lands
+ * once the measured box has been scaled. Nothing here is solved and nothing here is meant
+ * to be. The claim of the row above is that it sits in a list of ordinary ones.
+ */
+.snap-toggle-pill {
+  position: relative;
+  flex: none;
+  width: 6.5rem;
+  height: 2.5rem;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(6, 10, 18, 0.66);
+  box-shadow: inset 0 0 0 1px rgba(233, 241, 251, 0.1);
+  opacity: 0.5;
+  appearance: none;
+}
+
+.snap-toggle-pill::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 2rem;
+  height: 2rem;
+  margin: -1rem 0 0 -1rem;
+  border-radius: 999px;
+  background: rgba(233, 241, 251, 0.14);
+  box-shadow: inset 0 0 0 1.6px rgba(233, 241, 251, 0.5);
+  transform: translateX(-26px);
+}
+
+.snap-toggle-pill[data-on="true"] {
+  background: rgba(143, 198, 255, 0.13);
+}
+
+.snap-toggle-pill[data-on="true"]::after {
+  transform: translateX(26px);
+}
+
+.snap-toggle-hint {
+  position: absolute;
+  right: 0.875rem;
+  bottom: 0.75rem;
+  margin: 0;
+  font: 500 0.6875rem/1 ui-monospace, "SFMono-Regular", Menlo, monospace;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(233, 241, 251, 0.26);
+  pointer-events: none;
+}
+
+/*
+ * Nothing to switch off. There is no transition and no keyframe anywhere in this file,
+ * because the doc comment claims nothing eases and a stylesheet is a poor place to be
+ * caught easing. With the loop stopped the strut is seated in its well by `paint` instead
+ * of integrated toward it, and a press moves the value and re-seats it: the switch still
+ * switches, it simply arrives. Dragging goes with the loop, because a knob that follows
+ * the pointer is motion arriving through another door.
+ */
+@media (prefers-reduced-motion: reduce) {
+  .snap-toggle-mech {
+    cursor: default;
+  }
+}
+
+/*
+ * The card variant: the 298x240 catalogue frame, at that real size and never scaled.
+ * The truss needs nothing done to it — it is scaled from the switch's measured box, so
+ * it lands under its own focus ring at whatever size the row ends up. All this does is
+ * get the settings list out of the way and leave the one live row in it.
+ */
+.snap-toggle-stage[data-compact='true'] {
+  min-height: 0;
+  height: 100%;
+  /* `place-items: center` leaves the column auto-sized, so the card's `width: 100%` below
+     would resolve against its own max-content instead of the frame. Stretched horizontally
+     it resolves against the frame; the row stays centred, which is where one live switch
+     wants to be in a 240px card. */
+  justify-items: stretch;
+  padding: 0.75rem;
+  /* The card frame rounds and clips already. */
+  border-radius: 0;
+}
+
+.snap-toggle-stage[data-compact='true'] .snap-toggle-card {
+  width: 100%;
+}
+
+/* A full-bleed drag surface that claims every touch traps the page inside a scrolling
+   grid. `pan-y` hands the vertical gesture back to the document; a horizontal drag is
+   the one this mechanism is about, and it still arrives. */
+.snap-toggle-stage[data-compact='true'] .snap-toggle-mech {
+  touch-action: pan-y;
+}
+
+.snap-toggle-stage[data-compact='true'] .snap-toggle-face {
+  padding: 0.75rem 0.875rem;
+}
+
+/*
+ * The eyebrow and the hint are the card's own title's job, and the two locked rows are
+ * furniture — they are there in the full stage to argue that this is a settings list and
+ * not an exhibit, which a card three lines tall cannot claim either way.
+ */
+.snap-toggle-stage[data-compact='true'] .snap-toggle-eyebrow,
+.snap-toggle-stage[data-compact='true'] .snap-toggle-hint,
+.snap-toggle-stage[data-compact='true'] .snap-toggle-row:not(.snap-toggle-live) {
+  display: none;
+}

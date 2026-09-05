@@ -1,8 +1,8 @@
 "use client"
 
 /**
- * The browser side of the backend: four calls, all of them to this site's own
- * `/api` routes, none of them to Supabase.
+ * The browser side of the backend: three calls, all of them to this site's own
+ * `/api/saves` route, none of them to Supabase.
  *
  * WHY THERE IS NO SUPABASE CLIENT HERE, AND NO TOKEN EITHER.
  * The session lives in httpOnly cookies written server-side by
@@ -17,8 +17,9 @@
  * The anon key would be *safe* to use from here — everything it reaches is gated
  * by row level security in `supabase/schema.sql` — but calling PostgREST directly
  * would skip the two checks the API routes exist to make: that the token is real
- * (asked of the Auth server, not decoded locally) and that the item name is one of
- * the 17 in `lib/registry/items.ts`.
+ * (asked of the Auth server, not decoded locally) and that the item name is one
+ * `lib/registry/items.ts` actually declares. How many that is deliberately does not
+ * appear here; it changes whenever an item is added.
  *
  * `"use client"` is here so importing this from a Server Component is a build
  * error rather than a runtime one.
@@ -93,30 +94,18 @@ export function unsaveItem(name: string): Promise<boolean> {
   return mutateSave(name, "DELETE")
 }
 
-/**
- * Report an install. Fire and forget — the caller never waits and never sees an
- * error, because a metrics write must not be able to make a copy button feel slow
- * or broken.
+/*
+ * No `reportInstall()` here any more.
  *
- * BE PRECISE ABOUT WHAT THIS MEASURES. Called from a copy-to-clipboard handler it
- * counts *intent to install*: somebody copied a command, which is not the same as
- * running it. Only `cli/src/track.ts`, which posts after the files are on disk,
- * counts an install that happened. Both land in the same column, so pick one
- * meaning for the number on the page and label it to match — or send `runner`
- * from the CLI only and leave the copy button silent.
+ * It posted `{name, runner}` to `/api/track/install` from the browser and nothing
+ * ever called it. Its own comment set out the reason it should not be called:
+ * fired from a copy-to-clipboard handler it would count *intent* to install —
+ * somebody copied a command — into the same column `cli/src/track.ts` fills after
+ * the files are actually on disk, leaving one number with two meanings and no way
+ * to separate them afterwards.
+ *
+ * So the CLI is the only thing that moves that counter, which is what
+ * `app/(site)/privacy/page.tsx` now tells the reader, and what makes the number
+ * mean one thing. A copy button that wants to be counted needs its own column, not
+ * this one.
  */
-export function reportInstall(name: string, runner?: string): void {
-  if (typeof window === "undefined") return
-  try {
-    void fetch("/api/track/install", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, runner }),
-      // Survives the page being navigated away from immediately afterwards.
-      keepalive: true,
-      cache: "no-store",
-    }).catch(() => {})
-  } catch {
-    /* never surfaced */
-  }
-}

@@ -58,6 +58,31 @@ export type RecordInstallOutcome =
   | { accepted: true; installs: number | null }
   | { accepted: false; reason: "unconfigured" | "unknown-item" | "error" }
 
+/**
+ * Say "the keys are missing" once per process, not once per request.
+ *
+ * `logRestFailure` is deliberately silent on `unconfigured`, because a local
+ * checkout with no keys would otherwise warn on every page. That silence hid the
+ * case that actually matters: a *deployed* site whose `SUPABASE_SECRET_KEY` was
+ * never pasted in drops every install ping, and did it with no log line
+ * anywhere — the route answered 202, `after()` returned `unconfigured`, and the
+ * only visible symptom was a counter that stayed at zero forever.
+ *
+ * Guarded by a module-scope flag rather than a counter: one line at cold start is
+ * enough to find this in a log, and repeating it per request would bury the
+ * failures that vary.
+ */
+let warnedUnconfigured = false
+
+function warnUnconfiguredOnce() {
+  if (warnedUnconfigured || process.env.NODE_ENV !== "production") return
+  warnedUnconfigured = true
+  console.warn(
+    "[analytics] install pings are being dropped: no service role key is configured. " +
+      "Set SUPABASE_SECRET_KEY (and NEXT_PUBLIC_SUPABASE_URL) to start counting.",
+  )
+}
+
 export async function recordInstall(input: RecordInstallInput): Promise<RecordInstallOutcome> {
   // Checked in the route handler too. Repeated here because this is the function
   // that holds the service role key, and the service role bypasses every RLS
@@ -66,7 +91,10 @@ export async function recordInstall(input: RecordInstallInput): Promise<RecordIn
   // caller.
   if (!getItem(input.name)) return { accepted: false, reason: "unknown-item" }
 
-  if (!serviceRoleReady) return { accepted: false, reason: "unconfigured" }
+  if (!serviceRoleReady) {
+    warnUnconfiguredOnce()
+    return { accepted: false, reason: "unconfigured" }
+  }
 
   const result = await serviceRest<number | string>("rpc/increment_install", {
     method: "POST",

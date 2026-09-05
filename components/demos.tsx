@@ -2,21 +2,24 @@
 
 import type { ReactNode } from "react"
 
-import { AuroraBackground } from "@/registry/animations/aurora-background"
 import { AuroraThreadLoom } from "@/registry/animations/aurora-thread-loom"
 import { BalanceProgress } from "@/registry/animations/balance-progress"
 import { BubbleBurst } from "@/registry/animations/bubble-burst"
 import { ChipPile } from "@/registry/animations/chip-pile"
 import { CurtainSequence } from "@/registry/animations/curtain-sequence"
 import { DestructibleMembrane } from "@/registry/animations/destructible-membrane"
+import { DetentSlider } from "@/registry/animations/detent-slider"
+import { DockMagnify } from "@/registry/animations/dock-magnify"
 import { DominoWord } from "@/registry/animations/domino-word"
 import { EulerDiskSpinner } from "@/registry/animations/euler-disk-spinner"
 import { FlockSearch } from "@/registry/animations/flock-search"
+import { GaltonHistogram } from "@/registry/animations/galton-histogram"
 import { HeatGrid } from "@/registry/animations/heat-grid"
 import { KineticKerning } from "@/registry/animations/kinetic-kerning"
 import { KineticTextureMesh } from "@/registry/animations/kinetic-texture-mesh"
 import { LenticularShift } from "@/registry/animations/lenticular-shift"
 import { LiquidNav } from "@/registry/animations/liquid-nav"
+import { LloydAvatars } from "@/registry/animations/lloyd-avatars"
 import { Marquee } from "@/registry/animations/marquee"
 import { MercuryDropletChoir } from "@/registry/animations/mercury-droplet-choir"
 import { MorphogenWordmark } from "@/registry/animations/morphogen-wordmark"
@@ -24,11 +27,16 @@ import { NumberTicker } from "@/registry/animations/number-ticker"
 import { PressureButton } from "@/registry/animations/pressure-button"
 import { PullCord } from "@/registry/animations/pull-cord"
 import { PulseChoir } from "@/registry/animations/pulse-choir"
+import { RelaxationTyping } from "@/registry/animations/relaxation-typing"
 import { RollbackOrbit } from "@/registry/animations/rollback-orbit"
 import { ShadowCaster } from "@/registry/animations/shadow-caster"
+import { SheetFold } from "@/registry/animations/sheet-fold"
+import { ShutterCompare } from "@/registry/animations/shutter-compare"
 import { SloshGauge } from "@/registry/animations/slosh-gauge"
+import { SnapToggle } from "@/registry/animations/snap-toggle"
 import { SplitShutter } from "@/registry/animations/split-shutter"
 import { TextShimmer } from "@/registry/animations/text-shimmer"
+import { ToastStack } from "@/registry/animations/toast-stack"
 
 /**
  * One demo per registry item, keyed by `name`.
@@ -71,18 +79,6 @@ export const DEMOS: Record<string, ReactNode> = {
     </div>
   ),
 
-  // Not a catalog item — the site's own chrome renders `AuroraBackground`, so the
-  // file stays on disk while the entry stays unreachable. `ItemPreview` only ever
-  // reads `DEMOS[item.name]`, so this key renders nowhere and advertises nothing.
-  // It exists to keep the import honest; delete both together or neither.
-  "aurora-background": (
-    <AuroraBackground className="flex size-full items-center justify-center" fadeBottom={false}>
-      <p className="px-6 text-center text-xl font-semibold tracking-tight">
-        Slow light, no canvas
-      </p>
-    </AuroraBackground>
-  ),
-
   /* The stage animations. Each one paints its own full-bleed surface and owns its
      own controls, so the demo is the component and nothing else — no wrapper, no
      padding. Every one integrates its equation at a fixed step, so what a card
@@ -115,6 +111,19 @@ export const DEMOS: Record<string, ReactNode> = {
   "pulse-choir": <PulseChoir />,
   "rollback-orbit": <RollbackOrbit />,
   "split-shutter": <SplitShutter />,
+
+  /* The lab round, in the order they were reviewed in. Nine controls, nine
+     unrelated solvers, and the same rule as the two batches above: the demo is the
+     component at the size it was authored, with no wrapper of its own. */
+  "snap-toggle": <SnapToggle />,
+  "toast-stack": <ToastStack />,
+  "detent-slider": <DetentSlider />,
+  "sheet-fold": <SheetFold />,
+  "shutter-compare": <ShutterCompare />,
+  "dock-magnify": <DockMagnify />,
+  "galton-histogram": <GaltonHistogram />,
+  "relaxation-typing": <RelaxationTyping />,
+  "lloyd-avatars": <LloydAvatars />,
 }
 
 /**
@@ -225,5 +234,20 @@ export const CARD_DEMOS: Record<string, ReactNode> = {
   "pulse-choir": <PulseChoir compact />,
   "rollback-orbit": <RollbackOrbit compact />,
   "split-shutter": <SplitShutter compact />,
+
+  /* The lab round. Each of these nine was authored with the card in mind rather
+     than reduced to it: the stage's copy is dropped, the padding is cut, and the
+     control keeps the whole box. Both requirements above hold in every one — the
+     interactive parts take `tabIndex={-1}` under `compact`, and every stage that
+     claimed the gesture with `touch-action: none` relaxes to `pan-y`. */
+  "snap-toggle": <SnapToggle compact />,
+  "toast-stack": <ToastStack compact />,
+  "detent-slider": <DetentSlider compact />,
+  "sheet-fold": <SheetFold compact />,
+  "shutter-compare": <ShutterCompare compact />,
+  "dock-magnify": <DockMagnify compact />,
+  "galton-histogram": <GaltonHistogram compact />,
+  "relaxation-typing": <RelaxationTyping compact />,
+  "lloyd-avatars": <LloydAvatars compact />,
 }
 

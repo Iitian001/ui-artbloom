@@ -6,7 +6,7 @@ import { CodeBlock } from "@/components/code-block"
 import { InstallTabs } from "@/components/install-tabs"
 import { PageHeader, Prose } from "@/components/page-shell"
 import { brand, installCommand, registryUrl } from "@/lib/brand"
-import { newest, type RegistryItem } from "@/lib/registry"
+import { cssText, newest, type RegistryItem } from "@/lib/registry"
 
 export const metadata: Metadata = {
   title: "Docs",
@@ -47,7 +47,7 @@ function afterInstall(item: RegistryItem) {
   }))
 
   const keyframes = new Set(
-    [...(item.css ?? "").matchAll(/@keyframes\s+([\w-]+)/g)].map((match) => match[1]),
+    [...cssText(item.css).matchAll(/@keyframes\s+([\w-]+)/g)].map((match) => match[1]),
   ).size
   if (keyframes > 0) {
     rows.push({

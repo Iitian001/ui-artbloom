@@ -168,3 +168,16 @@
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
   pointer-events: none;
 }
+
+/*
+ * `useCanvasScene` never starts the loop under reduced motion, so the sheet is already
+ * still by the time this matters — the only thing left to correct is the grab cursor,
+ * which would otherwise promise a drag the halted scene cannot answer. The control keeps
+ * its pointer cursor: it is a real button and pressing it still does something.
+ */
+@media (prefers-reduced-motion: reduce) {
+  .destructible-membrane,
+  .destructible-membrane:active {
+    cursor: default;
+  }
+}

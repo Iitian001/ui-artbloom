@@ -16,6 +16,9 @@ import { readRegistryBytes, registrySourceBytes } from "@/lib/registry/source"
  */
 export const dynamic = "force-static"
 
+/** Unlisted paths 404 rather than reaching the handler — see app/r/[name]/route.ts. */
+export const dynamicParams = false
+
 /** Only paths an item actually declares are servable — not any file under registry/. */
 const DECLARED = new Set(
   ITEMS.flatMap((item) => item.assets ?? []).map((asset) => asset.source.replace(/\\/g, "/")),

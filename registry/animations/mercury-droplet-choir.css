@@ -87,7 +87,7 @@
   position: absolute;
   left: 18px;
   bottom: 16px;
-  font: 8px var(--font-geist-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+  font: 8px ui-monospace, SFMono-Regular, Menlo, monospace;
   letter-spacing: 0.13em;
 }
 
@@ -134,15 +134,20 @@
  * into a pile-up, and it would leave the `inset -7px -9px 12px` highlight sized for a 48px
  * ball on a 32px one — which reads as a black disc, not as chrome.
  *
- * 0.66 is sized to the 240px frame this composition is authored for, and it is the one
- * number here that does not survive a shorter one. Three surfaces pass `height={200}` to
- * the same card — bookmarks, the profile grid, the related row under an item — and in
- * 200px the 231px envelope loses 15.5px to each edge, which cuts the ball the wave lifts
- * out of the top row and the one it drops out of the bottom roughly in half at that
- * phase. Fitting 200 means 0.57, or 177px of choir instead of 205px on every card in the
- * catalogue grid, so this stays sized for 240. A height-driven scale is not available:
- * the stage is an `inline-size` container, `cqh` needs `container-type: size`, and
- * `scale` takes a number rather than a length either way.
+ * 0.66 is sized to the 240px frame this composition is authored for, and 240 is the floor:
+ * `ItemCard` and `ItemGrid` both default `height` to it, and every surface that shows a
+ * card — the catalogue grids, a profile, bookmarks, the related row under an item — goes
+ * through one of the two. The landing lists ask for 260, which is taller and fits. So the
+ * 231px envelope is never cropped on a card.
+ *
+ * This paragraph used to say three of those surfaces passed `height={200}`, and worked out
+ * that 200 would cut the ball the wave lifts out of the top row roughly in half. No surface
+ * passes 200. The conclusion is unchanged — 0.66, sized for 240 — but it now holds because
+ * nothing is shorter than 240 rather than in spite of something that was.
+ *
+ * A height-driven scale is not available either way: the stage is an `inline-size`
+ * container, `cqh` needs `container-type: size`, and `scale` takes a number rather than a
+ * length.
  */
 .mercury-droplet-choir-stage[data-compact='true'] .mercury-droplet-choir > div {
   scale: 0.66;
@@ -172,4 +177,16 @@
    competing for the only 240px there are. */
 .mercury-droplet-choir-stage[data-compact='true'] .mercury-droplet-choir > span {
   display: none;
+}
+
+/* The loop rests as a row of identical 0.72-scale circles, which is the least interesting
+   frame it has. The 72% pose is the one worth keeping: full scale, each droplet lifted by
+   its own `--wave-y`, so the row still reads as a choir rather than a ruler. The radius is
+   pinned back to a circle because 72% inherits a mid-morph value from 48%. */
+@media (prefers-reduced-motion: reduce) {
+  .mercury-droplet-choir i {
+    animation: none;
+    transform: translate3d(0, var(--wave-y), 0) scale(1);
+    border-radius: 50%;
+  }
 }

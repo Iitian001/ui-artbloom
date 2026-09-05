@@ -123,7 +123,7 @@
   z-index: 9;
   left: 17px;
   bottom: 15px;
-  font: 8px var(--font-geist-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+  font: 8px ui-monospace, SFMono-Regular, Menlo, monospace;
   text-transform: uppercase;
   letter-spacing: 0.12em;
 }
@@ -176,7 +176,7 @@
   position: absolute;
   left: 50%;
   bottom: 21px;
-  font: 7px var(--font-geist-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+  font: 7px ui-monospace, SFMono-Regular, Menlo, monospace;
   transform: translateX(-50%);
   opacity: 0.65;
 }
@@ -201,7 +201,7 @@
 }
 
 .curtain-sequence b > small {
-  font: 8px var(--font-geist-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+  font: 8px ui-monospace, SFMono-Regular, Menlo, monospace;
   letter-spacing: 0.18em;
   color: #8f8f89;
 }

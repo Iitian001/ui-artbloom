@@ -163,8 +163,10 @@ function build({ width, height }: SceneSetupContext, compact: boolean): MeshStat
      * entire mesh into one funnel instead of denting it, and a ring that runs to 330px is
      * past the far corner — 191px from the middle — for the last two fifths of its life.
      * Scaled by the shorter side, so the pluck reads at the same size relative to the box
-     * in either: 0.67 in a 240px card, 0.56 in the 200px ones on a profile, 1 at the stage
-     * the numbers came from, and never more than that.
+     * in either: 0.67 in a 240px card, 0.72 in the 260px frame the landing lists use, 1 at
+     * the stage the numbers came from, and never more than that. 240 is the floor —
+     * `ItemCard` and `ItemGrid` both default to it and every card surface goes through
+     * one of them.
      */
     reach: compact ? Math.min(1, Math.min(width, height) / 360) : 1,
     // Flat rather than nested: one bounds check per lookup instead of two, and

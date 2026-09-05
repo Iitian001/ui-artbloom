@@ -58,7 +58,7 @@
 .pulse-choir > span {
   display: flex;
   justify-content: space-between;
-  font: 8px var(--font-geist-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+  font: 8px ui-monospace, SFMono-Regular, Menlo, monospace;
   letter-spacing: 0.1em;
 }
 
@@ -199,4 +199,20 @@
  */
 .pulse-choir-stage[data-compact='true'] .pulse-choir > span {
   font-size: 10px;
+}
+
+/*
+ * `choir` starts at scaleY(0.08) — a flat line — so the still is each bar at its own peak
+ * instead. `--peak` already differs per bar, so the meter freezes as a varied profile
+ * rather than a row of equal blocks, and the blink resolves to its base steady state.
+ */
+@media (prefers-reduced-motion: reduce) {
+  .pulse-choir i {
+    animation: none;
+    transform: scaleY(var(--peak));
+  }
+
+  .pulse-choir span > b::before {
+    animation: none;
+  }
 }

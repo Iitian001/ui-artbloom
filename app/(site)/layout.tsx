@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next"
 import { Inter, Instrument_Serif, JetBrains_Mono } from "next/font/google"
 
 import { MobileTabBar } from "@/components/mobile-tab-bar"
+import { SavesProvider } from "@/components/saves-provider"
 import { SiteFooter } from "@/components/site-footer"
 import { SiteHeader } from "@/components/site-header"
 import { ThemeProvider } from "@/components/theme-provider"
@@ -16,10 +17,16 @@ const inter = Inter({
   display: "swap",
 })
 
+/**
+ * Italic only. Every `font-serif` in the tree is an `<em>` that also carries
+ * `italic` — grep it — so the upright face was a second file fetched and
+ * preloaded on every page to be used by nothing. Add `"normal"` back in the same
+ * change as the first upright serif.
+ */
 const instrument = Instrument_Serif({
   subsets: ["latin"],
   weight: "400",
-  style: ["italic", "normal"],
+  style: ["italic"],
   variable: "--font-instrument",
   display: "swap",
 })
@@ -61,18 +68,20 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       >
         <ThemeProvider>
           <TooltipProvider>
-            <a
-              href="#content"
-              className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-100 focus:rounded-md focus:bg-foreground focus:px-3 focus:py-2 focus:text-sm focus:text-background"
-            >
-              Skip to content
-            </a>
-            <SiteHeader />
-            <main id="content" className="pb-16 md:pb-0">
-              {children}
-            </main>
-            <SiteFooter />
-            <MobileTabBar />
+            <SavesProvider>
+              <a
+                href="#content"
+                className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-100 focus:rounded-md focus:bg-foreground focus:px-3 focus:py-2 focus:text-sm focus:text-background"
+              >
+                Skip to content
+              </a>
+              <SiteHeader />
+              <main id="content" className="pb-16 md:pb-0">
+                {children}
+              </main>
+              <SiteFooter />
+              <MobileTabBar />
+            </SavesProvider>
           </TooltipProvider>
         </ThemeProvider>
       </body>

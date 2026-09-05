@@ -49,10 +49,13 @@
  * viewport is not.
  */
 .kinetic-texture-mesh-stage[data-compact='true'] {
-  /* Load-bearing wherever the frame is shorter than the catalogue grid's 240px: cards are
-     200px on a profile and in the related row, and a 240px minimum inside a 200px frame
-     hangs 40px of the weave below the crop and leaves the wordmark sitting low in what is
-     left. The stage takes the frame's own height instead. */
+  /* Load-bearing wherever the frame is shorter than the stage's own 240px `min-height`:
+     that minimum inside a frame of exactly 240px leaves no room for the frame's padding,
+     and any surface asking for less hangs the difference below the crop with the wordmark
+     sitting low in what is left. The stage takes the frame's own height instead. (240 is
+     the floor across the site — `ItemCard` and `ItemGrid` default to it. An earlier note
+     here claimed 200px cards on a profile and in the related row; those surfaces use the
+     grid, so they are 240 too.) */
   min-height: 0;
   height: 100%;
 }
@@ -65,4 +68,16 @@
  */
 .kinetic-texture-mesh-stage[data-compact='true'] .kinetic-texture-mesh {
   touch-action: pan-y;
+}
+
+/*
+ * The weave is drawn on canvas and `useCanvasScene` declines to start its loop under
+ * reduced motion, so the scene holds still on its own. What is left is the grab cursor
+ * offering a gesture that now gathers nothing.
+ */
+@media (prefers-reduced-motion: reduce) {
+  .kinetic-texture-mesh,
+  .kinetic-texture-mesh:active {
+    cursor: default;
+  }
 }

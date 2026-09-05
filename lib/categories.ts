@@ -29,8 +29,6 @@ export type Category = {
   /** Label shown in the nav panel */
   label: string
   kind: Kind
-  /** Renders the "New" pill instead of a count */
-  isNew?: boolean
 }
 
 export type CategoryGroup = {
@@ -40,8 +38,8 @@ export type CategoryGroup = {
   categories: Category[]
 }
 
-function c(kind: Kind, label: string, slug: string, isNew?: boolean): Category {
-  return { kind, label, slug, ...(isNew ? { isNew } : {}) }
+function c(kind: Kind, label: string, slug: string): Category {
+  return { kind, label, slug }
 }
 
 export const TEMPLATE_CATEGORIES: Category[] = [

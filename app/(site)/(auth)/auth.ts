@@ -8,7 +8,7 @@ import {
   restEndpoint,
   SUPABASE_ANON_KEY,
 } from "@/lib/analytics/env"
-import { restFetch } from "@/lib/analytics/rest"
+import { logRestFailure, restFetch } from "@/lib/analytics/rest"
 
 /**
  * GitHub sign-in against Supabase Auth: PKCE out, session in httpOnly cookies.
@@ -390,6 +390,19 @@ export async function restSelect<T>(query: string): Promise<T[] | null> {
     timeoutMs: READ_TIMEOUT_MS,
   })
 
-  if (!result.ok) return null
+  /**
+   * A failed read is logged before it is flattened to `null`.
+   *
+   * `null` is all the caller needs — /bookmarks renders the same "Try again"
+   * either way — but the operator needs to tell the cases apart, and this is the
+   * read that fails when `supabase/schema.sql` has not been applied. Without the
+   * line, a missing table and a network blip both left exactly no trace.
+   * `logRestFailure` stays quiet on `unconfigured`, which is the ordinary state
+   * of a deploy with no keys, and never prints a credential.
+   */
+  if (!result.ok) {
+    logRestFailure(`restSelect ${query.split("?")[0]}`, result)
+    return null
+  }
   return Array.isArray(result.data) ? result.data : null
 }

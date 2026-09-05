@@ -2,7 +2,7 @@ import { BookmarkIcon, CheckIcon, TerminalIcon } from "lucide-react"
 
 import { ItemCard } from "@/components/item-card"
 import { brand } from "@/lib/brand"
-import { ITEMS, popular } from "@/lib/registry"
+import { featured, ITEMS, newest } from "@/lib/registry"
 
 function Chip({
   Icon,
@@ -29,7 +29,17 @@ function Chip({
 }
 
 export function ListsSection() {
-  const [item] = popular(1)
+  /**
+   * One card, and it carries a real save button now — see
+   * `components/save-button.tsx`. Until that shipped, this section illustrated a
+   * bookmark that existed nowhere on the site.
+   *
+   * `featured(1)` rather than the old `popular(1)`, which sorted by an `installs`
+   * field that was `0` on every item and therefore returned whatever `items.ts`
+   * lists first. `newest(1)` is the fallback for a catalogue with nothing marked
+   * `featured`.
+   */
+  const [item] = [...featured(1), ...newest(1)]
   if (!item) return null
 
   return (

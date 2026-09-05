@@ -1,0 +1,256 @@
+.dock-magnify-stage {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 23.5rem;
+  padding: 2.25rem 1.5rem;
+  overflow: hidden;
+  border-radius: 0.75rem;
+  background: radial-gradient(120% 110% at 50% 0%, #0c1620 0%, #070b12 60%, #05070c 100%);
+  color: #eaf3ff;
+}
+
+.dock-magnify-card {
+  position: relative;
+  width: min(30rem, 100%);
+  height: 15.5rem;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 1rem;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.015));
+  isolation: isolate;
+}
+
+/* The shelf, behind everything, and the layer that owns the pointer capture — so every
+   other layer in the card is a sibling of it rather than a child, which would swallow the
+   press. Its box is the card's padding box, which is why a transform written from a canvas
+   pixel lands where the canvas drew. */
+.dock-magnify-well {
+  position: absolute;
+  inset: 0;
+  touch-action: none;
+}
+
+.dock-magnify-well canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.dock-magnify-head {
+  position: absolute;
+  top: 1rem;
+  left: 1.25rem;
+  pointer-events: none;
+}
+
+.dock-magnify-label {
+  margin: 0 0 0.375rem;
+  font: 500 0.6875rem/1 ui-monospace, "SFMono-Regular", Menlo, monospace;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(234, 243, 255, 0.5);
+}
+
+.dock-magnify-read {
+  margin: 0;
+  font-size: 1.3125rem;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  text-shadow: 0 1px 18px rgba(5, 12, 20, 0.55);
+}
+
+/* Its own line, not a suffix: at 390px a long app name plus its state would have run under
+   the Magnification switch in the opposite corner. */
+.dock-magnify-unit {
+  display: block;
+  margin-top: 0.3125rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0;
+  color: rgba(234, 243, 255, 0.55);
+}
+
+/* The one control that needs its own click, so it takes events back. Moving onto it leaves
+   the shelf, which drops the load — correct: the pointer is no longer on the dock. */
+.dock-magnify-toggle {
+  position: absolute;
+  top: 1rem;
+  right: 1.125rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4375rem;
+  padding: 0.3125rem 0.625rem;
+  border: 1px solid rgba(234, 243, 255, 0.16);
+  border-radius: 999px;
+  background: rgba(6, 12, 20, 0.5);
+  font: 500 0.625rem/1 ui-monospace, "SFMono-Regular", Menlo, monospace;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(234, 243, 255, 0.62);
+  cursor: pointer;
+  pointer-events: auto;
+  transition: border-color 160ms ease, color 160ms ease;
+}
+
+.dock-magnify-toggle::before {
+  content: "";
+  width: 0.3125rem;
+  height: 0.3125rem;
+  border-radius: 50%;
+  background: rgba(234, 243, 255, 0.25);
+}
+
+.dock-magnify-toggle[aria-pressed="true"] {
+  border-color: rgba(158, 205, 255, 0.45);
+  color: rgba(234, 243, 255, 0.88);
+}
+
+.dock-magnify-toggle[aria-pressed="true"]::before {
+  background: #9ecdff;
+  box-shadow: 0 0 8px rgba(158, 205, 255, 0.85);
+}
+
+.dock-magnify-toggle:focus-visible {
+  outline: 2px solid rgba(158, 205, 255, 0.8);
+  outline-offset: 3px;
+}
+
+/*
+ * The real dock. One button per icon, laid over the tiles the canvas draws and moved by the
+ * solver, so the focus ring rides the bump instead of sitting where the icon used to be.
+ * `pointer-events: none` keeps the press on the shelf, which owns the capture; focus still
+ * lands here, so Tab and the arrows reach the same eight buttons the pointer does, and a
+ * click on the shelf is routed to whichever of them is under it.
+ */
+.dock-magnify-apps {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.dock-magnify-app {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  border: 0;
+  border-radius: 0.5rem;
+  background: none;
+  pointer-events: none;
+  opacity: 0;
+  will-change: transform;
+}
+
+.dock-magnify-app:focus-visible {
+  outline: 2px solid rgba(158, 205, 255, 0.85);
+  outline-offset: 3px;
+}
+
+/* The name is the button's whole accessible content — the mark itself is painted on the
+   canvas, because it rides a surface the DOM has no way to bend. */
+.dock-magnify-app-name {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* The dock label, placed above the magnified icon by the solver and faded by the load
+   itself, so it arrives with the bump rather than on a timer of its own. */
+.dock-magnify-tip {
+  position: absolute;
+  top: 0;
+  left: 0;
+  margin: 0;
+  padding: 0.25rem 0.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 0.375rem;
+  background: rgba(7, 13, 21, 0.85);
+  font-size: 0.75rem;
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  will-change: transform, opacity;
+}
+
+.dock-magnify-hint {
+  margin: 0.9375rem 0 0;
+  font: 500 0.6875rem/1.5 ui-monospace, "SFMono-Regular", Menlo, monospace;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  text-align: center;
+  color: rgba(234, 243, 255, 0.3);
+  pointer-events: none;
+}
+
+/* With the loop stopped the load is placed at its target and the beam is solved there in one
+   step, so the shape is the same shape — what is gone is the travel to it. Hovering, the
+   arrow keys and Enter all still work, and the undershoot is still on screen. */
+@media (prefers-reduced-motion: reduce) {
+  .dock-magnify-toggle {
+    transition: none;
+  }
+}
+
+/*
+ * The card variant: the 298x240 catalogue frame, at that real size and never scaled.
+ * Nothing about the shelf is restated here. `restY` is `height − FOOT` under a clamp and
+ * every other length — pitch, characteristic length, lift, tile — is a multiple of the icon
+ * pitch, which is `plateW / 8.6`. So a 278x220 card is the same beam with the same L/pitch
+ * ratio, the same zero crossing at 1.65 pitches and the same trough at 2.20. What changes
+ * here is the room around it.
+ */
+.dock-magnify-stage[data-compact='true'] {
+  min-height: 0;
+  height: 100%;
+  padding: 0.625rem;
+  /* The card frame rounds and clips already. */
+  border-radius: 0;
+}
+
+.dock-magnify-stage[data-compact='true'] .dock-magnify-card {
+  width: 100%;
+  height: 100%;
+}
+
+/* A full-bleed surface that claims every touch traps the page inside a scrolling grid.
+   `pan-y` hands the vertical gesture back to the document; the load follows a hover, which
+   arrives either way. */
+.dock-magnify-stage[data-compact='true'] .dock-magnify-well {
+  touch-action: pan-y;
+}
+
+/* In from the corners, so the head and the switch clear the shelf's headroom on a card
+   that is 60px shorter. */
+.dock-magnify-stage[data-compact='true'] .dock-magnify-head {
+  top: 0.75rem;
+  left: 0.875rem;
+}
+
+.dock-magnify-stage[data-compact='true'] .dock-magnify-read {
+  font-size: 1.125rem;
+}
+
+.dock-magnify-stage[data-compact='true'] .dock-magnify-toggle {
+  top: 0.75rem;
+  right: 0.75rem;
+  gap: 0.375rem;
+  padding: 0.25rem 0.5rem;
+}
+
+/* It sits below the card, and the card's own title says the same thing. */
+.dock-magnify-stage[data-compact='true'] .dock-magnify-hint {
+  display: none;
+}
