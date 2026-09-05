@@ -1,0 +1,321 @@
+/*
+ * The room the card sits in. Near-black, one cool accent, and nothing else in colour: the
+ * thumbnail is greyscale apart from the tint its sky carries, so the whole surface is two
+ * colours and a tint like the rest of the catalogue.
+ */
+.photon-thumbnail-stage {
+  position: relative;
+  display: grid;
+  place-content: center;
+  width: 100%;
+  min-height: 33rem;
+  padding: 2rem 1.5rem;
+  overflow: hidden;
+  border-radius: 0.75rem;
+  background: radial-gradient(125% 115% at 50% 0%, #0b1118 0%, #070a10 58%, #04060a 100%);
+  color: #e8eff7;
+}
+
+/* The media card. `min()` and not a media query: at 390px the card is the viewport less the
+   stage padding, so nothing here can overflow sideways. */
+.photon-thumbnail-card {
+  width: min(21rem, 100%);
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 0.875rem;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0.012));
+}
+
+/*
+ * The picture. `aspect-ratio` and not a height, so the plate the solver measures is 3:2 at
+ * every width and the cell grid is rebuilt to match. Black underneath, because the first
+ * exposed frames are nearly empty and anything paler would show through them as a lit box.
+ */
+.photon-thumbnail-frame {
+  position: relative;
+  aspect-ratio: 3 / 2;
+  overflow: hidden;
+  background: #04060a;
+  isolation: isolate;
+}
+
+/*
+ * The plate. This element takes the pointer capture and holds nothing but the canvas, so both
+ * buttons sit below the picture, outside it, where a click of their own can still land.
+ *
+ * `pan-y` rather than `none`: the picture is a 14rem block and a surface that swallows
+ * vertical touches traps the page. A press and hold still arrives, and that is the gesture.
+ */
+.photon-thumbnail-plate {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  cursor: pointer;
+  touch-action: pan-y;
+}
+
+.photon-thumbnail-plate canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/*
+ * The picture's text equivalent. The plate is `aria-hidden`, so this paragraph is what the
+ * thumbnail actually is to a screen reader. Hidden the standard way — clipped to nothing but
+ * still rendered, so it is read rather than skipped the way `display: none` would be.
+ */
+.photon-thumbnail-alt {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  border: 0;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* The loading chip, a sibling layer over the plate rather than a child of it, and deaf to the
+   pointer so a press meant for the picture is not caught by the label sitting on it. */
+.photon-thumbnail-state {
+  position: absolute;
+  z-index: 1;
+  top: 0.625rem;
+  right: 0.625rem;
+  margin: 0;
+  padding: 0.25rem 0.5rem;
+  border: 1px solid rgba(232, 239, 247, 0.14);
+  border-radius: 999px;
+  background: rgba(4, 6, 10, 0.55);
+  font: 500 0.625rem/1 ui-monospace, 'SFMono-Regular', Menlo, monospace;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(232, 239, 247, 0.6);
+  pointer-events: none;
+  backdrop-filter: blur(5px);
+}
+
+/* The caption block. Real headings and real sentences, under the picture where a media card
+   puts them, and outside the frame so nothing here is inside the `aria-hidden` plate. */
+.photon-thumbnail-meta {
+  padding: 1.0625rem 1.125rem 1.125rem;
+}
+
+.photon-thumbnail-kicker {
+  margin: 0 0 0.375rem;
+  font: 500 0.6875rem/1 ui-monospace, 'SFMono-Regular', Menlo, monospace;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: rgba(232, 239, 247, 0.42);
+}
+
+.photon-thumbnail-title {
+  margin: 0 0 0.4375rem;
+  font-size: 1.0625rem;
+  font-weight: 500;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  color: #f2f7fd;
+}
+
+.photon-thumbnail-caption {
+  margin: 0;
+  font-size: 0.8125rem;
+  line-height: 1.55;
+  color: rgba(232, 239, 247, 0.62);
+}
+
+.photon-thumbnail-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.625rem 0.875rem;
+  margin-top: 0.875rem;
+}
+
+.photon-thumbnail-credit {
+  margin: 0;
+  font: 500 0.6875rem/1 ui-monospace, 'SFMono-Regular', Menlo, monospace;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(232, 239, 247, 0.34);
+}
+
+.photon-thumbnail-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+}
+
+.photon-thumbnail-button {
+  appearance: none;
+  margin: 0;
+  padding: 0.4375rem 0.8125rem;
+  border: 1px solid rgba(232, 239, 247, 0.16);
+  border-radius: 999px;
+  background: rgba(6, 10, 16, 0.55);
+  font: inherit;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: rgba(232, 239, 247, 0.78);
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    border-color 160ms ease,
+    background-color 160ms ease,
+    color 160ms ease;
+}
+
+.photon-thumbnail-button:hover {
+  border-color: rgba(134, 200, 255, 0.45);
+  color: #f2f7fd;
+}
+
+/* The tint: the one accent, held under a fifth of an alpha, and the only colour in the card
+   that the picture did not put there. */
+.photon-thumbnail-button[aria-pressed='true'] {
+  border-color: rgba(134, 200, 255, 0.55);
+  background: rgba(134, 200, 255, 0.14);
+  color: #f2f7fd;
+}
+
+.photon-thumbnail-button:focus-visible {
+  outline: 2px solid rgba(134, 200, 255, 0.75);
+  outline-offset: 2px;
+}
+
+.photon-thumbnail-hint {
+  position: absolute;
+  right: 0.875rem;
+  bottom: 0.75rem;
+  margin: 0;
+  font: 500 0.6875rem/1 ui-monospace, 'SFMono-Regular', Menlo, monospace;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(232, 239, 247, 0.26);
+  pointer-events: none;
+}
+
+/*
+ * On a phone the caption takes another line or two and the foot breaks into two rows, so the
+ * padding comes in rather than the card being allowed to grow past the height the gallery
+ * reserved for it. `min-height` is deliberately not touched here: it is read out of this file
+ * once, and a second value would crop the card at exactly the width it was meant to help.
+ */
+@media (max-width: 26rem) {
+  .photon-thumbnail-stage {
+    padding: 1.5rem 1rem;
+  }
+
+  .photon-thumbnail-meta {
+    padding: 0.9375rem 1rem 1rem;
+  }
+
+  .photon-thumbnail-title {
+    font-size: 1rem;
+  }
+
+  .photon-thumbnail-foot {
+    align-items: flex-start;
+    flex-direction: column-reverse;
+  }
+
+  .photon-thumbnail-hint {
+    right: 1rem;
+  }
+}
+
+/*
+ * What reduced motion switches off is the integration, not the picture. The loop never starts,
+ * so the dose is placed straight at the point where the estimator's error is under a code value
+ * and one frame is sampled there: the reader gets the developed photograph on the first paint,
+ * which is a real state of the solver at a real exposure and not a decorative freeze. Both
+ * buttons still work — restarting simply re-samples the settled frame — and the hold gesture
+ * has nothing left to hurry, because there is nothing left to arrive. The only rule below is
+ * the buttons' own colour fade.
+ */
+@media (prefers-reduced-motion: reduce) {
+  .photon-thumbnail-button {
+    transition: none;
+  }
+}
+
+/*
+ * The card variant: the 298x240 catalogue frame, at that real size and never scaled. The plate is
+ * re-measured and its cell grid rebuilt at whatever size it lands in, so a card exposure is the
+ * same estimator sampling a smaller sensor — not a shrunk copy of the stage's picture.
+ *
+ * The whole caption block goes and the picture takes the card. That is the one composition where
+ * this belongs: the arrival of the image *is* the content, the plate already owns press-and-hold
+ * for the aperture, and the status chip is the only word the frame needs. `aspect-ratio: 3 / 2` is
+ * kept rather than dropped, so the picture holds its photographic proportion wherever there is
+ * width for it — and where there is not, `max-width: 100%` wins and the frame fills the card
+ * instead. Both are real sensor shapes: the scene is ray-traced per pixel against the box it
+ * measures, so a squarer card is a squarer sensor and never a stretched copy of a wider one.
+ *
+ * Beats the `max-width: 26rem` block above on specificity, not order, so a 390px catalogue does
+ * not put stage padding back around a card that has none to spare.
+ */
+.photon-thumbnail-stage[data-compact='true'] {
+  min-height: 0;
+  height: 100%;
+  /* `place-content: center` on the stage leaves the single grid track sized from its own
+     content, and once `-meta` is hidden the card has no intrinsic width left to be sized
+     from — the frame carries its size in an `aspect-ratio`, which contributes nothing. The
+     track collapsed to 1.6px and the plate to 0x0, so the card painted a 1x1 canvas.
+     Stretched, the track is the card frame and `width: 100%` resolves against it. */
+  place-content: stretch;
+  padding: 0.5rem;
+  /* The card frame rounds and clips already. */
+  border-radius: 0;
+}
+
+/*
+ * A flex column with the plate mount as the flexible child, for the same reason as the width fix
+ * above: `aspect-ratio: 3 / 2` against `width: 100%` is only in proportion at exactly one frame
+ * width, and the grid hands a phone a 357px card. Bounded by height instead — `flex: 1 1 0` takes
+ * the height from what is left in the frame and the ratio derives the width from that — so a wide
+ * card letterboxes the picture on near-black rather than clipping it off the bottom. On a narrow
+ * card the derived width exceeds the box and `max-width: 100%` takes over, which is the intended
+ * order of precedence: the frame fills, and the estimator is handed the squarer sensor.
+ */
+.photon-thumbnail-stage[data-compact='true'] .photon-thumbnail-card {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-height: 0;
+  border-radius: 0.625rem;
+}
+
+.photon-thumbnail-stage[data-compact='true'] .photon-thumbnail-frame {
+  flex: 1 1 0;
+  width: auto;
+  min-height: 0;
+  max-width: 100%;
+  margin-inline: auto;
+}
+
+.photon-thumbnail-stage[data-compact='true'] .photon-thumbnail-meta,
+.photon-thumbnail-stage[data-compact='true'] .photon-thumbnail-hint {
+  display: none;
+}
+
+/*
+ * Out of the top-right corner, because that corner is not this card's to use. The catalogue frame
+ * puts its own `Open` pill there — held at zero opacity until the card is hovered, but permanently
+ * visible wherever there is no hover to wait for, which is every touch screen — and the pill is
+ * wider than this chip, so on a phone the one word the frame needs was covered outright. The
+ * top-left corner belongs to the frame's `New` badge. So the chip goes to the bottom-left, onto
+ * the floor of the scene, which is both unclaimed and the last part of the picture to come clean.
+ */
+.photon-thumbnail-stage[data-compact='true'] .photon-thumbnail-state {
+  top: auto;
+  right: auto;
+  bottom: 0.4375rem;
+  left: 0.4375rem;
+}
+
+

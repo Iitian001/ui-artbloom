@@ -1,0 +1,309 @@
+/*
+ * The room the panel sits in. Near-black, white frost, one cool accent, and nothing else:
+ * the whole surface is two colours and a tint, so the card reads as the same set as the
+ * rest of the catalogue.
+ */
+.frost-spoiler-stage {
+  position: relative;
+  display: grid;
+  place-content: center;
+  width: 100%;
+  min-height: 29rem;
+  padding: 2.25rem 1.5rem;
+  overflow: hidden;
+  border-radius: 0.75rem;
+  background: radial-gradient(125% 115% at 50% 0%, #0b1219 0%, #070b11 58%, #04060a 100%);
+  color: #e9f1f9;
+}
+
+/* The panel. `min()` and not a media query: at 390px the card is the viewport less the
+   stage padding, so nothing here can overflow sideways. */
+.frost-spoiler-card {
+  width: min(26rem, 100%);
+  padding: 1.375rem;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 1rem;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0.012));
+}
+
+.frost-spoiler-kicker {
+  margin: 0 0 0.4375rem;
+  font: 500 0.6875rem/1 ui-monospace, 'SFMono-Regular', Menlo, monospace;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: rgba(233, 241, 249, 0.44);
+}
+
+.frost-spoiler-lead {
+  margin: 0;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: rgba(233, 241, 249, 0.6);
+}
+
+/*
+ * The glass. A grid with one in-flow child, so the copy stretches to whatever height the
+ * pane has and the frost canvas — absolutely placed over it — measures exactly the same
+ * box. `overflow: hidden` is what rounds the frost's corners; the solver knows nothing
+ * about the border radius.
+ */
+.frost-spoiler-pane {
+  position: relative;
+  display: grid;
+  min-height: 12rem;
+  margin: 1rem 0 1.125rem;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 0.625rem;
+  background: linear-gradient(180deg, rgba(8, 13, 19, 0.92), rgba(4, 7, 11, 0.96));
+  isolation: isolate;
+}
+
+/* The spoiler itself: real DOM, under the frost rather than swapped out for it. It sits at
+   the bottom of the stacking order and the frost paints over it. */
+.frost-spoiler-secret {
+  position: relative;
+  z-index: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 1.125rem 1.1875rem;
+}
+
+/* While it is frosted the text is still on the page, so a drag across the glass must not
+   select it and a copy must not lift it out from behind the ice. */
+.frost-spoiler-secret[data-veiled='true'] {
+  user-select: none;
+}
+
+.frost-spoiler-headline {
+  margin: 0;
+  font-size: 1.3125rem;
+  font-weight: 500;
+  line-height: 1.15;
+  letter-spacing: -0.025em;
+  color: #f4f9ff;
+}
+
+.frost-spoiler-figure {
+  font-variant-numeric: tabular-nums;
+  color: #8fd0ff;
+}
+
+.frost-spoiler-body {
+  margin: 0.6875rem 0 0;
+  font-size: 0.8125rem;
+  line-height: 1.55;
+  color: rgba(233, 241, 249, 0.74);
+}
+
+/*
+ * The frost layer, and the only thing in it is the canvas. This element takes the pointer
+ * capture, so every real control is a sibling outside it — the reveal button lives in the
+ * foot, below the pane, where a click of its own can still land.
+ *
+ * `pan-y` rather than `none`: the glass is a 12rem block and a surface that swallows
+ * vertical touches traps the page. A wipe is a sideways sweep, which still arrives.
+ */
+.frost-spoiler-glass {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  touch-action: pan-y;
+}
+
+.frost-spoiler-glass canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/*
+ * What stands in for the spoiler in the accessibility tree while the ice is over it. A
+ * spoiler a screen reader reads out is not a spoiler, so the copy behind the frost is
+ * `aria-hidden` and this line is announced in its place. Hidden the standard way — clipped
+ * to nothing but still rendered, so it is reachable rather than skipped like
+ * `display: none` would be.
+ */
+.frost-spoiler-note {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  border: 0;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.frost-spoiler-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.625rem 1rem;
+}
+
+.frost-spoiler-reveal {
+  appearance: none;
+  margin: 0;
+  padding: 0.4375rem 0.875rem;
+  border: 1px solid rgba(233, 241, 249, 0.16);
+  border-radius: 999px;
+  background: rgba(6, 11, 17, 0.55);
+  font: inherit;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: rgba(233, 241, 249, 0.78);
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    border-color 160ms ease,
+    background-color 160ms ease,
+    color 160ms ease;
+}
+
+.frost-spoiler-reveal:hover {
+  border-color: rgba(143, 208, 255, 0.45);
+  color: #f4f9ff;
+}
+
+/* The tint: the one accent, held under a fifth of an alpha. */
+.frost-spoiler-reveal[aria-expanded='true'] {
+  border-color: rgba(143, 208, 255, 0.55);
+  background: rgba(143, 208, 255, 0.14);
+  color: #f4f9ff;
+}
+
+.frost-spoiler-reveal:focus-visible {
+  outline: 2px solid rgba(143, 208, 255, 0.75);
+  outline-offset: 2px;
+}
+
+.frost-spoiler-embargo {
+  margin: 0;
+  font: 500 0.6875rem/1 ui-monospace, 'SFMono-Regular', Menlo, monospace;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(233, 241, 249, 0.36);
+}
+
+.frost-spoiler-hint {
+  position: absolute;
+  right: 0.875rem;
+  bottom: 0.75rem;
+  margin: 0;
+  font: 500 0.6875rem/1 ui-monospace, 'SFMono-Regular', Menlo, monospace;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(233, 241, 249, 0.26);
+  pointer-events: none;
+}
+
+/*
+ * On a phone the price line and the paragraph both take more lines, so the glass grows and
+ * the stage grows with it rather than the copy being clipped behind the ice. The grid is
+ * rebuilt at the new size — the frost is resolved from the pane, not scaled into it.
+ */
+@media (max-width: 26rem) {
+  .frost-spoiler-stage {
+    min-height: 31rem;
+    padding: 1.75rem 1rem;
+  }
+
+  .frost-spoiler-card {
+    padding: 1.125rem;
+  }
+
+  .frost-spoiler-headline {
+    font-size: 1.1875rem;
+  }
+
+  .frost-spoiler-foot {
+    align-items: flex-start;
+    flex-direction: column-reverse;
+  }
+
+  .frost-spoiler-hint {
+    display: none;
+  }
+}
+
+/*
+ * What reduced motion switches off is the aggregation, not the panel. The loop never
+ * starts, so no walker is released and nothing creeps: the first painted frame is the
+ * settled rime the warm-up already grew, which is a real state of the solver and not a
+ * decorative freeze. Wiping still works, because the hook repaints once per pointer move
+ * and one sublimation generation is run per repaint — so the ice comes off under the hand
+ * and then stays off, with no refreeze crawling back. The button still clears the pane and
+ * frosts it over, in one step each. The only rule here is the button's own colour fade.
+ */
+@media (prefers-reduced-motion: reduce) {
+  .frost-spoiler-reveal {
+    transition: none;
+  }
+}
+
+/*
+ * The card variant: the 298x240 catalogue frame, at that real size and never scaled. The walker
+ * grid is rebuilt from the pane's measured box, so the rime on a card is grown for that pane at
+ * that size — a coarser cluster of the same aggregation, not a scaled screenshot of the stage's.
+ *
+ * The kicker, the lead, the paragraph and the embargo line all go. What stays is the pair that
+ * makes the item legible in one glance: a headline worth hiding, and the ice hiding it. The reveal
+ * button stays too — it is the only way a still card can be shown to work both ways — and it keeps
+ * its pointer while leaving the tab order, since the card's title link is the path to the item.
+ *
+ * Beats the `max-width: 26rem` block above on specificity rather than order, so a 390px catalogue
+ * does not hand this card a 31rem stage or stack its foot into a column.
+ */
+.frost-spoiler-stage[data-compact='true'] {
+  min-height: 0;
+  height: 100%;
+  /* `place-content: center` leaves the single track sized from the card's own content, so the
+     pane would be as wide as the headline happens to set and no wider. Stretched, the track is
+     the card frame and `width: 100%` on the card resolves against it. */
+  place-content: stretch;
+  padding: 0.625rem;
+  /* The card frame rounds and clips already. */
+  border-radius: 0;
+}
+
+.frost-spoiler-stage[data-compact='true'] .frost-spoiler-card {
+  width: 100%;
+  padding: 0.6875rem;
+  border-radius: 0.75rem;
+}
+
+.frost-spoiler-stage[data-compact='true'] .frost-spoiler-kicker,
+.frost-spoiler-stage[data-compact='true'] .frost-spoiler-lead,
+.frost-spoiler-stage[data-compact='true'] .frost-spoiler-body,
+.frost-spoiler-stage[data-compact='true'] .frost-spoiler-embargo,
+.frost-spoiler-stage[data-compact='true'] .frost-spoiler-hint {
+  display: none;
+}
+
+/* 9.5rem, not the 9.75 this was first set to: the stage padding, the card padding and its
+   borders, this margin and the button come to 238px of the frame's 240, and the pane was
+   taking the last two back. Four pixels of slack instead, so nothing is clipped. */
+.frost-spoiler-stage[data-compact='true'] .frost-spoiler-pane {
+  min-height: 9.5rem;
+  margin: 0 0 0.625rem;
+}
+
+.frost-spoiler-stage[data-compact='true'] .frost-spoiler-secret {
+  padding: 0.75rem 0.8125rem;
+}
+
+.frost-spoiler-stage[data-compact='true'] .frost-spoiler-headline {
+  font-size: 1.0625rem;
+}
+
+/* Only the button is left in the foot, so it goes to the end rather than sitting alone at the
+   start of a row that was built to hold two things. */
+.frost-spoiler-stage[data-compact='true'] .frost-spoiler-foot {
+  align-items: center;
+  flex-direction: row;
+  justify-content: flex-end;
+}

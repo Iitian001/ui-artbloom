@@ -686,6 +686,128 @@ export const ITEMS: RegistryItem[] = [
     previewHeight: 416,
   },
 
+  /* The thin-category round, promoted after review. Six of the seven that were shown
+     in `/lab`; the one not taken stays an unregistered draft. These were aimed rather
+     than picked — one gradient, one marquee, one noise, three masks, at the four
+     categories with the fewest items in them — and every one is a canvas scene on
+     `use-canvas-scene` with a `compact` card variant in `CARD_DEMOS`. */
+  {
+    name: "kelvin-ramp",
+    title: "Kelvin Ramp",
+    kind: "animations",
+    description:
+      "A theme-warmth control whose strip is a real black-body locus — Planck's law through the CIE 1931 observer, then the sRGB transfer curve, solved a column at a time. A thousand kelvin at the warm end is five times the colour change it is at the cool end, so the same drag does different work at either end of the same strip, which a gradient between two stops cannot do at any number of stops.",
+    categories: ["gradients", "micro"],
+    author: AUTHORS.artbloom,
+    files: [
+      { source: "animations/kelvin-ramp.tsx", target: "components/ui/kelvin-ramp.tsx", type: "registry:ui" },
+      { source: "animations/kelvin-ramp.css", target: "components/ui/kelvin-ramp.css", type: "registry:file" },
+      { source: "hooks/use-canvas-scene.ts", target: "hooks/use-canvas-scene.ts", type: "registry:hook" },
+    ],
+    createdAt: "2026-09-05",
+    featured: true,
+    isNew: true,
+    previewDark: true,
+    // Matches `min-height: 33rem` in kelvin-ramp.css.
+    previewHeight: 528,
+  },
+  {
+    name: "scanline-marquee",
+    title: "Scanline Marquee",
+    kind: "animations",
+    description:
+      "A trusted-by belt read one scanline at a time, and read against the strip's own velocity history rather than its current speed. Flick it and hold still: the travel has stopped and the type is still unbending from the top of the window down, because every band on screen was exposed at a different moment.",
+    categories: ["marquees", "infinite", "text"],
+    author: AUTHORS.artbloom,
+    files: [
+      { source: "animations/scanline-marquee.tsx", target: "components/ui/scanline-marquee.tsx", type: "registry:ui" },
+      { source: "animations/scanline-marquee.css", target: "components/ui/scanline-marquee.css", type: "registry:file" },
+      { source: "hooks/use-canvas-scene.ts", target: "hooks/use-canvas-scene.ts", type: "registry:hook" },
+    ],
+    createdAt: "2026-09-05",
+    isNew: true,
+    previewDark: true,
+    // Matches `min-height: 22rem` in scanline-marquee.css.
+    previewHeight: 352,
+  },
+  {
+    name: "photon-thumbnail",
+    title: "Photon Thumbnail",
+    kind: "animations",
+    description:
+      "A media card whose thumbnail arrives as photons land on it: Poisson counts over an analytically ray-traced scene, so the estimator's error falls as the square root of exposure and nothing here is a bitmap. The shadows are still boiling long after the highlights have gone clean — the one thing a grain overlay fading to zero cannot reproduce, because its noise is uniform across the frame.",
+    categories: ["noise", "loaders"],
+    author: AUTHORS.artbloom,
+    files: [
+      { source: "animations/photon-thumbnail.tsx", target: "components/ui/photon-thumbnail.tsx", type: "registry:ui" },
+      { source: "animations/photon-thumbnail.css", target: "components/ui/photon-thumbnail.css", type: "registry:file" },
+      { source: "hooks/use-canvas-scene.ts", target: "hooks/use-canvas-scene.ts", type: "registry:hook" },
+    ],
+    createdAt: "2026-09-05",
+    isNew: true,
+    previewDark: true,
+    // Matches `min-height: 33rem` in photon-thumbnail.css.
+    previewHeight: 528,
+  },
+  {
+    name: "frost-spoiler",
+    title: "Frost Spoiler",
+    kind: "animations",
+    description:
+      "An embargoed price behind ice that was actually grown — a diffusion-limited cluster, aggregated one walker at a time. Sweeping the glass sublimates the patch under the hand and leaves the rest of the pane standing, and no two panels are frosted alike, because there is no texture anywhere in it to repeat.",
+    categories: ["masks", "micro"],
+    author: AUTHORS.artbloom,
+    files: [
+      { source: "animations/frost-spoiler.tsx", target: "components/ui/frost-spoiler.tsx", type: "registry:ui" },
+      { source: "animations/frost-spoiler.css", target: "components/ui/frost-spoiler.css", type: "registry:file" },
+      { source: "hooks/use-canvas-scene.ts", target: "hooks/use-canvas-scene.ts", type: "registry:hook" },
+    ],
+    createdAt: "2026-09-05",
+    isNew: true,
+    previewDark: true,
+    // Matches `min-height: 29rem` in frost-spoiler.css.
+    previewHeight: 464,
+  },
+  {
+    name: "wetting-reveal",
+    title: "Wetting Reveal",
+    kind: "animations",
+    description:
+      "A gallery plate revealed by a liquid film with a real contact angle. The front is driven by its own curvature and pins on defects in the glass, so a drop rounds itself off, stalls at an edge, and merges with its neighbours into one sheet — and the wetted picture carries the tonality the dry haze was flattening.",
+    categories: ["masks", "transitions"],
+    author: AUTHORS.artbloom,
+    files: [
+      { source: "animations/wetting-reveal.tsx", target: "components/ui/wetting-reveal.tsx", type: "registry:ui" },
+      { source: "animations/wetting-reveal.css", target: "components/ui/wetting-reveal.css", type: "registry:file" },
+      { source: "hooks/use-canvas-scene.ts", target: "hooks/use-canvas-scene.ts", type: "registry:hook" },
+    ],
+    createdAt: "2026-09-05",
+    isNew: true,
+    previewDark: true,
+    // Matches `min-height: 26rem` in wetting-reveal.css.
+    previewHeight: 416,
+  },
+  {
+    name: "moire-scratch",
+    title: "Moire Scratch",
+    kind: "animations",
+    description:
+      "A promo code under two printed gratings, revealed by the beat between them rather than by an eraser mask. Both films are box-filtered at exactly one pitch, so the carriers integrate away and only the beat survives — and the gain is the beat over the pitch: eleven pixels of hand sweeps the bright band clear across the panel.",
+    categories: ["masks", "micro"],
+    author: AUTHORS.artbloom,
+    files: [
+      { source: "animations/moire-scratch.tsx", target: "components/ui/moire-scratch.tsx", type: "registry:ui" },
+      { source: "animations/moire-scratch.css", target: "components/ui/moire-scratch.css", type: "registry:file" },
+      { source: "hooks/use-canvas-scene.ts", target: "hooks/use-canvas-scene.ts", type: "registry:hook" },
+    ],
+    createdAt: "2026-09-05",
+    featured: true,
+    isNew: true,
+    previewDark: true,
+    // Matches `min-height: 33rem` in moire-scratch.css.
+    previewHeight: 528,
+  },
+
   // ── Templates ────────────────────────────────────────────────────────────
   {
     name: "cinematic-supercar",

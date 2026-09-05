@@ -1,0 +1,356 @@
+/*
+ * The belt is an in-flow row between the head and the foot, not a layer beneath them. It
+ * takes pointer capture the moment it is dragged, so anything that owns a click has to sit
+ * beside it rather than on it, and the negative side margin below is what still lets the
+ * strip run to both edges of the card while the copy stays inset.
+ */
+.scanline-marquee-stage {
+  position: relative;
+  display: flex;
+  width: 100%;
+  min-height: 22rem;
+  overflow: hidden;
+  border-radius: 0.875rem;
+  background: radial-gradient(130% 120% at 50% 0%, #131a23 0%, #0a0e14 58%, #070a0e 100%);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.07);
+  color: #e9eff7;
+}
+
+.scanline-marquee-content {
+  display: flex;
+  flex: 1 1 auto;
+  min-width: 0;
+  flex-direction: column;
+  padding: 1.75rem 1.5rem;
+}
+
+/* Equal reserves above and below. The scene centres its readout window on the canvas and
+   knows nothing about this layout, so equal blocks - not arithmetic a wrapped line would
+   break - are why the strip never lands under a line of type. */
+.scanline-marquee-head,
+.scanline-marquee-foot {
+  min-height: 5rem;
+}
+
+.scanline-marquee-eyebrow {
+  margin: 0 0 0.4375rem;
+  font: 500 0.6875rem/1 ui-monospace, 'SFMono-Regular', Menlo, monospace;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(233, 239, 247, 0.46);
+}
+
+.scanline-marquee-title {
+  max-width: 18rem;
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+/* `flex: 1 1 5rem` and not `1 1 auto`: the canvas below is taken out of flow, so a content
+   basis would be zero and the row would collapse to its minimum on a tall card.
+   `touch-action: pan-y` because the strip reads the pointer's x only - a vertical touch
+   belongs to the page, and swallowing it would trap a phone on this card. */
+.scanline-marquee-belt {
+  position: relative;
+  flex: 1 1 5rem;
+  min-height: 5rem;
+  margin: 0 -1.5rem;
+  touch-action: pan-y;
+  cursor: grab;
+}
+
+.scanline-marquee-belt:active {
+  cursor: grabbing;
+}
+
+/* Out of flow, so the canvas's own intrinsic 300x150 never gets a vote on the row height,
+   and 100% resolves against a height the flex line has already settled. */
+.scanline-marquee-belt canvas {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* The eight names again, in belt order, for anything that cannot read a canvas. Out of the
+   flow entirely, so it can never push the readout window off the middle of the card. */
+.scanline-marquee-roll {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  list-style: none;
+  white-space: nowrap;
+}
+
+.scanline-marquee-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 0.875rem 1.5rem;
+}
+
+.scanline-marquee-note {
+  max-width: 21rem;
+  margin: 0;
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  color: rgba(233, 239, 247, 0.5);
+}
+
+.scanline-marquee-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1rem;
+}
+
+.scanline-marquee-speed {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+}
+
+.scanline-marquee-speed-label {
+  font: 500 0.6875rem/1 ui-monospace, 'SFMono-Regular', Menlo, monospace;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: rgba(233, 239, 247, 0.44);
+}
+
+/* The track is the control: it carries role="slider", the tab stop and the focus ring, and it
+   is the only box here that takes its own pointer events back off the belt. The side margin
+   is half a knob wide, so the knob can sit dead on 0% and 100% - where the pointer mapping
+   puts it - without leaning on the label or the readout. */
+.scanline-marquee-track {
+  position: relative;
+  width: 8rem;
+  height: 1.25rem;
+  margin: 0 0.375rem;
+  border-radius: 0.375rem;
+  cursor: ew-resize;
+  touch-action: none;
+}
+
+.scanline-marquee-track::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: 0;
+  left: 0;
+  height: 2px;
+  margin-top: -1px;
+  border-radius: 2px;
+  background: rgba(233, 239, 247, 0.14);
+}
+
+.scanline-marquee-track:focus-visible {
+  outline: 2px solid rgba(158, 205, 255, 0.75);
+  outline-offset: 3px;
+}
+
+.scanline-marquee-fill {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  height: 2px;
+  margin-top: -1px;
+  border-radius: 2px;
+  background: rgba(158, 205, 255, 0.72);
+}
+
+.scanline-marquee-knob {
+  position: absolute;
+  top: 50%;
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 999px;
+  background: #9ecdff;
+  transform: translate(-50%, -50%);
+}
+
+.scanline-marquee-value {
+  min-width: 2.5rem;
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+  color: rgba(233, 239, 247, 0.7);
+}
+
+.scanline-marquee-hold {
+  appearance: none;
+  margin: 0;
+  padding: 0.4375rem 0.875rem;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 999px;
+  background: rgba(10, 14, 20, 0.5);
+  font: inherit;
+  font-size: 0.75rem;
+  font-weight: 500;
+  white-space: nowrap;
+  color: rgba(233, 239, 247, 0.76);
+  cursor: pointer;
+  transition:
+    border-color 160ms ease,
+    background-color 160ms ease,
+    color 160ms ease;
+}
+
+.scanline-marquee-hold:hover {
+  border-color: rgba(158, 205, 255, 0.45);
+  color: #f2f8ff;
+}
+
+.scanline-marquee-hold[aria-pressed='true'] {
+  border-color: rgba(158, 205, 255, 0.6);
+  background: rgba(158, 205, 255, 0.16);
+  color: #f6faff;
+}
+
+.scanline-marquee-hold:focus-visible {
+  outline: 2px solid rgba(158, 205, 255, 0.75);
+  outline-offset: 2px;
+}
+
+/* Sits in the head's padding rather than in its flow, so the caption cannot lengthen the
+   reserve that keeps the strip centred. */
+.scanline-marquee-hint {
+  position: absolute;
+  top: 1.75rem;
+  right: 1.5rem;
+  margin: 0;
+  font: 500 0.6875rem/1 ui-monospace, 'SFMono-Regular', Menlo, monospace;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(233, 239, 247, 0.26);
+  pointer-events: none;
+}
+
+@media (max-width: 30rem) {
+  /* The controls take their own lines under the note, so the card grows rather than
+     squeezing the belt into the copy. */
+  .scanline-marquee-stage {
+    min-height: 27rem;
+  }
+
+  .scanline-marquee-content {
+    padding: 1.5rem 1.125rem;
+  }
+
+  /* Has to track the padding above, or the belt stops short of the card's edges. */
+  .scanline-marquee-belt {
+    margin: 0 -1.125rem;
+  }
+
+  .scanline-marquee-title {
+    max-width: 15rem;
+    font-size: 1.0625rem;
+  }
+
+  .scanline-marquee-foot {
+    align-items: flex-start;
+    flex-direction: column;
+    min-height: 8.5rem;
+  }
+
+  .scanline-marquee-track {
+    width: 7rem;
+  }
+
+  .scanline-marquee-hint {
+    top: 1.5rem;
+    right: 1.125rem;
+  }
+}
+
+/*
+ * The belt does not travel. With the loop stopped the readout history is filled from one
+ * constant velocity, so the strip holds the settled lean the current speed implies and
+ * holds it dead still. Both controls stay live - the lean changes when the speed does, and
+ * the hold flattens it upright - what is withheld is the travel and the transient bend
+ * between one lean and the next. A drag is still honoured, because that motion is the
+ * reader's own and the hook repaints for it.
+ */
+@media (prefers-reduced-motion: reduce) {
+  .scanline-marquee-hold {
+    transition: none;
+  }
+}
+
+/*
+ * The card variant: the 298x240 catalogue frame, at that real size and never scaled. The belt
+ * takes almost the whole box, because the belt is the thing — the readout window is centred on
+ * the canvas by the scene itself, so a shorter row is a shorter window and not a cropped one.
+ *
+ * What goes is the headline, the paragraph and the speed slider. The hold button stays: it is the
+ * one control that makes the effect legible in a still frame, since the strip keeps whatever lean
+ * its own velocity history earned even after the travel stops. It keeps its pointer but loses its
+ * tab stop — the card's title link is the accessible path to the item.
+ *
+ * Beats the `max-width: 30rem` block above on specificity rather than order, so a 390px catalogue
+ * does not hand this card a 27rem stage or stack its foot into a column.
+ */
+.scanline-marquee-stage[data-compact='true'] {
+  min-height: 0;
+  height: 100%;
+  /* No alignment override here, unlike the other five: this stage is a flex row and `-content`
+     already claims the width with `flex: 1 1 auto`, so there is no auto-sized grid track to
+     collapse. */
+  /* The card frame rounds and clips already. */
+  border-radius: 0;
+}
+
+.scanline-marquee-stage[data-compact='true'] .scanline-marquee-content {
+  padding: 0.75rem 0.875rem 0.8125rem;
+}
+
+/* The equal reserves are what centre the strip on the stage. On the card there is no headline
+   and no paragraph to balance, so the belt is given the slack instead. */
+.scanline-marquee-stage[data-compact='true'] .scanline-marquee-head,
+.scanline-marquee-stage[data-compact='true'] .scanline-marquee-foot {
+  min-height: 0;
+}
+
+/* Centred on the card, and only on the card: the catalogue frame owns both top corners — its `New`
+   badge on the left, and its `Open` pill on the right, which is held at zero opacity until the card
+   is hovered but is permanently visible wherever there is no hover to wait for, i.e. every touch
+   screen. Right-aligning this label put it straight under that pill. The eyebrow is worth keeping —
+   a belt of company names with no label on it is a list, not a trusted-by strip — so it moves to
+   the one part of the top row neither corner claims, which is the middle. */
+.scanline-marquee-stage[data-compact='true'] .scanline-marquee-head {
+  text-align: center;
+}
+
+.scanline-marquee-stage[data-compact='true'] .scanline-marquee-eyebrow {
+  margin: 0;
+}
+
+/* `1 1 auto` is safe here only because the canvas is out of flow — see the note on the base
+   rule. The side margin tracks the padding above, or the strip stops short of the card edges. */
+.scanline-marquee-stage[data-compact='true'] .scanline-marquee-belt {
+  flex: 1 1 auto;
+  min-height: 0;
+  margin: 0.625rem -0.875rem 0.6875rem;
+}
+
+.scanline-marquee-stage[data-compact='true'] .scanline-marquee-foot {
+  align-items: center;
+  flex-direction: row;
+  justify-content: flex-start;
+  gap: 0;
+}
+
+.scanline-marquee-stage[data-compact='true'] .scanline-marquee-title,
+.scanline-marquee-stage[data-compact='true'] .scanline-marquee-note,
+.scanline-marquee-stage[data-compact='true'] .scanline-marquee-speed,
+.scanline-marquee-stage[data-compact='true'] .scanline-marquee-hint {
+  display: none;
+}

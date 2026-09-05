@@ -1,0 +1,358 @@
+/*
+ * The room the card sits in. Near-black plate, one near-white for the film, one warm
+ * accent that appears only inside the bright fringe: two colours and a tint, so the
+ * card belongs to the same set as the rest of the catalogue.
+ */
+.moire-scratch-stage {
+  position: relative;
+  display: grid;
+  place-content: center;
+  width: 100%;
+  min-height: 33rem;
+  padding: 2.25rem 1.5rem;
+  overflow: hidden;
+  border-radius: 0.75rem;
+  background: radial-gradient(125% 115% at 50% 0%, #0b1118 0%, #070a10 58%, #04060a 100%);
+  color: #e8eef6;
+}
+
+/* `min()` rather than a media query for the width: at 390px the card is the viewport
+   less the stage padding, so nothing in here can overflow sideways. */
+.moire-scratch-card {
+  width: min(26rem, 100%);
+  padding: 1.375rem;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 1rem;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0.012));
+}
+
+.moire-scratch-kicker {
+  margin: 0 0 0.4375rem;
+  font: 500 0.6875rem/1 ui-monospace, 'SFMono-Regular', Menlo, monospace;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: rgba(232, 238, 246, 0.44);
+}
+
+.moire-scratch-title {
+  margin: 0 0 0.5rem;
+  font-size: 1.25rem;
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: -0.025em;
+  color: #f3f8ff;
+}
+
+.moire-scratch-lead {
+  margin: 0;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: rgba(232, 238, 246, 0.6);
+}
+
+/*
+ * The panel the two films are laid over. Its height is its own, because the only
+ * children are absolutely placed: the film layer that owns the pointer, and the layer
+ * the revealed code sits on. `overflow: hidden` is what rounds the corners of the
+ * fringe — the solver knows nothing about the border radius.
+ */
+.moire-scratch-pane {
+  position: relative;
+  min-height: 11rem;
+  margin: 1rem 0 0.875rem;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 0.625rem;
+  background: #070a10;
+  isolation: isolate;
+}
+
+/*
+ * The film layer, and the only thing in it is the canvas. This element takes the
+ * pointer capture, so every real control is a sibling outside it — both buttons and the
+ * slider live below the panel, where a click and a focus ring of their own still land.
+ *
+ * `pan-y` rather than `none`: the reveal is driven by sideways travel, so a vertical
+ * touch can be handed back to the page instead of trapping it inside a card.
+ */
+.moire-scratch-film {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  cursor: ew-resize;
+  touch-action: pan-y;
+}
+
+.moire-scratch-film canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* The sibling layer over the film. Deaf to the pointer as a whole, so a drag that
+   crosses it still slides the film; the code inside takes its events back. */
+.moire-scratch-veil {
+  position: absolute;
+  z-index: 1;
+  inset: auto 0 0 0;
+  display: flex;
+  justify-content: flex-end;
+  padding: 0.625rem 0.6875rem;
+  pointer-events: none;
+}
+
+/*
+ * The code as real text, once the fringe has actually lit it. A code you cannot select
+ * is useless, so this is a `<code>` a reader can drag over and copy — not a picture of
+ * one. It is the only element on the card that carries the accent as a fill.
+ */
+.moire-scratch-code {
+  padding: 0.3125rem 0.5625rem;
+  border: 1px solid rgba(255, 207, 125, 0.42);
+  border-radius: 0.375rem;
+  background: rgba(12, 9, 5, 0.82);
+  font: 600 0.8125rem/1 ui-monospace, 'SFMono-Regular', Menlo, monospace;
+  letter-spacing: 0.11em;
+  color: #ffcf7d;
+  user-select: all;
+  pointer-events: auto;
+}
+
+/*
+ * What a screen reader is given instead of the fringe. The panel is `aria-hidden`, so
+ * this line carries the state, and it is polite rather than assertive because the
+ * reading flips as the hand moves and an assertive region would interrupt every sweep.
+ * Hidden the standard way — clipped to nothing but still rendered, so it is announced
+ * rather than skipped the way `display: none` would be.
+ */
+.moire-scratch-status {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  border: 0;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.moire-scratch-rail {
+  display: grid;
+  gap: 0.375rem;
+  margin: 0 0 0.875rem;
+}
+
+.moire-scratch-rail-label {
+  font: 500 0.6875rem/1 ui-monospace, 'SFMono-Regular', Menlo, monospace;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(232, 238, 246, 0.4);
+}
+
+/*
+ * The keyboard path onto the same axis the drag drives, geared down so it is landable:
+ * the film shift a whole sweep needs is under two pixels, and no arrow key can address
+ * two pixels. Its own element rather than an `<input type="range">` because the value it
+ * carries wraps — the film is periodic, so the last step is adjacent to the first — and
+ * a native range clamps at both ends instead.
+ */
+.moire-scratch-slider {
+  position: relative;
+  height: 1.5rem;
+  cursor: pointer;
+  touch-action: none;
+}
+
+.moire-scratch-track {
+  position: absolute;
+  inset: 50% 0 auto;
+  height: 2px;
+  transform: translateY(-50%);
+  border-radius: 999px;
+  background: rgba(232, 238, 246, 0.12);
+}
+
+.moire-scratch-thumb {
+  position: absolute;
+  top: 50%;
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 999px;
+  background: rgba(232, 238, 246, 0.72);
+  transform: translate(-50%, -50%);
+}
+
+.moire-scratch-slider:hover .moire-scratch-thumb {
+  background: #f3f8ff;
+}
+
+.moire-scratch-slider:focus-visible {
+  outline: 2px solid rgba(255, 207, 125, 0.75);
+  outline-offset: 3px;
+  border-radius: 0.25rem;
+}
+
+.moire-scratch-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.moire-scratch-button {
+  appearance: none;
+  margin: 0;
+  padding: 0.4375rem 0.875rem;
+  border: 1px solid rgba(232, 238, 246, 0.16);
+  border-radius: 999px;
+  background: rgba(7, 10, 16, 0.6);
+  font: inherit;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: rgba(232, 238, 246, 0.78);
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    border-color 160ms ease,
+    background-color 160ms ease,
+    color 160ms ease;
+}
+
+.moire-scratch-button:hover {
+  border-color: rgba(255, 207, 125, 0.45);
+  color: #f3f8ff;
+}
+
+/* The tint: the one accent, held under a fifth of an alpha. */
+.moire-scratch-button[aria-pressed='true'] {
+  border-color: rgba(255, 207, 125, 0.55);
+  background: rgba(255, 207, 125, 0.14);
+  color: #fff6e6;
+}
+
+.moire-scratch-button:focus-visible {
+  outline: 2px solid rgba(255, 207, 125, 0.75);
+  outline-offset: 2px;
+}
+
+.moire-scratch-hint {
+  position: absolute;
+  right: 0.875rem;
+  bottom: 0.75rem;
+  margin: 0;
+  font: 500 0.6875rem/1 ui-monospace, 'SFMono-Regular', Menlo, monospace;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(232, 238, 246, 0.26);
+  pointer-events: none;
+}
+
+/*
+ * On a phone the title and the lead both take another line, so the stage grows rather
+ * than the panel being squeezed. The films are re-derived at the new width — the beat
+ * period is a multiple of the panel, not a fixed number of pixels — so the fringe still
+ * arrives one band at a time and the code still fits inside one.
+ */
+@media (max-width: 26rem) {
+  .moire-scratch-stage {
+    min-height: 35rem;
+    padding: 1.75rem 1rem;
+  }
+
+  .moire-scratch-card {
+    padding: 1.125rem;
+  }
+
+  .moire-scratch-title {
+    font-size: 1.125rem;
+  }
+
+  .moire-scratch-foot {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .moire-scratch-hint {
+    display: none;
+  }
+}
+
+/*
+ * What reduced motion switches off is the sweep, not the panel. The loop never starts,
+ * so nothing moves of its own accord, and the first painted frame is the film pair
+ * already at the shift that puts the bright band on the code — the answer the solver
+ * would have slewed to, held from the start, so the code is readable without a game of
+ * precision. Dragging still works, because the hook repaints once per pointer move and
+ * the mask is recomputed from scratch each time; what is gone is the constant-speed
+ * travel the button would otherwise show. The rules below are the two colour fades.
+ */
+@media (prefers-reduced-motion: reduce) {
+  .moire-scratch-button {
+    transition: none;
+  }
+
+  .moire-scratch-slider:hover .moire-scratch-thumb {
+    background: rgba(232, 238, 246, 0.72);
+  }
+}
+
+/*
+ * The card variant: the 298x240 catalogue frame, at that real size and never scaled. Nothing has
+ * to be re-tuned for it, because `BEAT_SPAN` sets the beat period as a multiple of the panel
+ * rather than in pixels — a card pane gets its own pitch pair, the same fraction of a period is
+ * on screen, and the code still lands inside one band.
+ *
+ * The copy and the rail go, and so does the skew button: at this width the two labels wrap onto
+ * two rows and cost the panel more height than the second control is worth. `Reveal the code` is
+ * the one that stays, because it gives the card a payoff in one press — the band slews onto the
+ * word and the `<code>` chip appears — and the film itself still takes a drag. Both buttons leave
+ * the tab order under `compact`, the card frame being `aria-hidden` with its own title link.
+ *
+ * Beats the `max-width: 26rem` block above on specificity rather than order, so a 390px catalogue
+ * does not hand this card a 35rem stage.
+ */
+.moire-scratch-stage[data-compact='true'] {
+  min-height: 0;
+  height: 100%;
+  /* `place-content: center` leaves the single track sized from the card's own content, so with
+     the copy and the rail hidden the panel would be as wide as the one remaining button and the
+     film would be solved for that box. Stretched, the track is the card frame. */
+  place-content: stretch;
+  padding: 0.625rem;
+  /* The card frame rounds and clips already. */
+  border-radius: 0;
+}
+
+.moire-scratch-stage[data-compact='true'] .moire-scratch-card {
+  width: 100%;
+  padding: 0.6875rem;
+  border-radius: 0.75rem;
+}
+
+.moire-scratch-stage[data-compact='true'] .moire-scratch-kicker,
+.moire-scratch-stage[data-compact='true'] .moire-scratch-title,
+.moire-scratch-stage[data-compact='true'] .moire-scratch-lead,
+.moire-scratch-stage[data-compact='true'] .moire-scratch-rail,
+.moire-scratch-stage[data-compact='true'] .moire-scratch-skew,
+.moire-scratch-stage[data-compact='true'] .moire-scratch-hint {
+  display: none;
+}
+
+.moire-scratch-stage[data-compact='true'] .moire-scratch-pane {
+  min-height: 9.5rem;
+  margin: 0 0 0.625rem;
+}
+
+.moire-scratch-stage[data-compact='true'] .moire-scratch-veil {
+  padding: 0.5rem 0.5625rem;
+}
+
+/* One button left, so the column the phone rules would stack it into is not wanted here. */
+.moire-scratch-stage[data-compact='true'] .moire-scratch-foot {
+  align-items: center;
+  flex-direction: row;
+}
+
+
+

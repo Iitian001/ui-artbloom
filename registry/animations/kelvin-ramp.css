@@ -1,0 +1,383 @@
+/*
+ * The room the control sits in. Near-black, one white, and the only colour on the surface is
+ * the colour the solver returns: the strip and the preview slab. Nothing here declares a hue,
+ * so the card cannot drift out of step with the ramp — there is no second source of truth.
+ */
+.kelvin-ramp-stage {
+  position: relative;
+  display: grid;
+  place-content: center;
+  width: 100%;
+  min-height: 33rem;
+  padding: 2.25rem 1.5rem;
+  overflow: hidden;
+  border-radius: 0.75rem;
+  background: radial-gradient(125% 115% at 50% 0%, #0b1219 0%, #070b11 58%, #04060a 100%);
+  color: #e9f1f9;
+}
+
+/* `min()` and not a media query: at 390px the card is the viewport less the stage padding,
+   so no width in this file can push the page sideways. */
+.kelvin-ramp-card {
+  width: min(24rem, 100%);
+  padding: 1.375rem;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 1rem;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0.012));
+}
+
+.kelvin-ramp-kicker {
+  margin: 0 0 0.4375rem;
+  font: 500 0.6875rem/1 ui-monospace, 'SFMono-Regular', Menlo, monospace;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: rgba(233, 241, 249, 0.44);
+}
+
+.kelvin-ramp-title {
+  margin: 0;
+  font-size: 1.3125rem;
+  font-weight: 500;
+  line-height: 1.15;
+  letter-spacing: -0.025em;
+  color: #f4f9ff;
+}
+
+.kelvin-ramp-lead {
+  margin: 0.5rem 0 0;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: rgba(233, 241, 249, 0.6);
+}
+
+/*
+ * The preview. Its background is written from React as the solver's answer for the current
+ * value — the one place in this file where a colour arrives from outside it. Everything on the
+ * slab is ink rather than white, because the swatch is the brighter surface: the strip runs
+ * from a luminance of about 0.29 at 1600K to 0.83 at the neutral end, so near-black type
+ * clears 4.5:1 at every setting and never has to swap sides mid-drag.
+ */
+.kelvin-ramp-preview {
+  min-height: 6.5rem;
+  margin: 1.125rem 0 0;
+  padding: 0.875rem 1rem 1rem;
+  border-radius: 0.625rem;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.16);
+}
+
+.kelvin-ramp-preview-kicker {
+  margin: 0;
+  font: 500 0.6875rem/1 ui-monospace, 'SFMono-Regular', Menlo, monospace;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: #1f252c;
+}
+
+.kelvin-ramp-preview-title {
+  margin: 0.5rem 0 0;
+  font-size: 1.0625rem;
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  color: #0d1117;
+}
+
+.kelvin-ramp-preview-body {
+  margin: 0.4375rem 0 0;
+  font-size: 0.75rem;
+  line-height: 1.5;
+  color: #1c2128;
+}
+
+/*
+ * The strip and its handle, stacked in one box. The wrapper does not clip, so the handle may
+ * stand a little proud of the strip and the focus ring is not cut off; the clipping is one
+ * level down, on the layer that holds the canvas.
+ */
+.kelvin-ramp-ramp {
+  position: relative;
+  height: 2.75rem;
+  margin: 1rem 0 0;
+}
+
+/*
+ * The canvas layer, and the only thing inside it is the canvas. It is `aria-hidden`, and the
+ * pointer never reaches it: the slider above covers it completely and takes every event, which
+ * is the sibling rule doing its job rather than being worked around. `overflow: hidden` is what
+ * rounds the strip's corners — the solver knows nothing about the border radius. The background
+ * is what shows through the gap the strip is cut with, and through the columns not solved yet.
+ */
+.kelvin-ramp-band {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: 0.5rem;
+  background: #0a0f15;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+}
+
+.kelvin-ramp-band canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/*
+ * The slider itself: a real focusable element with a real role, sitting on top of the canvas
+ * rather than drawn into it. `pan-y` rather than `none` — a 44px band that swallows vertical
+ * touches traps the page in a scrolling list, and the value is read from x alone, so a sideways
+ * drag still arrives intact.
+ */
+.kelvin-ramp-control {
+  position: absolute;
+  inset: 0;
+  border-radius: 0.5rem;
+  cursor: ew-resize;
+  touch-action: pan-y;
+}
+
+.kelvin-ramp-control:focus-visible {
+  outline: 2px solid rgba(233, 241, 249, 0.8);
+  outline-offset: 3px;
+}
+
+/*
+ * The handle. Its width and its travel are set inline from the component, because the canvas
+ * cuts the gap it sits in from the same constant — a copy of that number here is how the chip
+ * and its socket drift apart at some width nobody tested. Its fill is the solver's answer, so
+ * the handle is a swatch of the value and not a marker pointing at one.
+ */
+.kelvin-ramp-thumb {
+  position: absolute;
+  top: -0.25rem;
+  bottom: -0.25rem;
+  border-radius: 0.3125rem;
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.82),
+    0 2px 9px rgba(0, 0, 0, 0.6);
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.kelvin-ramp-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin: 0.9375rem 0 0;
+}
+
+.kelvin-ramp-value {
+  margin: 0;
+  font-size: 1.75rem;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+  color: #f4f9ff;
+}
+
+.kelvin-ramp-unit {
+  margin-left: 0.2em;
+  font-size: 0.875rem;
+  font-weight: 500;
+  letter-spacing: 0;
+  color: rgba(233, 241, 249, 0.5);
+}
+
+.kelvin-ramp-name {
+  margin: 0;
+  font: 500 0.6875rem/1 ui-monospace, 'SFMono-Regular', Menlo, monospace;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(233, 241, 249, 0.48);
+}
+
+/* Four real buttons, not four painted dots. `minmax(0, 1fr)` so a long label shrinks its own
+   column instead of widening the grid past the card. */
+.kelvin-ramp-presets {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.3125rem;
+  margin: 0.875rem 0 0;
+}
+
+.kelvin-ramp-preset {
+  display: grid;
+  gap: 0.1875rem;
+  appearance: none;
+  margin: 0;
+  padding: 0.375rem 0.25rem 0.4375rem;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 0.5rem;
+  background: rgba(6, 11, 17, 0.5);
+  font: inherit;
+  color: rgba(233, 241, 249, 0.74);
+  cursor: pointer;
+  transition:
+    border-color 160ms ease,
+    background-color 160ms ease,
+    color 160ms ease;
+}
+
+.kelvin-ramp-preset:hover {
+  border-color: rgba(233, 241, 249, 0.34);
+  color: #f4f9ff;
+}
+
+/* The pressed state is white, not the swatch colour: the strip and the slab are already
+   carrying the one colour, and a third surface taking it would stop reading as the output. */
+.kelvin-ramp-preset[aria-pressed='true'] {
+  border-color: rgba(233, 241, 249, 0.46);
+  background: rgba(233, 241, 249, 0.12);
+  color: #f8fbff;
+}
+
+.kelvin-ramp-preset:focus-visible {
+  outline: 2px solid rgba(233, 241, 249, 0.8);
+  outline-offset: 2px;
+}
+
+.kelvin-ramp-preset-name {
+  font-size: 0.6875rem;
+  font-weight: 500;
+  line-height: 1.1;
+}
+
+.kelvin-ramp-preset-k {
+  font: 500 0.625rem/1 ui-monospace, 'SFMono-Regular', Menlo, monospace;
+  letter-spacing: 0.04em;
+  font-variant-numeric: tabular-nums;
+  color: rgba(233, 241, 249, 0.44);
+}
+
+/* Named by the slider's `aria-describedby`, so the key steps are announced with the control
+   and are also just readable on the card. */
+.kelvin-ramp-help {
+  margin: 0.75rem 0 0;
+  font-size: 0.6875rem;
+  line-height: 1.45;
+  color: rgba(233, 241, 249, 0.38);
+}
+
+.kelvin-ramp-hint {
+  position: absolute;
+  right: 0.875rem;
+  bottom: 0.75rem;
+  margin: 0;
+  font: 500 0.6875rem/1 ui-monospace, 'SFMono-Regular', Menlo, monospace;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(233, 241, 249, 0.26);
+  pointer-events: none;
+}
+
+/*
+ * On a phone the lead and the slab body both take another line, so the stage is given the room
+ * rather than the card being squeezed, and the presets go to two rows. The strip is rebuilt at
+ * the new width — every column is re-solved from the spectrum, so the ramp is resolved for the
+ * box it is in and never scaled into it.
+ */
+@media (max-width: 26rem) {
+  .kelvin-ramp-stage {
+    min-height: 38rem;
+    padding: 1.75rem 1rem;
+  }
+
+  .kelvin-ramp-card {
+    padding: 1.125rem;
+  }
+
+  .kelvin-ramp-title {
+    font-size: 1.1875rem;
+  }
+
+  .kelvin-ramp-presets {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .kelvin-ramp-hint {
+    display: none;
+  }
+}
+
+/*
+ * Reduced motion takes away the refinement, not the ramp. The loop never starts, so the first
+ * painted frame runs every pass at once and the strip is fully resolved the moment it appears —
+ * which is a real state of the solver, the same one the paced path arrives at half a second
+ * later, and not a frozen frame of an animation. Dragging and the keys still work, because the
+ * component asks for a repaint whenever the value changes. All that is left here is the
+ * buttons' own colour fade.
+ */
+@media (prefers-reduced-motion: reduce) {
+  .kelvin-ramp-preset {
+    transition: none;
+  }
+}
+
+/*
+ * The card variant: the 298x240 catalogue frame, at that real size and never scaled. The strip
+ * is rebuilt for whatever width it is given — every column is re-solved from the spectrum — so
+ * a card ramp is the same locus at a coarser sampling, not a shrunk copy of the stage's.
+ *
+ * What goes is the prose. What stays is the pair of surfaces that carry the solver's answer: the
+ * slab, whose background *is* the value, and the strip the value is picked from. The one line of
+ * type left on the slab is load-bearing rather than decorative — near-black ink clears 4.5:1 at
+ * every temperature, and a card with no words on the swatch could not show that.
+ *
+ * These win over the `max-width: 26rem` block above on specificity, not on order: a media query
+ * adds none, so `[data-compact='true']` outranks the phone rules and a 390px catalogue does not
+ * hand this card a 38rem stage.
+ */
+.kelvin-ramp-stage[data-compact='true'] {
+  min-height: 0;
+  height: 100%;
+  /* `place-content: center` leaves the single track sized from the card's own content, so the
+     ramp would be as wide as the value row's type happens to set. Stretched, the track is the
+     card frame and the strip is solved across its full width. */
+  place-content: stretch;
+  padding: 0.8125rem;
+  /* The card frame rounds and clips already. */
+  border-radius: 0;
+}
+
+.kelvin-ramp-stage[data-compact='true'] .kelvin-ramp-card {
+  width: 100%;
+  padding: 0.75rem;
+  border-radius: 0.75rem;
+}
+
+.kelvin-ramp-stage[data-compact='true'] .kelvin-ramp-kicker,
+.kelvin-ramp-stage[data-compact='true'] .kelvin-ramp-title,
+.kelvin-ramp-stage[data-compact='true'] .kelvin-ramp-lead,
+.kelvin-ramp-stage[data-compact='true'] .kelvin-ramp-preview-kicker,
+.kelvin-ramp-stage[data-compact='true'] .kelvin-ramp-preview-body,
+.kelvin-ramp-stage[data-compact='true'] .kelvin-ramp-presets,
+.kelvin-ramp-stage[data-compact='true'] .kelvin-ramp-help,
+.kelvin-ramp-stage[data-compact='true'] .kelvin-ramp-hint {
+  display: none;
+}
+
+.kelvin-ramp-stage[data-compact='true'] .kelvin-ramp-preview {
+  min-height: 4rem;
+  margin: 0;
+  padding: 0.625rem 0.75rem 0.6875rem;
+}
+
+.kelvin-ramp-stage[data-compact='true'] .kelvin-ramp-preview-title {
+  margin: 0;
+  font-size: 0.9375rem;
+}
+
+.kelvin-ramp-stage[data-compact='true'] .kelvin-ramp-ramp {
+  height: 2.25rem;
+  margin: 0.625rem 0 0;
+}
+
+.kelvin-ramp-stage[data-compact='true'] .kelvin-ramp-row {
+  margin: 0.5625rem 0 0;
+}
+
+.kelvin-ramp-stage[data-compact='true'] .kelvin-ramp-value {
+  font-size: 1.375rem;
+}

@@ -13,8 +13,10 @@ import { DockMagnify } from "@/registry/animations/dock-magnify"
 import { DominoWord } from "@/registry/animations/domino-word"
 import { EulerDiskSpinner } from "@/registry/animations/euler-disk-spinner"
 import { FlockSearch } from "@/registry/animations/flock-search"
+import { FrostSpoiler } from "@/registry/animations/frost-spoiler"
 import { GaltonHistogram } from "@/registry/animations/galton-histogram"
 import { HeatGrid } from "@/registry/animations/heat-grid"
+import { KelvinRamp } from "@/registry/animations/kelvin-ramp"
 import { KineticKerning } from "@/registry/animations/kinetic-kerning"
 import { KineticTextureMesh } from "@/registry/animations/kinetic-texture-mesh"
 import { LenticularShift } from "@/registry/animations/lenticular-shift"
@@ -22,13 +24,16 @@ import { LiquidNav } from "@/registry/animations/liquid-nav"
 import { LloydAvatars } from "@/registry/animations/lloyd-avatars"
 import { Marquee } from "@/registry/animations/marquee"
 import { MercuryDropletChoir } from "@/registry/animations/mercury-droplet-choir"
+import { MoireScratch } from "@/registry/animations/moire-scratch"
 import { MorphogenWordmark } from "@/registry/animations/morphogen-wordmark"
 import { NumberTicker } from "@/registry/animations/number-ticker"
+import { PhotonThumbnail } from "@/registry/animations/photon-thumbnail"
 import { PressureButton } from "@/registry/animations/pressure-button"
 import { PullCord } from "@/registry/animations/pull-cord"
 import { PulseChoir } from "@/registry/animations/pulse-choir"
 import { RelaxationTyping } from "@/registry/animations/relaxation-typing"
 import { RollbackOrbit } from "@/registry/animations/rollback-orbit"
+import { ScanlineMarquee } from "@/registry/animations/scanline-marquee"
 import { ShadowCaster } from "@/registry/animations/shadow-caster"
 import { SheetFold } from "@/registry/animations/sheet-fold"
 import { ShutterCompare } from "@/registry/animations/shutter-compare"
@@ -37,6 +42,7 @@ import { SnapToggle } from "@/registry/animations/snap-toggle"
 import { SplitShutter } from "@/registry/animations/split-shutter"
 import { TextShimmer } from "@/registry/animations/text-shimmer"
 import { ToastStack } from "@/registry/animations/toast-stack"
+import { WettingReveal } from "@/registry/animations/wetting-reveal"
 
 /**
  * One demo per registry item, keyed by `name`.
@@ -124,6 +130,18 @@ export const DEMOS: Record<string, ReactNode> = {
   "galton-histogram": <GaltonHistogram />,
   "relaxation-typing": <RelaxationTyping />,
   "lloyd-avatars": <LloydAvatars />,
+
+  /* The thin-category round, in the order they were reviewed in. Aimed at the four
+     categories with the fewest items rather than picked for variety, so there is one
+     gradient, one marquee, one noise and three masks — but they share no solver: a
+     black-body locus, a scanline exposure, a photon estimator, a diffusion-limited
+     cluster, a wetting front, and a pair of gratings beating against each other. */
+  "kelvin-ramp": <KelvinRamp />,
+  "scanline-marquee": <ScanlineMarquee />,
+  "photon-thumbnail": <PhotonThumbnail />,
+  "frost-spoiler": <FrostSpoiler />,
+  "wetting-reveal": <WettingReveal />,
+  "moire-scratch": <MoireScratch />,
 }
 
 /**
@@ -249,5 +267,23 @@ export const CARD_DEMOS: Record<string, ReactNode> = {
   "galton-histogram": <GaltonHistogram compact />,
   "relaxation-typing": <RelaxationTyping compact />,
   "lloyd-avatars": <LloydAvatars compact />,
+
+  /* The thin-category round. Each card keeps exactly one thing: the strip on
+     `kelvin-ramp`, the belt on `scanline-marquee`, the picture on the two that are
+     pictures, the frosted pane, the film. What goes is the copy — every one of these
+     six was authored as a marketing section first, so the compact variant drops a
+     kicker, a headline, a lead and a hint before it touches the mechanism.
+
+     The `[data-compact='true']` block in each stylesheet is deliberately more
+     specific than that file's own `@media (max-width: 26rem)` rules, which set stage
+     heights of 27–38rem. A media query adds no specificity, so the attribute
+     selector wins on its own merits and a 390px catalogue cannot hand a 240px card a
+     31rem stage. */
+  "kelvin-ramp": <KelvinRamp compact />,
+  "scanline-marquee": <ScanlineMarquee compact />,
+  "photon-thumbnail": <PhotonThumbnail compact />,
+  "frost-spoiler": <FrostSpoiler compact />,
+  "wetting-reveal": <WettingReveal compact />,
+  "moire-scratch": <MoireScratch compact />,
 }
 
