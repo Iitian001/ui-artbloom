@@ -1,5 +1,7 @@
 # ui.artbloom
 
+[![Deploys by Netlify](https://www.netlify.com/img/global/badges/netlify-color-accent.svg)](https://www.netlify.com)
+
 The living library of interfaces — production-ready React templates and animations, browsable on the web and installable with one command.
 
 Two things live in this repo:
