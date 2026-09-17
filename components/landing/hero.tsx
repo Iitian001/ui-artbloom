@@ -3,7 +3,6 @@ import Link from "next/link"
 import { ALL_CATEGORIES } from "@/lib/categories"
 import { ITEMS, categoryCount, populatedCategories } from "@/lib/registry"
 import { cn } from "@/lib/utils"
-import { InteractiveMockup } from "./interactive-mockup"
 
 function PillCluster({
   heading,
@@ -48,9 +47,7 @@ export function Hero() {
       
       <div className="container-page relative z-10 flex flex-col items-center text-center">
         
-        <InteractiveMockup />
-
-        <h1 className="max-w-4xl text-balance text-5xl font-light tracking-tight text-slate-900 dark:text-white sm:text-6xl lg:text-7xl mt-8">
+        <h1 className="max-w-4xl text-balance text-5xl font-light tracking-tight text-slate-900 dark:text-white sm:text-6xl lg:text-7xl">
           The <strong className="font-semibold text-slate-900 dark:text-white">living library</strong>
           <br className="hidden sm:block" /> of interfaces
         </h1>
