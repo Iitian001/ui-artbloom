@@ -20,6 +20,11 @@ export type ItemCardProps = {
    * The item's authored height still travels to `ItemPreview` as `designHeight`,
    * which is only consulted by the scaled fallback for an item with no card
    * composition yet.
+   *
+   * 300, not the old 240: a taller frame gives the scaled block previews (a whole
+   * pricing table, a testimonial grid) enough room to read at a glance, and the
+   * compact component stills — a calendar month, a command list — stop feeling
+   * cramped against the top and bottom edges.
    */
   height?: number
   className?: string
@@ -59,7 +64,10 @@ export function ItemCard({ item, height, className }: ItemCardProps) {
         <ItemPreview
           name={item.name}
           kind={item.kind}
-          height={height ?? 240}
+          // Templates are whole sites shown shrunk, so they get a taller frame — a
+          // 300px card scaled the hero down to a strip. Everything else (blocks fit
+          // their own height, components mount a card demo) reads fine at 300.
+          height={height ?? (item.kind === "templates" ? 420 : 300)}
           designHeight={item.previewHeight}
           dark={item.previewDark}
           compact

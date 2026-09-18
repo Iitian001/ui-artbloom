@@ -132,10 +132,10 @@ export type ItemPreviewProps = {
 /**
  * The live preview shown on every card and item page.
  *
- * Templates load the real page in an iframe at desktop width and scale it down,
- * so a card shows the actual rendered template rather than a screenshot that can
- * go stale. Everything else mounts its real demo — either the card composition
- * (`compact`) or the full stage.
+ * Templates and blocks load the real source in an iframe at desktop width and
+ * scale it down, so a card shows the actual rendered output rather than a
+ * screenshot that can go stale. Animations mount their real demo — either the
+ * card composition (`compact`) or the full stage.
  */
 export function ItemPreview({
   name,
@@ -150,6 +150,8 @@ export function ItemPreview({
 }: ItemPreviewProps) {
   const [wrapRef, near] = useNearViewport<HTMLDivElement>()
   const [width, setWidth] = useState(0)
+  const iframeRef = useRef<HTMLIFrameElement>(null)
+  const [contentHeight, setContentHeight] = useState(0)
 
   useEffect(() => {
     const node = wrapRef.current
@@ -159,14 +161,68 @@ export function ItemPreview({
     return () => observer.disconnect()
   }, [wrapRef])
 
-  const isTemplate = kind === "templates"
+  // Templates and blocks are both framed: the real source loads in an iframe at
+  // desktop width via /preview/<name> and is scaled down, rather than mounting a
+  // hand-written demo. Animations mount their demo.
+  const isFramed = kind === "templates" || kind === "blocks"
   const scale = width > 0 ? width / frameWidth : 0
+
+  /*
+   * A block is a single responsive section, not a whole page — so the frame takes
+   * the section's own height and never sits over a slab of empty background, which
+   * is what a fixed height did to a short block like a CTA.
+   *
+   * Two ways it renders. On the item page (`interactive`) it renders at the real
+   * preview width with no scaling — crisp, full size. In a card it renders at
+   * desktop width and scales down, so the card shows the section's true desktop
+   * layout in miniature; the frame is then the section's scaled height. Either way
+   * the height is measured, not guessed. Templates never do this: a full site is
+   * meant to be shown shrunk to a fixed window, not grown to its full scroll.
+   */
+  const blockFit = isFramed && kind === "blocks"
+  const blockScale = interactive ? 1 : scale
+  const blockRenderWidth = interactive ? width : frameWidth
+  const blockFrameHeight = contentHeight > 0 ? contentHeight * blockScale : height
+
+  useEffect(() => {
+    if (!blockFit || !near || width === 0) return
+    const iframe = iframeRef.current
+    if (!iframe) return
+    let ro: ResizeObserver | undefined
+    // The body's own rendered height, not `documentElement.scrollHeight`: the latter
+    // is floored at the iframe's viewport height, so a section shorter than the frame
+    // measured back as the frame itself and the block sat over its own dead space. The
+    // body box collapses to the section, which is the number we actually want.
+    const read = () => {
+      const body = iframe.contentDocument?.body
+      if (!body) return
+      const h = Math.ceil(body.getBoundingClientRect().height)
+      if (h > 0) setContentHeight(h)
+    }
+    const measure = () => {
+      read()
+      // The section reflows as fonts land and at every width — track it live so the
+      // frame never lags the content it holds.
+      const body = iframe.contentDocument?.body
+      if (body && !ro && typeof ResizeObserver !== "undefined") {
+        ro = new ResizeObserver(read)
+        ro.observe(body)
+      }
+    }
+    iframe.addEventListener("load", measure)
+    // An iframe already loaded by the time this runs fires no further load event.
+    measure()
+    return () => {
+      iframe.removeEventListener("load", measure)
+      ro?.disconnect()
+    }
+  }, [blockFit, near, width])
 
   /**
    * A card composition, when the item has one. This is the only branch that is
    * both unscaled and touchable, and it is what the catalogue grid renders.
    */
-  const card = compact && !isTemplate ? CARD_DEMOS[name] : undefined
+  const card = compact && !isFramed ? CARD_DEMOS[name] : undefined
 
   /**
    * The fallback, for an animation registered before its card composition is
@@ -177,7 +233,7 @@ export function ItemPreview({
    * in `CARD_DEMOS` retires it for that item.
    */
   const wantsScale =
-    !isTemplate && !card && !interactive && !!designHeight && designHeight > height
+    !isFramed && !card && !interactive && !!designHeight && designHeight > height
   const demoScale = wantsScale ? height / designHeight! : 1
   /*
    * Both branches that are sized from the measured width — the template iframe and
@@ -191,14 +247,14 @@ export function ItemPreview({
    * check answers synchronously, and it never resolves at all in a view where the
    * observers are the thing that stays silent.
    */
-  const demoReady = isTemplate || wantsScale ? width > 0 : true
+  const demoReady = isFramed || wantsScale ? width > 0 : true
   /** Pointer-live: the card composition, or the full stage on a page. */
   const live = !!card || interactive
 
   return (
     <div
       ref={wrapRef}
-      style={{ height }}
+      style={{ height: blockFit ? blockFrameHeight : height }}
       className={cn(
         "relative w-full overflow-hidden bg-subtle",
         dark && "dark bg-[oklch(0.145_0_0)]",
@@ -207,7 +263,26 @@ export function ItemPreview({
     >
       {(!near || !demoReady) && <div className="size-full animate-pulse bg-muted/40" />}
 
-      {near && isTemplate && scale > 0 && (
+      {near && blockFit && scale > 0 && (
+        <iframe
+          ref={iframeRef}
+          src={`/preview/${name}`}
+          title={`${name} preview`}
+          loading="lazy"
+          tabIndex={-1}
+          aria-hidden
+          inert
+          scrolling="no"
+          sandbox="allow-scripts allow-same-origin"
+          className="pointer-events-none absolute top-0 left-0 origin-top-left border-0"
+          style={{
+            width: blockRenderWidth,
+            height: contentHeight || height / (blockScale || 1),
+            transform: `scale(${blockScale})`,
+          }}
+        />
+      )}
+      {near && isFramed && !blockFit && scale > 0 && (
         <iframe
           src={`/preview/${name}`}
           title={`${name} preview`}
@@ -224,7 +299,7 @@ export function ItemPreview({
           }}
         />
       )}
-      {near && !isTemplate && demoReady && (
+      {near && !isFramed && demoReady && (
         // `interactive` is the only branch that joins the tab order and the
         // accessibility tree. A card composition is pointer-live but hidden from
         // AT — the card's title link names the item, and the composition renders

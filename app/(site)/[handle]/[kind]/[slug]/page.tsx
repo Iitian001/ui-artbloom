@@ -131,7 +131,7 @@ export default async function ItemPage({ params }: { params: Promise<Params> }) 
 
         <div className="flex shrink-0 items-center gap-2">
           <SaveButton name={item.name} title={item.title} variant="wide" />
-          {item.kind === "templates" && (
+          {(item.kind === "templates" || item.kind === "blocks") && (
             <Link
               href={`/preview/${item.name}`}
               target="_blank"

@@ -12,6 +12,14 @@ import PaperPortfolioHome from "@/registry/templates/paper-portfolio/page"
 import StreetCodeLayout from "@/registry/templates/street-code/layout"
 import StreetCodeHome from "@/registry/templates/street-code/page"
 
+import ContactForm from "@/registry/blocks/contact-form/contact-form"
+import CtaBanner from "@/registry/blocks/cta-banner/cta-banner"
+import Faq from "@/registry/blocks/faq/faq"
+import LogoCloud from "@/registry/blocks/logo-cloud/logo-cloud"
+import PricingTiers from "@/registry/blocks/pricing-tiers/pricing-tiers"
+import TeamGrid from "@/registry/blocks/team-grid/team-grid"
+import Testimonials from "@/registry/blocks/testimonials/testimonials"
+
 /**
  * Multi-page templates ship a nested layout that the consumer's router would
  * normally apply. Nothing applies it here, so the preview composes it by hand —
@@ -58,10 +66,12 @@ function StreetCode() {
 }
 
 /**
- * Template name -> the real page component that ships to a consumer. One entry
- * per `kind: "templates"` item in `lib/registry/items.ts`; templates are the only
- * kind that gets framed through this route (see `components/item-preview.tsx`),
- * everything else mounts its demo directly.
+ * Preview name -> the real component that ships to a consumer. One entry per
+ * framed item in `lib/registry/items.ts` — every `kind: "templates"` and every
+ * `kind: "blocks"` item, the two kinds that render through this route (see
+ * `components/item-preview.tsx`); animations mount their demo directly instead.
+ * Blocks are single self-contained sections, so they map to their own default
+ * export with no layout to compose.
  *
  * A `Map` rather than an object literal because `name` is whatever the URL says:
  * a plain object answers `/preview/constructor` with something inherited from
@@ -75,6 +85,14 @@ const TEMPLATE_PAGES = new Map<string, () => React.ReactNode>([
   ["monolith-launch", MonolithLaunch],
   ["paper-portfolio", PaperPortfolio],
   ["street-code", StreetCode],
+  // Blocks — each a single self-contained section component.
+  ["contact-form", ContactForm],
+  ["cta-banner", CtaBanner],
+  ["faq", Faq],
+  ["logo-cloud", LogoCloud],
+  ["pricing-tiers", PricingTiers],
+  ["team-grid", TeamGrid],
+  ["testimonials", Testimonials],
 ])
 
 /**

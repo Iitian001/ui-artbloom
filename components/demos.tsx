@@ -32,6 +32,7 @@ import { PressureButton } from "@/registry/animations/pressure-button"
 import { PullCord } from "@/registry/animations/pull-cord"
 import { PulseChoir } from "@/registry/animations/pulse-choir"
 import { RelaxationTyping } from "@/registry/animations/relaxation-typing"
+import { RippleTank } from "@/registry/animations/ripple-tank"
 import { RollbackOrbit } from "@/registry/animations/rollback-orbit"
 import { ScanlineMarquee } from "@/registry/animations/scanline-marquee"
 import { ShadowCaster } from "@/registry/animations/shadow-caster"
@@ -43,6 +44,11 @@ import { SplitShutter } from "@/registry/animations/split-shutter"
 import { TextShimmer } from "@/registry/animations/text-shimmer"
 import { ToastStack } from "@/registry/animations/toast-stack"
 import { WettingReveal } from "@/registry/animations/wetting-reveal"
+import { Combobox } from "@/registry/components/combobox"
+import { CommandPalette } from "@/registry/components/command-palette"
+import { DateRangePicker } from "@/registry/components/date-range-picker"
+import { FileDropzone } from "@/registry/components/file-dropzone"
+import { SegmentedControl } from "@/registry/components/segmented-control"
 
 /**
  * One demo per registry item, keyed by `name`.
@@ -142,6 +148,18 @@ export const DEMOS: Record<string, ReactNode> = {
   "frost-spoiler": <FrostSpoiler />,
   "wetting-reveal": <WettingReveal />,
   "moire-scratch": <MoireScratch />,
+
+  /* A shallow-water ripple tank: drips fall on a clock, their rings interfere, and
+     the wake reflects off the walls of the tank. */
+  "ripple-tank": <RippleTank />,
+
+  /* Components — interactive UI primitives, mounted like animations rather than
+     framed. Each owns its own surface and controls, so the demo is the component. */
+  "command-palette": <CommandPalette />,
+  "segmented-control": <SegmentedControl />,
+  combobox: <Combobox />,
+  "date-range-picker": <DateRangePicker />,
+  "file-dropzone": <FileDropzone />,
 }
 
 /**
@@ -285,5 +303,15 @@ export const CARD_DEMOS: Record<string, ReactNode> = {
   "frost-spoiler": <FrostSpoiler compact />,
   "wetting-reveal": <WettingReveal compact />,
   "moire-scratch": <MoireScratch compact />,
+
+  /* The catalog-expansion scene and components, each in its own card variant —
+     same component as the stage above with `compact` set, so the card is authored
+     for the box rather than a scaled crop of the full stage. */
+  "ripple-tank": <RippleTank compact />,
+  "command-palette": <CommandPalette compact />,
+  "segmented-control": <SegmentedControl compact />,
+  combobox: <Combobox compact />,
+  "date-range-picker": <DateRangePicker compact />,
+  "file-dropzone": <FileDropzone compact />,
 }
 

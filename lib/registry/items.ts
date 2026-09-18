@@ -808,6 +808,117 @@ export const ITEMS: RegistryItem[] = [
     previewHeight: 528,
   },
 
+  /* The catalog-expansion round: a shallow-water ripple tank, a canvas on
+     `use-canvas-scene` integrating its wave equation at a fixed step, with a
+     `compact` card variant in `CARD_DEMOS`. */
+  {
+    name: "ripple-tank",
+    title: "Ripple Tank",
+    kind: "animations",
+    description:
+      "A shallow-water surface solved on a grid: drips fall on a clock, their rings interfere, and the wake reflects off the walls of the tank instead of fading out. Click to drop your own.",
+    categories: ["backgrounds", "particles"],
+    author: AUTHORS.artbloom,
+    files: [
+      { source: "animations/ripple-tank.tsx", target: "components/ui/ripple-tank.tsx", type: "registry:ui" },
+      { source: "hooks/use-canvas-scene.ts", target: "hooks/use-canvas-scene.ts", type: "registry:hook" },
+    ],
+    createdAt: "2026-09-18",
+    featured: true,
+    isNew: true,
+    previewDark: true,
+    previewHeight: 320,
+  },
+
+  // ── Components ───────────────────────────────────────────────────────────
+  // Interactive UI primitives, mounted like animations rather than framed. Each
+  // is a single self-contained file with a `compact` card variant in `CARD_DEMOS`.
+  {
+    name: "command-palette",
+    title: "Command Palette",
+    kind: "components",
+    description:
+      "A ⌘K command menu with fuzzy search, grouped results, full keyboard navigation and a recent-commands memory. One file, keyboard-first, accessible.",
+    categories: ["command"],
+    author: AUTHORS.artbloom,
+    files: [
+      { source: "components/command-palette.tsx", target: "components/ui/command-palette.tsx", type: "registry:ui" },
+      { source: "lib/utils.ts", target: "lib/utils.ts", type: "registry:lib" },
+    ],
+    createdAt: "2026-09-18",
+    featured: true,
+    isNew: true,
+    // The open palette is ~410px tall (header + a 320px scroll list + footer). At
+    // 360 the frame cropped the search row and the last result; 470 seats the whole
+    // dialog with a little air top and bottom.
+    previewHeight: 470,
+  },
+  {
+    name: "segmented-control",
+    title: "Segmented Control",
+    kind: "components",
+    description:
+      "An iOS-style segmented control with a sliding indicator that tracks the active segment, full keyboard support and roving focus. One file, no dependencies.",
+    categories: ["inputs"],
+    author: AUTHORS.artbloom,
+    files: [
+      { source: "components/segmented-control.tsx", target: "components/ui/segmented-control.tsx", type: "registry:ui" },
+    ],
+    createdAt: "2026-09-18",
+    isNew: true,
+    // The two stacked controls are only ~150px tall; 280 floated them in a dark
+    // void. 220 wraps them with even margins so the card reads as full.
+    previewHeight: 220,
+  },
+  {
+    name: "combobox",
+    title: "Combobox",
+    kind: "components",
+    description:
+      "An autocomplete combobox with filtering, keyboard navigation and an ARIA listbox. Self-contained — its own class-merge helper, no external dependencies.",
+    categories: ["inputs", "pickers"],
+    author: AUTHORS.artbloom,
+    files: [
+      { source: "components/combobox.tsx", target: "components/ui/combobox.tsx", type: "registry:ui" },
+    ],
+    createdAt: "2026-09-18",
+    featured: true,
+    isNew: true,
+    previewHeight: 360,
+  },
+  {
+    name: "date-range-picker",
+    title: "Date Range Picker",
+    kind: "components",
+    description:
+      "A two-month calendar for picking a start and end date, with hover previews across the range, keyboard navigation and month paging. One file.",
+    categories: ["pickers"],
+    author: AUTHORS.artbloom,
+    files: [
+      { source: "components/date-range-picker.tsx", target: "components/ui/date-range-picker.tsx", type: "registry:ui" },
+      { source: "lib/utils.ts", target: "lib/utils.ts", type: "registry:lib" },
+    ],
+    createdAt: "2026-09-18",
+    featured: true,
+    isNew: true,
+    previewHeight: 420,
+  },
+  {
+    name: "file-dropzone",
+    title: "File Dropzone",
+    kind: "components",
+    description:
+      "A drag-and-drop upload zone with a real drag state, file-type and size validation, per-file progress and previews. Self-contained, keyboard-accessible.",
+    categories: ["upload"],
+    author: AUTHORS.artbloom,
+    files: [
+      { source: "components/file-dropzone.tsx", target: "components/ui/file-dropzone.tsx", type: "registry:ui" },
+    ],
+    createdAt: "2026-09-18",
+    isNew: true,
+    previewHeight: 400,
+  },
+
   // ── Templates ────────────────────────────────────────────────────────────
   {
     name: "cinematic-supercar",
@@ -1291,6 +1402,121 @@ export const ITEMS: RegistryItem[] = [
     featured: true,
     isNew: true,
     previewDark: true,
+    previewHeight: 420,
+  },
+
+  // ── Blocks ─────────────────────────────────────────────────────────────────
+  // Each block is one self-contained section: a single Tailwind file with a
+  // default export, no `@/` imports, no external deps, no image assets (avatars
+  // are initials, logos and icons are inline SVG). It installs as one file and
+  // renders framed through /preview/<name>, same route as a template.
+  {
+    name: "pricing-tiers",
+    title: "Pricing Tiers",
+    kind: "blocks",
+    description:
+      "Three-column pricing with a highlighted Pro plan, per-plan feature lists and a checkmark for each line. One file, no dependencies.",
+    categories: ["pricing"],
+    author: AUTHORS.artbloom,
+    files: [
+      { source: "blocks/pricing-tiers/pricing-tiers.tsx", target: "components/blocks/pricing-tiers.tsx", type: "registry:block" },
+    ],
+    createdAt: "2026-09-19",
+    featured: true,
+    isNew: true,
+    previewHeight: 420,
+  },
+  {
+    name: "testimonials",
+    title: "Testimonials",
+    kind: "blocks",
+    description:
+      "A responsive grid of quote cards with star ratings and initials avatars. Server component, no images, no dependencies.",
+    categories: ["testimonials"],
+    author: AUTHORS.artbloom,
+    files: [
+      { source: "blocks/testimonials/testimonials.tsx", target: "components/blocks/testimonials.tsx", type: "registry:block" },
+    ],
+    createdAt: "2026-09-19",
+    featured: true,
+    isNew: true,
+    previewHeight: 420,
+  },
+  {
+    name: "cta-banner",
+    title: "CTA Banner",
+    kind: "blocks",
+    description:
+      "A gradient call-to-action panel with a headline, subcopy and two buttons over soft blurred glows. Static markup, one file.",
+    categories: ["cta"],
+    author: AUTHORS.artbloom,
+    files: [
+      { source: "blocks/cta-banner/cta-banner.tsx", target: "components/blocks/cta-banner.tsx", type: "registry:block" },
+    ],
+    createdAt: "2026-09-19",
+    isNew: true,
+    previewHeight: 320,
+  },
+  {
+    name: "faq",
+    title: "FAQ Accordion",
+    kind: "blocks",
+    description:
+      "An accessible FAQ built on native details/summary — expands with zero JavaScript, keyboard-operable, one item open by default.",
+    categories: ["faq"],
+    author: AUTHORS.artbloom,
+    files: [
+      { source: "blocks/faq/faq.tsx", target: "components/blocks/faq.tsx", type: "registry:block" },
+    ],
+    createdAt: "2026-09-19",
+    featured: true,
+    isNew: true,
+    previewHeight: 420,
+  },
+  {
+    name: "logo-cloud",
+    title: "Logo Cloud",
+    kind: "blocks",
+    description:
+      "A row of customer wordmarks drawn as inline SVG, so the block ships with no image assets. Responsive from two columns to six.",
+    categories: ["logos"],
+    author: AUTHORS.artbloom,
+    files: [
+      { source: "blocks/logo-cloud/logo-cloud.tsx", target: "components/blocks/logo-cloud.tsx", type: "registry:block" },
+    ],
+    createdAt: "2026-09-19",
+    isNew: true,
+    previewHeight: 260,
+  },
+  {
+    name: "team-grid",
+    title: "Team Grid",
+    kind: "blocks",
+    description:
+      "A team section with initials avatars, names, roles and short bios in a four-up responsive grid. Server component, no images.",
+    categories: ["team"],
+    author: AUTHORS.artbloom,
+    files: [
+      { source: "blocks/team-grid/team-grid.tsx", target: "components/blocks/team-grid.tsx", type: "registry:block" },
+    ],
+    createdAt: "2026-09-19",
+    isNew: true,
+    previewHeight: 420,
+  },
+  {
+    name: "contact-form",
+    title: "Contact Form",
+    kind: "blocks",
+    description:
+      "A two-column contact section: labelled, accessible form fields beside contact details with inline SVG icons. One file, no deps.",
+    categories: ["contact"],
+    author: AUTHORS.artbloom,
+    files: [
+      { source: "blocks/contact-form/contact-form.tsx", target: "components/blocks/contact-form.tsx", type: "registry:block" },
+    ],
+    createdAt: "2026-09-19",
+    featured: true,
+    isNew: true,
     previewHeight: 420,
   },
 ]
