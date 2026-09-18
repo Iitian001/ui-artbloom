@@ -1,0 +1,37 @@
+# CodeRabbit configuration — https://docs.coderabbit.ai/guides/configure-coderabbit
+# Free for public repositories. Reviews every pull request automatically.
+language: "en-US"
+early_access: false
+reviews:
+  profile: "chill"
+  request_changes_workflow: false
+  high_level_summary: true
+  poem: false
+  review_status: true
+  collapse_walkthrough: false
+  auto_review:
+    enabled: true
+    drafts: false
+    base_branches:
+      - "main"
+  path_filters:
+    # Skip generated output, dependencies, and local scratch work.
+    - "!**/dist/**"
+    - "!**/.next/**"
+    - "!**/node_modules/**"
+    - "!lab/**"
+    - "!app/(bare)/lab/**"
+  path_instructions:
+    - path: "registry/**"
+      instructions: >
+        These are published, copy-paste UI items. Favor small, typed,
+        dependency-light code. Flag any hard-coded brand strings (the name,
+        domain, or npm package belong in brand.json), and flag bundled
+        third-party assets whose license may forbid redistribution.
+    - path: "cli/**"
+      instructions: >
+        This is the published npm CLI. Watch for unsafe filesystem writes,
+        unvalidated registry input, and anything that would break on Windows
+        (path separators, dotted bin names).
+chat:
+  auto_reply: true

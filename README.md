@@ -1,8 +1,12 @@
 # ui.artbloom
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![PRs welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 [![Deploys by Netlify](https://www.netlify.com/img/global/badges/netlify-color-accent.svg)](https://www.netlify.com)
 
 The living library of interfaces — production-ready React templates and animations, browsable on the web and installable with one command.
+
+**[Browse the library →](https://ui.artbloom.tech)**
 
 Two things live in this repo:
 
@@ -73,7 +77,7 @@ npx ui.artbloom info cinematic-supercar
 
 ## Deploy
 
-The site is a stock Next.js app on Vercel. `next build` prerenders the whole catalog plus every registry payload and asset route.
+The site is a stock Next.js app — `next build` prerenders the whole catalog plus every registry payload and asset route, so it runs on any host that supports Next.js. The live deployment is on [Netlify](https://www.netlify.com).
 
 ## License
 

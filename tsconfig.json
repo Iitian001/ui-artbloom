@@ -45,6 +45,8 @@
   ],
   "exclude": [
     "node_modules",
-    "cli"
+    "cli",
+    "lab",
+    "app/(bare)/lab"
   ]
 }

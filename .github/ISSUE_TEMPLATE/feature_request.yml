@@ -1,0 +1,40 @@
+name: Feature request or new item
+description: Suggest an improvement, or propose a new template or animation.
+title: "[Idea]: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Ideas are welcome — new animations, new templates, or improvements to the site
+        and CLI.
+  - type: dropdown
+    id: kind
+    attributes:
+      label: What are you proposing?
+      options:
+        - A new animation
+        - A new template
+        - An improvement to the site
+        - An improvement to the CLI
+        - Something else
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem does this solve, or what's the idea?
+      description: What would you use it for? What's missing today?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: What should it look like or do?
+      description: A description, a link to a reference, or a rough sketch all help.
+  - type: checkboxes
+    id: contribute
+    attributes:
+      label: Would you want to build it?
+      options:
+        - label: I'd be interested in opening a pull request for this.

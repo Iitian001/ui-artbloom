@@ -1,0 +1,57 @@
+name: Bug report
+description: Something in the site, an item, or the CLI is broken.
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting a bug. Please fill in what you can — details make it far
+        faster to fix.
+  - type: dropdown
+    id: area
+    attributes:
+      label: Where is the bug?
+      options:
+        - The website (catalog, item page, docs)
+        - A specific registry item (template or animation)
+        - The CLI (ui.artbloom / artbloom)
+        - The registry API (/r/*)
+        - Something else
+    validations:
+      required: true
+  - type: input
+    id: item
+    attributes:
+      label: Item or page affected
+      description: The item name, page URL, or CLI command.
+      placeholder: "e.g. cinematic-supercar, /docs, npx ui.artbloom add chip-pile"
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect to happen?
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: What actually happened?
+      description: Include error messages, console output, or screenshots.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Go to ...
+        2. Run / click ...
+        3. See ...
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: OS, browser or Node version, CLI version. Only relevant ones.
+      placeholder: "e.g. Windows 11, Chrome 140, Node 20.11, ui.artbloom 0.1.1"

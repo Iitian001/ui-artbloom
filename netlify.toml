@@ -1,0 +1,11 @@
+# Netlify build configuration for the ui.artbloom site.
+#
+# Next.js runs on Netlify with zero configuration via the official runtime, which
+# auto-detects the build command and manages the publish output itself. Do NOT set
+# `publish = ".next"` or pin the adapter — both break the modern runtime.
+#
+# This file exists only to pin the Node version so local, CI, and Netlify builds
+# all agree.
+
+[build.environment]
+  NODE_VERSION = "20"

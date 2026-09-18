@@ -10,3 +10,8 @@ next-env.d.ts
 .DS_Store
 .vercel
 cli/dist
+
+# Local scratch / research — WIP, not part of the published build.
+# Un-ignore a folder here once its work is ready to ship.
+/lab
+/app/(bare)/lab
