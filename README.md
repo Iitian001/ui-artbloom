@@ -1,5 +1,6 @@
 # ui.artbloom
 
+[![CI](https://github.com/Iitian001/ui-artbloom/actions/workflows/ci.yml/badge.svg)](https://github.com/Iitian001/ui-artbloom/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![PRs welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 [![Deploys by Netlify](https://www.netlify.com/img/global/badges/netlify-color-accent.svg)](https://www.netlify.com)
