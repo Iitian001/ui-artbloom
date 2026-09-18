@@ -1093,5 +1093,205 @@ export const ITEMS: RegistryItem[] = [
     previewDark: true,
     previewHeight: 420,
   },
+  {
+    name: "daylight",
+    title: "Daylight",
+    kind: "templates",
+    description:
+      "A calm, light one-page engineer portfolio: an airy hero, a quick-facts strip, an about section with a workspace photo, grouped skills, selected work, an experience timeline and a contact close. Every word lives in one content file, and the headshot ships background-free so it sits on any page colour.",
+    categories: ["portfolio", "personal", "resume"],
+    author: AUTHORS.artbloom,
+    // A whole site, not a page. Everything lands under one folder so it cannot
+    // collide with the consumer's own routes; `BASE` in data/content.ts is the
+    // single string to change if they want it somewhere else.
+    files: [
+      {
+        source: "templates/daylight/layout.tsx",
+        target: "app/daylight/layout.tsx",
+        type: "registry:page",
+      },
+      {
+        source: "templates/daylight/daylight.css",
+        target: "app/daylight/daylight.css",
+        type: "registry:style",
+      },
+      {
+        source: "templates/daylight/page.tsx",
+        target: "app/daylight/page.tsx",
+        type: "registry:page",
+      },
+      {
+        // Every string on the site. Re-voicing it for another person is this
+        // file and the palette at the top of the stylesheet, nothing else.
+        source: "templates/daylight/data/content.ts",
+        target: "app/daylight/data/content.ts",
+        type: "registry:lib",
+      },
+      {
+        source: "templates/daylight/components/site-header.tsx",
+        target: "app/daylight/components/site-header.tsx",
+        type: "registry:component",
+      },
+      {
+        source: "templates/daylight/components/site-footer.tsx",
+        target: "app/daylight/components/site-footer.tsx",
+        type: "registry:component",
+      },
+      {
+        source: "templates/daylight/components/reveal.tsx",
+        target: "app/daylight/components/reveal.tsx",
+        type: "registry:component",
+      },
+    ],
+    // The headshot and the workspace photo. A PNG cannot be inlined as text in
+    // the payload, so these stream as bytes into `public/`, which is what makes
+    // the `/daylight/<file>` URLs in the pages resolve.
+    assets: [
+      { source: "templates/daylight/assets/portrait.png", target: "public/daylight/portrait.png" },
+      { source: "templates/daylight/assets/workspace.png", target: "public/daylight/workspace.png" },
+    ],
+    createdAt: "2026-09-18",
+    featured: true,
+    isNew: true,
+    previewHeight: 420,
+  },
+  {
+    name: "graphite",
+    title: "Graphite",
+    kind: "templates",
+    description:
+      "A graphite-and-cream sketchbook portfolio for a design engineer: hand-drawn underlines and margin notes, an editorial about, a pinned selected-work grid and a pencil self-portrait. Every string on the site lives in one content file — swap the palette and the words and it is someone else's.",
+    categories: ["portfolio", "personal"],
+    author: AUTHORS.artbloom,
+    // A whole site, not a page. Everything lands under one folder so it cannot
+    // collide with the consumer's own routes; `BASE` in data/content.ts is the
+    // single string to change if they want it somewhere else.
+    files: [
+      {
+        source: "templates/graphite/layout.tsx",
+        target: "app/graphite/layout.tsx",
+        type: "registry:page",
+      },
+      {
+        source: "templates/graphite/graphite.css",
+        target: "app/graphite/graphite.css",
+        type: "registry:style",
+      },
+      {
+        source: "templates/graphite/page.tsx",
+        target: "app/graphite/page.tsx",
+        type: "registry:page",
+      },
+      {
+        source: "templates/graphite/data/content.ts",
+        target: "app/graphite/data/content.ts",
+        type: "registry:lib",
+      },
+      {
+        source: "templates/graphite/components/site-header.tsx",
+        target: "app/graphite/components/site-header.tsx",
+        type: "registry:component",
+      },
+      {
+        source: "templates/graphite/components/site-footer.tsx",
+        target: "app/graphite/components/site-footer.tsx",
+        type: "registry:component",
+      },
+      {
+        source: "templates/graphite/components/reveal.tsx",
+        target: "app/graphite/components/reveal.tsx",
+        type: "registry:component",
+      },
+      {
+        // The hand-drawn underlines, circles and margin scribbles, all SVG.
+        source: "templates/graphite/components/sketch-marks.tsx",
+        target: "app/graphite/components/sketch-marks.tsx",
+        type: "registry:component",
+      },
+    ],
+    // The pencil self-portrait. A PNG cannot be inlined as text in the payload,
+    // so it streams as bytes into `public/`, which is what makes the
+    // `/graphite/portrait.png` URL in the hero resolve.
+    assets: [
+      { source: "templates/graphite/assets/portrait.png", target: "public/graphite/portrait.png" },
+    ],
+    createdAt: "2026-09-18",
+    featured: true,
+    isNew: true,
+    previewHeight: 420,
+  },
+  {
+    name: "street-code",
+    title: "Street Code",
+    kind: "templates",
+    description:
+      "A loud, brutalist one-page developer portfolio: hard black edges, hand-drawn scribbles, a scrolling slogan marquee and a background-free portrait against the dark. Every word lives in one content file; swap the palette and the copy and it is someone else's site.",
+    categories: ["portfolio", "personal"],
+    author: AUTHORS.artbloom,
+    // A whole site, not a page. Everything lands under one folder so it cannot
+    // collide with the consumer's own routes; `BASE` in data/content.ts is the
+    // single string to change if they want it somewhere else.
+    files: [
+      {
+        source: "templates/street-code/layout.tsx",
+        target: "app/street-code/layout.tsx",
+        type: "registry:page",
+      },
+      {
+        source: "templates/street-code/street-code.css",
+        target: "app/street-code/street-code.css",
+        type: "registry:style",
+      },
+      {
+        source: "templates/street-code/page.tsx",
+        target: "app/street-code/page.tsx",
+        type: "registry:page",
+      },
+      {
+        // Every string on the site. Re-voicing it for another dev is this file
+        // and the palette at the top of the stylesheet, nothing else.
+        source: "templates/street-code/data/content.ts",
+        target: "app/street-code/data/content.ts",
+        type: "registry:lib",
+      },
+      {
+        source: "templates/street-code/components/site-header.tsx",
+        target: "app/street-code/components/site-header.tsx",
+        type: "registry:component",
+      },
+      {
+        source: "templates/street-code/components/site-footer.tsx",
+        target: "app/street-code/components/site-footer.tsx",
+        type: "registry:component",
+      },
+      {
+        source: "templates/street-code/components/reveal.tsx",
+        target: "app/street-code/components/reveal.tsx",
+        type: "registry:component",
+      },
+      {
+        source: "templates/street-code/components/ticker.tsx",
+        target: "app/street-code/components/ticker.tsx",
+        type: "registry:component",
+      },
+      {
+        // The hand-drawn scribble loops and arrows, all SVG.
+        source: "templates/street-code/components/doodles.tsx",
+        target: "app/street-code/components/doodles.tsx",
+        type: "registry:component",
+      },
+    ],
+    // The background-free portrait. A PNG cannot be inlined as text in the
+    // payload, so it streams as bytes into `public/`, which is what makes the
+    // `/street-code/portrait.png` URL in the hero resolve.
+    assets: [
+      { source: "templates/street-code/assets/portrait.png", target: "public/street-code/portrait.png" },
+    ],
+    createdAt: "2026-09-18",
+    featured: true,
+    isNew: true,
+    previewDark: true,
+    previewHeight: 420,
+  },
 ]
 
