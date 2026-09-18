@@ -1,5 +1,5 @@
 /**
- * The browse taxonomy. Two groups, each rendered as a column in the command
+ * The browse taxonomy. Three groups, each rendered as a column in the command
  * panel and as its own catalog route. Counts are never written here — they are
  * derived from the registry in `lib/registry/index.ts`, so a category cannot
  * advertise items that do not exist.
@@ -12,16 +12,18 @@
  */
 
 /**
- * Two kinds, and that is the whole catalogue. `components` used to sit in this
- * union as a promise, which meant `RegistryItem.kind`, the published schema at
- * /schema/registry-item.json and the landing hero all named a kind nothing could
- * ever be — so it is gone from all four places together.
+ * Four kinds, and that is the whole catalogue. Each entered this union in the
+ * same change that added its first item to `ITEMS` — `blocks` did, and now
+ * `components` does too (the five interactive primitives: a command palette, a
+ * segmented control, a combobox, a date-range picker and a file dropzone). The
+ * rule is symmetric: a kind is admitted only with something to fill it, and it
+ * would leave in the change that removed its last item.
  *
- * Nothing about routing changed with it: `isBrowsableKind` is
- * `isKind(value) && kindCount(value) > 0`, so `/community/components` 404s on
- * the count, exactly as it did while the union still admitted the word.
+ * Routing follows the count, not the union: `isBrowsableKind` is
+ * `isKind(value) && kindCount(value) > 0`, so a kind with no items 404s on the
+ * count regardless of whether the word is spelled here.
  */
-export type Kind = "templates" | "animations"
+export type Kind = "templates" | "animations" | "blocks" | "components"
 
 export type Category = {
   /** URL segment under /community/{kind}/s/{slug} */
@@ -48,6 +50,10 @@ export const TEMPLATE_CATEGORIES: Category[] = [
   c("templates", "Agencies", "agency"),
   c("templates", "Personal Sites", "personal"),
   c("templates", "Resumes", "resume"),
+  c("templates", "Restaurants", "restaurant"),
+  c("templates", "Editorial", "editorial"),
+  c("templates", "Events", "events"),
+  c("templates", "Experiences", "experiences"),
   // No "E-commerce" / `store` slug here on purpose. The four footwear sites that
   // claimed it were cut, so nothing in `ITEMS` claims it — and listing it anyway
   // would pre-render /community/templates/s/store as an empty "coming soon" page,
@@ -75,12 +81,41 @@ export const ANIMATION_CATEGORIES: Category[] = [
   c("animations", "Noise & Grain", "noise"),
 ]
 
+export const BLOCK_CATEGORIES: Category[] = [
+  c("blocks", "Pricing", "pricing"),
+  c("blocks", "Testimonials", "testimonials"),
+  c("blocks", "Call to Action", "cta"),
+  c("blocks", "FAQ", "faq"),
+  c("blocks", "Logo Clouds", "logos"),
+  c("blocks", "Team", "team"),
+  c("blocks", "Contact", "contact"),
+]
+
+export const COMPONENT_CATEGORIES: Category[] = [
+  c("components", "Command Menus", "command"),
+  c("components", "Inputs", "inputs"),
+  c("components", "Pickers", "pickers"),
+  c("components", "Upload", "upload"),
+]
+
 export const CATEGORY_GROUPS: CategoryGroup[] = [
   {
     kind: "templates",
     label: "Templates",
     blurb: "Complete, deployable sites — every page, every asset.",
     categories: TEMPLATE_CATEGORIES,
+  },
+  {
+    kind: "blocks",
+    label: "Blocks",
+    blurb: "Self-contained page sections — one file, paste and ship.",
+    categories: BLOCK_CATEGORIES,
+  },
+  {
+    kind: "components",
+    label: "Components",
+    blurb: "Interactive UI primitives — command menus, pickers, inputs.",
+    categories: COMPONENT_CATEGORIES,
   },
   {
     kind: "animations",
@@ -94,12 +129,16 @@ export const ALL_CATEGORIES: Category[] = CATEGORY_GROUPS.flatMap((g) => g.categ
 
 export const KIND_LABEL: Record<Kind, string> = {
   templates: "Templates",
+  blocks: "Blocks",
+  components: "Components",
   animations: "Animations",
 }
 
 /** Singular, for detail-page breadcrumbs. */
 export const KIND_SINGULAR: Record<Kind, string> = {
   templates: "Template",
+  blocks: "Block",
+  components: "Component",
   animations: "Animation",
 }
 
@@ -112,5 +151,10 @@ export function categoryLabel(kind: Kind, slug: string) {
 }
 
 export function isKind(value: string): value is Kind {
-  return value === "templates" || value === "animations"
+  return (
+    value === "templates" ||
+    value === "animations" ||
+    value === "blocks" ||
+    value === "components"
+  )
 }
