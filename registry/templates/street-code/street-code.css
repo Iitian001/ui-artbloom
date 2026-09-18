@@ -1,0 +1,1080 @@
+/*
+ * street-code — a dark, loud, spray-paint developer portfolio.
+ *
+ * Nothing here can leak. Every class carries an `sc` prefix and every bare-element
+ * rule is scoped under `.scSite`, so the whole sheet is inert outside its own
+ * wrapper. A template that ships `.hero` or `.card` into a consumer's globals is a
+ * collision waiting to happen; a prefix plus one wrapper makes that impossible.
+ *
+ * The theme is carried by three things, in order of importance:
+ *   1. The hand-drawn marker doodles (see components/doodles.tsx) — the crown, the
+ *      loop around a word, the underlines that draw themselves in.
+ *   2. One electric green accent, used like spray paint and almost nowhere else.
+ *   3. Heavy, oversized, tight-tracked display type in caps.
+ * Everything below serves those three. The palette and the display scale are at
+ * the top; nothing further down hard-codes a value that is a variable up here.
+ */
+.scSite {
+  /* Palette — near-black, off-white, and one acid green. Pink is the rare second marker. */
+  --bg: #0a0a0a;
+  --bg-lift: #141414;
+  --bg-card: #161616;
+  --ink: #f2f2ef;
+  --ink-dim: rgba(242, 242, 239, 0.66);
+  --ink-faint: rgba(242, 242, 239, 0.4);
+  --line: rgba(242, 242, 239, 0.14);
+  --line-strong: rgba(242, 242, 239, 0.9);
+  --accent: #39ff14;
+  --accent-soft: #4ade80;
+  --marker: #ff2d78;
+
+  /* Display scale. Viewport units make the headline monumental on desktop and
+     still legible on a phone; the clamp stops it doing either badly. */
+  --display: clamp(3.4rem, 15vw, 12rem);
+  --heading: clamp(1.9rem, 4.6vw, 3.6rem);
+  --body: clamp(1rem, 1.1vw, 1.15rem);
+
+  --gutter: clamp(1.25rem, 4.5vw, 5.5rem);
+  --section: clamp(4.5rem, 11vh, 9rem);
+  --measure: 40rem;
+
+  /* Heavy grotesque for display; Impact/Arial Black give the sprayed-stencil weight.
+     Body and labels ride the app's loaded fonts so the template needs none of its own. */
+  --font-display: "Helvetica Neue", "Arial Narrow", "Arial Black", Impact, sans-serif;
+  --font-body: var(--font-inter, ui-sans-serif, system-ui, "Segoe UI", Arial, sans-serif);
+  --font-mono: var(--font-jetbrains, ui-monospace, "SFMono-Regular", "Cascadia Mono", monospace);
+
+  position: relative;
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: var(--body);
+  line-height: 1.6;
+  isolation: isolate;
+  overflow-x: hidden;
+}
+
+.scSite *,
+.scSite *::before,
+.scSite *::after { box-sizing: border-box; }
+
+/*
+ * The grain. A tiled SVG turbulence sits over the whole page at low opacity in
+ * overlay blend — it is what stops the flat black reading as a plain dark theme
+ * and gives it the texture of a photographed wall. Fixed, so it does not scroll,
+ * and `pointer-events: none` so it never eats a click.
+ */
+.scSite::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.5;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Everything the page renders sits above the grain. */
+.scSite > * { position: relative; z-index: 2; }
+
+/*
+ * `:where()` contributes no specificity, so this reset never beats a later class
+ * rule — a green button will not inherit a link colour, for instance.
+ */
+.scSite :where(a) { color: inherit; text-decoration: none; }
+.scSite :where(button, input, textarea, select) { font: inherit; color: inherit; }
+.scSite :where(ul, ol) { margin: 0; padding: 0; list-style: none; }
+.scSite ::selection { background: var(--accent); color: #000; }
+
+.scSite :focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 3px;
+}
+
+/* --------------------------------------------------------------- primitives */
+
+.scWrap {
+  width: 100%;
+  max-width: 84rem;
+  margin: 0 auto;
+  padding-inline: var(--gutter);
+}
+
+.scSection { padding-block: var(--section); }
+
+/* Wide-tracked micro-label, marked with a green tick. Used for every eyebrow. */
+.scLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.scLabel::before {
+  content: "";
+  width: 1.6rem;
+  height: 2px;
+  background: var(--accent);
+}
+
+.scLede {
+  max-width: var(--measure);
+  margin: 0;
+  font-size: clamp(1.1rem, 1.7vw, 1.5rem);
+  line-height: 1.5;
+  color: var(--ink-dim);
+  text-wrap: pretty;
+}
+
+/* Big section headings. Heavy, tight, and set in caps like a stencil. */
+.scHeading {
+  position: relative;
+  margin: 0;
+  max-width: 20ch;
+  font-family: var(--font-display);
+  font-size: var(--heading);
+  font-weight: 900;
+  line-height: 0.98;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  text-wrap: balance;
+}
+
+.scSectionHead { margin-bottom: clamp(2.5rem, 6vw, 4rem); }
+.scSectionHead .scLabel { margin-bottom: 1.25rem; }
+
+/* ------------------------------------------------------------------ buttons */
+
+/*
+ * Street-poster buttons: a heavy border and a hard offset shadow, no blur. On
+ * hover the whole button lunges into its own shadow, so it reads as pressed —
+ * kinetic, not decorative.
+ */
+.scBtn {
+  --shadow: var(--accent);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.9rem 1.6rem;
+  border: 2px solid var(--ink);
+  background: transparent;
+  color: var(--ink);
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  box-shadow: 5px 5px 0 var(--shadow);
+  transition: transform 0.12s ease, box-shadow 0.12s ease, background-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.scBtn:hover {
+  transform: translate(3px, 3px);
+  box-shadow: 2px 2px 0 var(--shadow);
+}
+
+.scBtn:active {
+  transform: translate(5px, 5px);
+  box-shadow: 0 0 0 var(--shadow);
+}
+
+.scBtnSolid {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #000;
+  --shadow: var(--ink);
+}
+
+.scBtnSolid:hover { background: var(--accent-soft); border-color: var(--accent-soft); }
+
+.scBtnBig {
+  padding: 1.15rem 2.2rem;
+  font-size: 0.95rem;
+}
+
+.scBtnArrow {
+  display: inline-block;
+  transition: transform 0.2s ease;
+}
+
+.scBtn:hover .scBtnArrow { transform: translateX(4px); }
+
+/* ------------------------------------------------------------------- header */
+
+.scHeader {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  background: color-mix(in oklab, var(--bg) 84%, transparent);
+  backdrop-filter: blur(12px) saturate(130%);
+  border-bottom: 2px solid var(--ink);
+}
+
+.scHeaderRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  height: 4.25rem;
+}
+
+.scBrand {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.7rem;
+}
+
+/* The tag, sprayed green with a marker underline scored beneath it. */
+.scBrandTag {
+  position: relative;
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  color: var(--accent);
+  text-transform: uppercase;
+}
+
+.scBrandTag::after {
+  content: "";
+  position: absolute;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  height: 3px;
+  background: var(--accent);
+  transform: skewX(-12deg);
+}
+
+.scBrandHandle {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  color: var(--ink-faint);
+}
+
+.scNav {
+  display: none;
+  align-items: center;
+  gap: 1.9rem;
+}
+
+.scNavLink {
+  position: relative;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  transition: color 0.2s ease;
+}
+
+.scNavLink:hover { color: var(--ink); }
+
+/* The marker underline grows from the left on hover. */
+.scNavLink::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -0.4rem;
+  width: 100%;
+  height: 2px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.scNavLink:hover::after { transform: scaleX(1); }
+
+.scNavCta {
+  padding: 0.5rem 1rem;
+  border: 2px solid var(--accent);
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--accent);
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.scNavCta:hover { background: var(--accent); color: #000; }
+
+/* Mobile menu: a native <details>. No state, works without hydration. */
+.scMenu { position: relative; }
+
+.scMenuSummary {
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 2.75rem;
+  height: 2.5rem;
+  padding: 0 0.6rem;
+  border: 2px solid var(--ink);
+  cursor: pointer;
+  list-style: none;
+}
+
+.scMenuSummary::-webkit-details-marker { display: none; }
+.scMenuBar { display: block; height: 2px; background: var(--ink); }
+.scMenu[open] .scMenuSummary { border-color: var(--accent); }
+.scMenu[open] .scMenuBar { background: var(--accent); }
+
+.scMenuPanel {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 0.7rem);
+  z-index: 50;
+  display: grid;
+  gap: 0.25rem;
+  min-width: 12rem;
+  padding: 0.6rem;
+  border: 2px solid var(--ink);
+  background: var(--bg-lift);
+  box-shadow: 6px 6px 0 var(--accent);
+}
+
+.scMenuLink {
+  padding: 0.65rem 0.75rem;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+}
+
+.scMenuLink:hover { background: rgba(242, 242, 239, 0.06); color: var(--ink); }
+.scMenuLinkCta { color: var(--accent); }
+
+@media (min-width: 56rem) {
+  .scNav { display: flex; }
+  .scMenu { display: none; }
+  .scHeaderRow { height: 5rem; }
+}
+
+/* --------------------------------------------------------------------- hero */
+
+.scHero {
+  display: grid;
+  gap: clamp(2.5rem, 6vw, 4rem);
+  padding-top: clamp(2.5rem, 7vh, 5rem);
+  padding-bottom: clamp(2.5rem, 6vh, 4rem);
+  align-items: center;
+}
+
+/* A soft green haze behind the hero, so the portrait does not float on flat black. */
+.scHero::before {
+  content: "";
+  position: absolute;
+  top: -10%;
+  right: -5%;
+  width: 42rem;
+  height: 42rem;
+  max-width: 90vw;
+  z-index: -1;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(57, 255, 20, 0.16), transparent 62%);
+  filter: blur(30px);
+  pointer-events: none;
+}
+
+.scHeroCopy {
+  display: grid;
+  gap: clamp(1.5rem, 3vw, 2.25rem);
+  align-content: start;
+}
+
+.scKicker {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+/*
+ * The headline. One hard word per line, transformed taller than it is wide for
+ * the condensed, spray-stencil look — `scaleY` rather than a variable font so no
+ * webfont is needed. `overflow: visible` lets the crown and loop spill out.
+ */
+.scDisplay {
+  position: relative;
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--display);
+  font-weight: 900;
+  line-height: 0.82;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+}
+
+.scDisplayWord {
+  display: block;
+  transform: scaleY(1.14);
+  transform-origin: left top;
+}
+
+/* The circled word is the one the eye lands on — green, with a marker loop. */
+.scDisplayWordMark {
+  position: relative;
+  display: inline-block;
+  color: var(--accent);
+}
+
+/* The crown, sprayed above the first line and tilted like a hand drew it. */
+.scCrown {
+  position: absolute;
+  top: clamp(-2.6rem, -6vw, -4.2rem);
+  left: -0.4rem;
+  width: clamp(3.6rem, 9vw, 6.5rem);
+  height: auto;
+  color: var(--accent);
+  transform: rotate(-8deg);
+  overflow: visible;
+}
+
+/* The loop around the circled word, sized past the glyphs so it reads as a ring. */
+.scWordLoop {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 128%;
+  height: 176%;
+  transform: translate(-50%, -50%) rotate(-3deg);
+  color: var(--marker);
+  overflow: visible;
+  pointer-events: none;
+}
+
+.scHeroActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.9rem;
+  align-items: center;
+}
+
+/* Stats row — mono labels under heavy green numbers, split by hairlines. */
+.scHeroStats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: clamp(1.5rem, 4vw, 3rem);
+  margin: 0.5rem 0 0;
+  padding-top: 1.75rem;
+  border-top: 2px solid var(--line);
+}
+
+.scStat { display: grid; gap: 0.15rem; }
+
+.scStatValue {
+  font-family: var(--font-display);
+  font-size: clamp(1.9rem, 4vw, 2.9rem);
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--accent);
+}
+
+.scStatLabel {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+/* ------------------------------------------------------------ hero portrait */
+
+.scPortrait {
+  position: relative;
+  justify-self: center;
+  width: min(100%, 30rem);
+}
+
+/*
+ * The frame is tilted a couple of degrees, bordered heavy, and throws a hard
+ * green shadow — a poster stapled to a wall, not a headshot. The portrait's own
+ * black background blends into the card, so only the figure shows.
+ */
+.scPortraitFrame {
+  position: relative;
+  border: 3px solid var(--ink);
+  background: #000;
+  box-shadow: 12px 12px 0 var(--accent);
+  transform: rotate(-2deg);
+  overflow: visible;
+}
+
+.scPortraitImg {
+  display: block;
+  width: 100%;
+  height: auto;
+  filter: grayscale(1) contrast(1.15);
+  mix-blend-mode: lighten;
+}
+
+/* A scribbled corner bracket, top-left, overhanging the frame. */
+.scPortraitCorner {
+  position: absolute;
+  top: -1.5rem;
+  left: -1.5rem;
+  width: 5rem;
+  height: 5rem;
+  color: var(--accent);
+  transform: rotate(-6deg);
+}
+
+/* A spark near the shoulder. */
+.scPortraitSpark {
+  position: absolute;
+  right: -1.2rem;
+  top: 22%;
+  width: 2.5rem;
+  height: 2.5rem;
+  color: var(--marker);
+}
+
+/* The "yeah, that's me" note, hand-scrawled and arrowed at the portrait. */
+.scPortraitNote {
+  position: absolute;
+  right: -0.5rem;
+  bottom: -3.5rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.25rem;
+  transform: rotate(-4deg);
+}
+
+.scPortraitNoteText {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  color: var(--ink);
+}
+
+.scPortraitArrow {
+  width: 3.25rem;
+  height: 3rem;
+  color: var(--accent);
+  transform: rotate(6deg) scaleX(-1);
+}
+
+@media (min-width: 60rem) {
+  .scHero { grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr); }
+  .scPortrait { justify-self: end; }
+}
+
+/* ------------------------------------------------------------------ marquee */
+
+/*
+ * The spray-paint ticker. Alternating filled and outlined words give it the
+ * layered-poster look; a green diamond sits between each. The track is doubled in
+ * the component and shifted -50%, so the loop is seamless.
+ */
+.scMarquee {
+  border-block: 3px solid var(--ink);
+  background: var(--bg-lift);
+  padding-block: 1.1rem;
+  overflow: hidden;
+}
+
+.scMarqueeTrack {
+  display: flex;
+  width: max-content;
+  animation: scMarquee 26s linear infinite;
+}
+
+.scMarqueeItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 2.5rem;
+  padding-right: 2.5rem;
+  font-family: var(--font-display);
+  font-size: clamp(1.4rem, 3.4vw, 2.4rem);
+  font-weight: 900;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--ink);
+}
+
+/* Every other phrase is outlined instead of filled — depth without a second colour. */
+.scMarqueeItem:nth-child(even) {
+  color: transparent;
+  -webkit-text-stroke: 1.5px var(--ink);
+}
+
+/* The diamond separator. */
+.scMarqueeItem::after {
+  content: "";
+  width: 0.7rem;
+  height: 0.7rem;
+  background: var(--accent);
+  transform: rotate(45deg);
+  flex-shrink: 0;
+}
+
+@keyframes scMarquee {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(-50%, 0, 0); }
+}
+
+/* -------------------------------------------------------------------- about */
+
+.scAbout { display: grid; gap: clamp(2rem, 5vw, 3.5rem); }
+
+.scAboutHead { display: grid; gap: 1.25rem; align-content: start; }
+
+/* The marker underline under the about heading draws in when it scrolls up. */
+.scHeadingRule {
+  display: block;
+  width: clamp(9rem, 22vw, 15rem);
+  height: auto;
+  margin-top: 0.6rem;
+  color: var(--accent);
+  overflow: visible;
+}
+
+.scAboutBody { display: grid; gap: 1.4rem; }
+
+.scAboutBody p {
+  margin: 0;
+  max-width: var(--measure);
+  font-size: clamp(1.05rem, 1.4vw, 1.28rem);
+  line-height: 1.6;
+  color: var(--ink-dim);
+  text-wrap: pretty;
+}
+
+/* The opener carries the voice; make it read louder than the rest. */
+.scAboutBody p:first-child {
+  color: var(--ink);
+  font-size: clamp(1.2rem, 1.9vw, 1.6rem);
+  line-height: 1.45;
+}
+
+.scAboutSign {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 1.5rem;
+  letter-spacing: 0.02em;
+  color: var(--accent);
+  text-transform: uppercase;
+}
+
+@media (min-width: 60rem) {
+  .scAbout { grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); align-items: start; }
+}
+
+/* ----------------------------------------------------------------- projects */
+
+.scCards {
+  display: grid;
+  gap: clamp(1.5rem, 3vw, 2.25rem);
+}
+
+/*
+ * Each project is a street poster: heavy ink border, hard green offset shadow,
+ * lifted background. On hover it jumps up-left into a bigger pink shadow — the
+ * one place the second marker colour earns its keep.
+ */
+.scCard {
+  display: grid;
+  gap: 1.1rem;
+  align-content: start;
+  padding: clamp(1.5rem, 3vw, 2.25rem);
+  border: 3px solid var(--ink);
+  background: var(--bg-card);
+  box-shadow: 8px 8px 0 var(--accent);
+  transition: transform 0.16s ease, box-shadow 0.16s ease;
+}
+
+.scCard:hover,
+.scCard:focus-within {
+  transform: translate(-4px, -4px);
+  box-shadow: 14px 14px 0 var(--marker);
+}
+
+.scCardTop {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.scCardIndex {
+  font-family: var(--font-display);
+  font-size: clamp(2.4rem, 5vw, 3.6rem);
+  font-weight: 900;
+  line-height: 0.8;
+  letter-spacing: -0.04em;
+  color: transparent;
+  -webkit-text-stroke: 2px var(--accent);
+}
+
+.scCardYear {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.1em;
+  color: var(--ink-faint);
+}
+
+.scCardTitle {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 3.4vw, 2.6rem);
+  font-weight: 900;
+  line-height: 0.95;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+}
+
+.scCardBlurb {
+  margin: 0;
+  color: var(--ink-dim);
+  line-height: 1.55;
+  text-wrap: pretty;
+}
+
+.scTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.scTag {
+  padding: 0.3rem 0.7rem;
+  border: 1.5px solid var(--line-strong);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+
+.scCardLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  justify-self: start;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+  border-bottom: 2px solid transparent;
+  transition: border-color 0.2s ease;
+}
+
+.scCardLink:hover { border-color: var(--accent); }
+.scCardLink:hover .scBtnArrow { transform: translate(2px, -2px); }
+
+@media (min-width: 48rem) {
+  .scCards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+/* ------------------------------------------------------------------- skills */
+
+.scSkills {
+  display: grid;
+  gap: clamp(1.5rem, 3vw, 2.5rem);
+}
+
+.scSkillGroup {
+  display: grid;
+  gap: 1.1rem;
+  align-content: start;
+  padding-top: 1.5rem;
+  border-top: 3px solid var(--ink);
+}
+
+.scSkillTitle {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.3rem, 2.4vw, 1.75rem);
+  font-weight: 900;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+}
+
+.scSkillSpark {
+  width: 1.15rem;
+  height: 1.15rem;
+  color: var(--accent);
+  flex-shrink: 0;
+}
+
+.scSkillList { display: grid; gap: 0.7rem; }
+
+.scSkillItem {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  font-size: 1.02rem;
+  color: var(--ink-dim);
+}
+
+/* A green spray-tick before each skill. */
+.scSkillItem::before {
+  content: "";
+  width: 0.85rem;
+  height: 2px;
+  background: var(--accent);
+  flex-shrink: 0;
+}
+
+@media (min-width: 52rem) {
+  .scSkills { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+/* ------------------------------------------------------------------ contact */
+
+.scContactSection { padding-bottom: clamp(3rem, 8vw, 6rem); }
+
+.scContact {
+  display: grid;
+  gap: 1.75rem;
+  justify-items: start;
+}
+
+.scContactHeading {
+  position: relative;
+  margin: 0;
+  max-width: 18ch;
+  font-family: var(--font-display);
+  font-size: clamp(2.4rem, 7vw, 5.5rem);
+  font-weight: 900;
+  line-height: 0.94;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+  text-wrap: balance;
+}
+
+.scContactRule { width: clamp(12rem, 32vw, 22rem); }
+
+.scSocials {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.9rem;
+  margin-top: 0.75rem;
+}
+
+.scSocial {
+  display: grid;
+  gap: 0.2rem;
+  padding: 0.9rem 1.2rem;
+  border: 2px solid var(--line);
+  transition: border-color 0.2s ease, transform 0.16s ease;
+}
+
+.scSocial:hover { border-color: var(--accent); transform: translateY(-3px); }
+
+.scSocialLabel {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.scSocialHandle { font-weight: 600; color: var(--ink); }
+
+/* ------------------------------------------------------------------- footer */
+
+.scFooter {
+  position: relative;
+  border-top: 3px solid var(--ink);
+  padding-top: clamp(3rem, 7vw, 4.5rem);
+  overflow: hidden;
+}
+
+.scFooterTop {
+  display: grid;
+  gap: 2.5rem;
+  padding-bottom: 2.5rem;
+}
+
+.scFooterBlurb {
+  margin: 0;
+  max-width: 34rem;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--ink-dim);
+  text-wrap: pretty;
+}
+
+.scFooterNav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem 1.75rem;
+  align-content: start;
+}
+
+.scFooterLink {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  transition: color 0.2s ease;
+}
+
+.scFooterLink:hover { color: var(--accent); }
+
+.scFooterBottom {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 2rem;
+  justify-content: space-between;
+  padding-block: 1.6rem;
+  border-top: 2px solid var(--line);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.scFooterBottom a { transition: color 0.2s ease; }
+.scFooterBottom a:hover { color: var(--accent); }
+
+/*
+ * The closing tag, sized to run off both edges and get clipped by the footer —
+ * a name sprayed bigger than its wall. Outlined, not filled, so it stays a
+ * backdrop and never fights the copy above it.
+ */
+.scFooterTag {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(6rem, 34vw, 30rem);
+  font-weight: 900;
+  line-height: 0.72;
+  letter-spacing: -0.04em;
+  text-align: center;
+  color: transparent;
+  -webkit-text-stroke: 2px rgba(57, 255, 20, 0.28);
+  white-space: nowrap;
+  user-select: none;
+}
+
+@media (min-width: 52rem) {
+  .scFooterTop { grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 4rem; }
+}
+
+/* ------------------------------------------------------------- scroll reveal */
+
+/*
+ * Reveal on scroll, driven by the one IntersectionObserver in components/reveal.tsx
+ * that flips `data-shown`. The hidden state lives here, not in JS, so nothing
+ * flashes in before the observer attaches.
+ */
+.scReveal {
+  opacity: 0;
+  transform: translate3d(0, 1.5rem, 0);
+  transition:
+    opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: var(--sc-delay, 0ms);
+}
+
+.scReveal[data-shown="true"] {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
+/* ---------------------------------------------------------- drawn-in doodles */
+
+/*
+ * The marker draw-in. Every stroked path in a `.scDraw` mark uses `pathLength={1}`,
+ * so setting the dash array and offset to 1 hides the whole line, and animating
+ * the offset to 0 "draws" it. Two triggers:
+ *   - `.scDrawNow` fires on load, after a beat — for the hero marks, which are on
+ *     screen before any scroll.
+ *   - Inside a reveal, the draw waits for `data-shown` — so a heading's underline
+ *     paints itself exactly as the block arrives.
+ */
+.scDraw path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+}
+
+/* The lighter second underline pass hangs back so the two strokes land in sequence. */
+.scDraw .scUnderlineSecond { transition-delay: 0.15s; }
+
+@keyframes scDrawIn {
+  to { stroke-dashoffset: 0; }
+}
+
+.scDrawNow path {
+  animation: scDrawIn 0.9s cubic-bezier(0.65, 0, 0.35, 1) forwards;
+}
+
+.scCrown.scDrawNow path { animation-delay: 0.15s; }
+.scWordLoop.scDrawNow path { animation-delay: 0.5s; }
+.scPortraitArrow.scDrawNow path { animation-delay: 0.8s; }
+
+/* A reveal-triggered mark draws with a transition instead of the load animation. */
+.scReveal[data-shown="true"] .scDraw path {
+  transition: stroke-dashoffset 0.9s cubic-bezier(0.65, 0, 0.35, 1);
+  transition-delay: 0.2s;
+  stroke-dashoffset: 0;
+}
+
+/* ------------------------------------------------------- reduced motion */
+
+/*
+ * Under reduced-motion everything is simply present: reveals visible with no
+ * transform, doodles fully drawn with no animation, and the marquee stopped —
+ * it scrolls on overflow instead, so its phrases stay reachable.
+ */
+@media (prefers-reduced-motion: reduce) {
+  .scReveal,
+  .scReveal[data-shown="true"] {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .scDraw path,
+  .scDrawNow path,
+  .scReveal[data-shown="true"] .scDraw path {
+    stroke-dashoffset: 0;
+    animation: none;
+    transition: none;
+  }
+
+  .scMarquee { overflow-x: auto; }
+  .scMarqueeTrack { animation: none; }
+
+  .scSite *,
+  .scSite *::before,
+  .scSite *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+  }
+}

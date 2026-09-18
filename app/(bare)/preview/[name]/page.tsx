@@ -1,10 +1,16 @@
 import { notFound } from "next/navigation"
 
 import CinematicSupercar from "@/registry/templates/cinematic-supercar/page"
+import DaylightLayout from "@/registry/templates/daylight/layout"
+import DaylightHome from "@/registry/templates/daylight/page"
+import GraphiteLayout from "@/registry/templates/graphite/layout"
+import GraphiteHome from "@/registry/templates/graphite/page"
 import MonolithLaunchLayout from "@/registry/templates/monolith-launch/layout"
 import MonolithLaunchHome from "@/registry/templates/monolith-launch/page"
 import PaperPortfolioLayout from "@/registry/templates/paper-portfolio/layout"
 import PaperPortfolioHome from "@/registry/templates/paper-portfolio/page"
+import StreetCodeLayout from "@/registry/templates/street-code/layout"
+import StreetCodeHome from "@/registry/templates/street-code/page"
 
 /**
  * Multi-page templates ship a nested layout that the consumer's router would
@@ -27,6 +33,30 @@ function MonolithLaunch() {
   )
 }
 
+function Daylight() {
+  return (
+    <DaylightLayout>
+      <DaylightHome />
+    </DaylightLayout>
+  )
+}
+
+function Graphite() {
+  return (
+    <GraphiteLayout>
+      <GraphiteHome />
+    </GraphiteLayout>
+  )
+}
+
+function StreetCode() {
+  return (
+    <StreetCodeLayout>
+      <StreetCodeHome />
+    </StreetCodeLayout>
+  )
+}
+
 /**
  * Template name -> the real page component that ships to a consumer. One entry
  * per `kind: "templates"` item in `lib/registry/items.ts`; templates are the only
@@ -40,8 +70,11 @@ function MonolithLaunch() {
  */
 const TEMPLATE_PAGES = new Map<string, () => React.ReactNode>([
   ["cinematic-supercar", CinematicSupercar],
+  ["daylight", Daylight],
+  ["graphite", Graphite],
   ["monolith-launch", MonolithLaunch],
   ["paper-portfolio", PaperPortfolio],
+  ["street-code", StreetCode],
 ])
 
 /**

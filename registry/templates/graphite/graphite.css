@@ -1,0 +1,922 @@
+/*
+ * graphite — an artistic, hand-drawn developer portfolio built to feel like a
+ * designer's sketchbook: warm paper, graphite type, one red pencil accent, and
+ * marks that draw themselves in as you scroll.
+ *
+ * Nothing here can leak. Every class name carries a `gr` prefix and every
+ * bare-element rule is scoped under `.grSite`. A template that ships names like
+ * `.hero`, `.card` or `.rule` into a consumer's global stylesheet is a collision
+ * waiting to happen; a prefix plus one wrapper element makes the whole sheet
+ * inert outside itself.
+ *
+ * The two things most people will want to change are at the top: the palette
+ * and the display scale. Nothing below hard-codes a value that is a variable up
+ * here. The paper grain and ruled lines are pure CSS/SVG — no image weight, and
+ * nothing to look dated.
+ */
+.grSite {
+  /* Palette — warm off-white paper, graphite ink, one red-pencil accent. */
+  --paper: #f4f1ea;
+  --paper-deep: #efe9dd;
+  --paper-panel: #f7f4ee;
+  --ink: #2b2b2b;
+  --ink-soft: #4a4744;
+  --ink-dim: #6b6660;
+  --ink-faint: #948d83;
+  --line: rgba(43, 43, 43, 0.14);
+  --line-strong: rgba(43, 43, 43, 0.32);
+  --accent: #c0392b;
+  --accent-soft: rgba(192, 57, 43, 0.14);
+  --rule-blue: rgba(70, 90, 120, 0.16);
+  --tape: rgba(214, 202, 176, 0.62);
+
+  /*
+   * Display scale. The viewport unit is what makes the headline expressive on a
+   * desktop and still legible on a phone; the clamp stops it doing either badly.
+   */
+  --display: clamp(3rem, 9vw, 7.75rem);
+  --display-sm: clamp(2.2rem, 5vw, 4rem);
+  --heading: clamp(1.75rem, 3.2vw, 3rem);
+  --body: clamp(1.0625rem, 1.05vw, 1.1875rem);
+
+  /* Rhythm. Sections breathe — the paper space is part of the composition. */
+  --gutter: clamp(1.25rem, 4.5vw, 5.5rem);
+  --section: clamp(4.5rem, 10vh, 8.5rem);
+  --measure: 34rem;
+
+  /*
+   * Type. An editorial serif for display and headings, a clean sans for body,
+   * the serif's italic for the handwritten notes. All system-safe — the nicer
+   * faces are used when present, Georgia/Times carry everyone else.
+   */
+  --font-serif: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, "Times New Roman", serif;
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+
+  position: relative;
+  min-height: 100vh;
+  background-color: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: var(--body);
+  line-height: 1.65;
+  isolation: isolate;
+  /*
+   * `clip` not `hidden`: `overflow-x: hidden` forces the computed `overflow-y`
+   * to `auto`, quietly turning this element into a scroll container (which also
+   * breaks the sticky header inside it). `clip` trims any stray horizontal
+   * bleed without either side effect. There is no real overflow here — this is
+   * belt-and-braces against a future wide child.
+   */
+  overflow-x: clip;
+}
+
+/*
+ * Paper grain. An SVG turbulence baked into a data URI, dropped to a whisper by
+ * a colour matrix on the alpha channel and pinned behind everything. `fixed`
+ * so it reads as the sheet the whole site is printed on, not a tiled swatch.
+ * Two soft washes over it give the paper an uneven, hand-made warmth.
+ */
+.grSite::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image:
+    radial-gradient(120% 90% at 12% 8%, rgba(255, 255, 255, 0.55), transparent 55%),
+    radial-gradient(120% 100% at 88% 100%, rgba(214, 202, 176, 0.4), transparent 60%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.5 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: cover, cover, 180px 180px;
+  opacity: 0.5;
+  mix-blend-mode: multiply;
+}
+
+.grSite *,
+.grSite *::before,
+.grSite *::after { box-sizing: border-box; }
+
+/*
+ * `:where()` contributes no specificity, which is the point: `.grSite a` would
+ * beat every single-class rule below it, so a solid button would inherit the
+ * wrong colour. This keeps the reset at (0,1,0) so any later class rule wins.
+ */
+.grSite :where(a) { color: inherit; text-decoration: none; }
+.grSite :where(button, input, textarea, select) { font: inherit; color: inherit; }
+.grSite ::selection { background: var(--accent-soft); color: var(--ink); }
+
+/* One visible focus style for the whole template. */
+.grSite :focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 1px;
+}
+
+/* ---------------------------------------------------------------- primitives */
+
+.grWrap {
+  width: 100%;
+  max-width: 78rem;
+  margin: 0 auto;
+  padding-inline: var(--gutter);
+}
+
+/* The hairline that separates sections — a fine ruled-paper line. */
+.grRule {
+  height: 1px;
+  background: var(--line);
+  border: 0;
+  margin: 0;
+}
+
+.grSection { padding-block: var(--section); }
+.grSectionTight { padding-top: 0; }
+
+/* Wide-tracked micro-label, set in the serif italic like a caption. */
+.grLabel {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 0.9375rem;
+  letter-spacing: 0.02em;
+  color: var(--accent);
+}
+
+/* A tiny hand-annotation, tilted a hair off true. */
+.grNote {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 1rem;
+  line-height: 1.4;
+  color: var(--ink-dim);
+}
+
+.grHeading {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-size: var(--heading);
+  font-weight: 600;
+  line-height: 1.06;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+}
+
+.grLede {
+  max-width: var(--measure);
+  margin: 0;
+  font-size: clamp(1.125rem, 1.5vw, 1.4375rem);
+  line-height: 1.55;
+  color: var(--ink-soft);
+  text-wrap: pretty;
+}
+
+.grSectionHead {
+  display: grid;
+  gap: 0.875rem;
+  max-width: 40rem;
+  margin-bottom: clamp(2.25rem, 5vw, 3.5rem);
+}
+
+/* ------------------------------------------------------------------- buttons */
+
+.grBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.8125rem 1.5rem;
+  border: 1.5px solid var(--line-strong);
+  border-radius: 999px;
+  background: transparent;
+  font-family: var(--font-serif);
+  font-size: 1.0625rem;
+  cursor: pointer;
+  transition:
+    background-color 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    color 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.grBtn:hover {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--paper);
+  transform: translateY(-1px);
+}
+
+.grBtnSolid {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--paper);
+}
+
+.grBtnSolid:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--paper);
+}
+
+/* The arrow that leans forward on hover. Inline SVG, no icon library. */
+.grBtn .grArrow { transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1); }
+.grBtn:hover .grArrow { transform: translate(2px, -2px); }
+
+/* -------------------------------------------------------------------- header */
+
+.grHeader {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: color-mix(in oklab, var(--paper) 80%, transparent);
+  backdrop-filter: blur(8px) saturate(120%);
+  border-bottom: 1px solid var(--line);
+}
+
+.grHeaderRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  height: 4.5rem;
+}
+
+.grBrand { display: grid; gap: 0.05rem; line-height: 1.1; }
+
+.grBrandName {
+  font-family: var(--font-serif);
+  font-size: 1.375rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.grBrandRole {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 0.8125rem;
+  color: var(--ink-dim);
+}
+
+.grNav {
+  display: none;
+  align-items: center;
+  gap: 2rem;
+}
+
+.grNavLink {
+  position: relative;
+  font-family: var(--font-serif);
+  font-size: 1.125rem;
+  color: var(--ink-soft);
+  transition: color 0.25s ease;
+}
+
+.grNavLink:hover { color: var(--ink); }
+
+/* A hand-inked underline that sweeps in from the left on hover. */
+.grNavLink::after {
+  content: "";
+  position: absolute;
+  left: -0.1rem;
+  right: -0.1rem;
+  bottom: -0.28rem;
+  height: 2px;
+  background: var(--accent);
+  border-radius: 2px;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.grNavLink:hover::after { transform: scaleX(1); }
+
+/* Mobile nav is a native <details> — no state, no focus trap to get wrong. */
+.grMenu { position: relative; }
+
+.grMenuSummary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.875rem;
+  border: 1.5px solid var(--line-strong);
+  border-radius: 999px;
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 0.9375rem;
+  color: var(--ink-soft);
+  cursor: pointer;
+  list-style: none;
+}
+
+.grMenuSummary::-webkit-details-marker { display: none; }
+.grMenu[open] .grMenuSummary { color: var(--ink); border-color: var(--ink); }
+
+.grMenuPanel {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 0.6rem);
+  z-index: 30;
+  display: grid;
+  gap: 0.25rem;
+  min-width: 11rem;
+  padding: 0.625rem;
+  border: 1px solid var(--line);
+  border-radius: 0.5rem;
+  background: var(--paper-panel);
+  box-shadow: 0 18px 40px -22px rgba(43, 43, 43, 0.5);
+}
+
+.grMenuLink {
+  padding: 0.5rem 0.625rem;
+  border-radius: 0.375rem;
+  font-family: var(--font-serif);
+  font-size: 1.0625rem;
+  color: var(--ink-soft);
+}
+
+.grMenuLink:hover { background: var(--accent-soft); color: var(--ink); }
+
+@media (min-width: 52rem) {
+  .grNav { display: flex; }
+  .grHeaderRow { height: 5.25rem; }
+  .grMenu { display: none; }
+}
+
+/* ---------------------------------------------------------------------- hero */
+
+.grHero {
+  display: grid;
+  gap: clamp(2.5rem, 6vw, 4rem);
+  padding-top: clamp(2.5rem, 7vh, 5rem);
+  padding-bottom: clamp(2.5rem, 6vh, 4.5rem);
+  align-items: center;
+}
+
+.grHeroText { display: grid; gap: 1.75rem; align-content: center; }
+
+.grKicker {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: clamp(1.0625rem, 1.4vw, 1.25rem);
+  color: var(--accent);
+}
+
+.grDisplay {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-size: var(--display);
+  font-weight: 600;
+  line-height: 0.98;
+  letter-spacing: -0.03em;
+}
+
+.grDisplayLine { display: block; }
+
+/* The word that carries the drawn-in underline sits over its own mark. */
+.grMarkWord {
+  position: relative;
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.grMarkWord > .grUnderline {
+  position: absolute;
+  left: -2%;
+  bottom: -0.16em;
+  width: 104%;
+  height: 0.34em;
+  overflow: visible;
+  color: var(--accent);
+  pointer-events: none;
+}
+
+.grHeroActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.875rem;
+  align-items: center;
+  margin-top: 0.5rem;
+}
+
+/*
+ * The portrait, pinned to the paper like a sketch: a cream mat with a hairline
+ * frame, a soft lifted shadow, a couple of degrees of rotation, and two strips
+ * of tape across the top corners. It straightens itself when you hover it.
+ */
+.grPortrait {
+  justify-self: center;
+  width: min(100%, 24rem);
+  margin: 0;
+}
+
+.grPortraitFrame {
+  position: relative;
+  padding: 0.75rem 0.75rem 0;
+  background: var(--paper-panel);
+  border: 1px solid var(--line);
+  border-radius: 2px;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.6) inset,
+    0 26px 50px -26px rgba(43, 43, 43, 0.55),
+    0 6px 14px -10px rgba(43, 43, 43, 0.4);
+  transform: rotate(-2.2deg);
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.grPortrait:hover .grPortraitFrame { transform: rotate(0deg); }
+
+.grPortraitImg {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 1px;
+  /* Nudges the cream scan toward the paper so it sits in the page, not on it. */
+  filter: grayscale(0.12) contrast(1.03);
+  mix-blend-mode: multiply;
+}
+
+/* Two strips of low-tack tape holding it to the sheet. */
+.grTape {
+  position: absolute;
+  top: -0.7rem;
+  width: 4.5rem;
+  height: 1.5rem;
+  background: var(--tape);
+  border: 1px solid rgba(43, 43, 43, 0.06);
+  box-shadow: 0 2px 6px -3px rgba(43, 43, 43, 0.35);
+}
+
+.grTape::after {
+  /* A faint highlight down the tape so it reads as slightly glossy. */
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(105deg, rgba(255, 255, 255, 0.35), transparent 45%);
+}
+
+.grTapeLeft { left: 1.25rem; transform: rotate(-6deg); }
+.grTapeRight { right: 1.25rem; transform: rotate(5deg); }
+
+.grPortraitCaption {
+  margin: 0.85rem 0.25rem 0.6rem;
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 0.9375rem;
+  color: var(--ink-dim);
+  text-align: center;
+}
+
+@media (min-width: 60rem) {
+  .grHero {
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+    gap: clamp(3rem, 6vw, 6rem);
+  }
+  .grPortrait { justify-self: end; width: min(100%, 27rem); }
+}
+
+/* --------------------------------------------------------------------- about */
+
+.grAbout { display: grid; gap: clamp(2rem, 5vw, 3.5rem); }
+
+.grAboutHead { display: grid; gap: 0.875rem; align-content: start; }
+
+.grAboutBody { display: grid; gap: 1.375rem; max-width: 60rem; }
+
+.grAboutBody p {
+  margin: 0;
+  font-size: clamp(1.0625rem, 1.15vw, 1.1875rem);
+  line-height: 1.72;
+  color: var(--ink-soft);
+  text-wrap: pretty;
+}
+
+/* A drop cap on the opening paragraph, set in the display serif. */
+.grAboutBody p:first-of-type::first-letter {
+  float: left;
+  margin: 0.06em 0.14em 0 0;
+  font-family: var(--font-serif);
+  font-size: 3.6em;
+  line-height: 0.74;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+/* The one line big enough to stop on — a hanging pull quote with a red rule. */
+.grPull {
+  margin: 0.5rem 0;
+  padding-left: 1.25rem;
+  border-left: 2px solid var(--accent);
+  font-family: var(--font-serif);
+  font-size: clamp(1.375rem, 2.4vw, 1.9375rem);
+  font-style: italic;
+  line-height: 1.28;
+  color: var(--ink);
+  text-wrap: balance;
+}
+
+/* The margin annotation, tilted like it was scribbled in later. */
+.grAboutNote {
+  display: inline-flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  transform: rotate(-1.5deg);
+  color: var(--accent);
+}
+
+.grAboutNote .grArrowNote { flex: none; margin-top: 0.15rem; color: var(--accent); }
+.grAboutNote span { font-family: var(--font-serif); font-style: italic; font-size: 1.0625rem; color: var(--ink-dim); }
+
+@media (min-width: 60rem) {
+  .grAbout { grid-template-columns: 15rem minmax(0, 1fr); align-items: start; gap: 4rem; }
+  .grAboutHead { position: sticky; top: 7rem; }
+  /* Set the essay in two columns of ruled prose on a wide screen. */
+  .grAboutBody { column-count: 2; column-gap: 3rem; display: block; max-width: none; }
+  .grAboutBody > * { break-inside: avoid; }
+  .grPull { column-span: all; margin-block: 1.25rem; }
+}
+
+/* -------------------------------------------------------------------- skills */
+
+.grSkills {
+  display: grid;
+  gap: 0;
+  border-top: 1px solid var(--line);
+}
+
+.grSkillGroup {
+  display: grid;
+  gap: 1rem;
+  padding-block: clamp(1.5rem, 3.5vw, 2.25rem);
+  border-bottom: 1px solid var(--line);
+}
+
+.grSkillTitle {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-size: 1.375rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.grSkillList {
+  display: grid;
+  gap: 0.625rem 1.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.grSkillItem {
+  display: grid;
+  grid-template-columns: 1.1rem minmax(0, 1fr);
+  gap: 0.625rem;
+  align-items: baseline;
+  color: var(--ink-soft);
+}
+
+/* A little hand-drawn tick instead of a bullet. */
+.grSkillItem .grTick { color: var(--accent); transform: translateY(0.1rem); }
+
+@media (min-width: 44rem) {
+  .grSkillList { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (min-width: 60rem) {
+  .grSkillGroup { grid-template-columns: 13rem minmax(0, 1fr); gap: 2.5rem; align-items: start; }
+}
+
+/* ---------------------------------------------------------------------- work */
+
+.grWorkGrid {
+  display: grid;
+  gap: clamp(1.5rem, 3vw, 2.25rem);
+}
+
+/*
+ * Each card is an index card pinned to the page: warm panel stock, a red margin
+ * rule down the left, faint blue horizontal rules behind the copy, a hairline
+ * border and a soft shadow. Odd and even cards tilt opposite ways and settle
+ * straight when you hover.
+ */
+.grCard {
+  position: relative;
+  display: grid;
+  gap: 1rem;
+  padding: clamp(1.5rem, 3vw, 2.25rem);
+  padding-left: clamp(2.25rem, 4vw, 3rem);
+  background:
+    linear-gradient(var(--paper-panel), var(--paper-panel)) padding-box,
+    repeating-linear-gradient(var(--paper-panel), var(--paper-panel) 1.85rem, var(--rule-blue) 1.85rem, var(--rule-blue) calc(1.85rem + 1px));
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  box-shadow: 0 20px 40px -30px rgba(43, 43, 43, 0.55);
+  overflow: hidden;
+  transition:
+    transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* The red margin line, like the one down a school jotter. */
+.grCard::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: clamp(1.25rem, 2.5vw, 1.75rem);
+  width: 1.5px;
+  background: var(--accent);
+  opacity: 0.55;
+}
+
+.grCard:hover {
+  transform: translateY(-4px) rotate(0deg);
+  box-shadow: 0 32px 55px -32px rgba(43, 43, 43, 0.6);
+}
+
+.grCardHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.grCardIndex {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 1.0625rem;
+  color: var(--accent);
+}
+
+.grCardMeta {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 0.9375rem;
+  color: var(--ink-dim);
+}
+
+.grCardTitle {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-size: clamp(1.625rem, 2.6vw, 2.125rem);
+  font-weight: 600;
+  line-height: 1.05;
+  letter-spacing: -0.015em;
+}
+
+.grCardBody { margin: 0; color: var(--ink-soft); text-wrap: pretty; }
+
+.grCardTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.grCardTag {
+  padding: 0.25rem 0.6875rem;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  font-size: 0.8125rem;
+  color: var(--ink-dim);
+}
+
+.grCardLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 0.25rem;
+  font-family: var(--font-serif);
+  font-size: 1.0625rem;
+  color: var(--ink);
+  border-bottom: 1.5px solid var(--accent);
+  padding-bottom: 1px;
+  width: fit-content;
+  transition: gap 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.grCardLink:hover { gap: 0.7rem; }
+.grCardLink .grArrow { color: var(--accent); }
+
+@media (min-width: 48rem) {
+  .grWorkGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .grCardOdd { transform: rotate(-1deg); }
+  .grCardEven { transform: rotate(0.9deg); }
+}
+
+/* ------------------------------------------------------------------- contact */
+
+.grContact {
+  display: grid;
+  gap: 1.75rem;
+  justify-items: center;
+  text-align: center;
+  padding-block: clamp(1rem, 3vw, 2rem);
+}
+
+.grContactHeading {
+  margin: 0;
+  max-width: 20ch;
+  font-family: var(--font-serif);
+  font-size: var(--display-sm);
+  font-weight: 600;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+/* The circled word — the SVG ellipse is drawn around it on reveal. */
+.grCircleWord {
+  position: relative;
+  display: inline-block;
+  color: var(--accent);
+  padding-inline: 0.15em;
+}
+
+.grCircleWord > .grCircle {
+  position: absolute;
+  left: -12%;
+  top: -22%;
+  width: 124%;
+  height: 148%;
+  overflow: visible;
+  color: var(--accent);
+  pointer-events: none;
+}
+
+.grContactBody { max-width: 38rem; color: var(--ink-soft); text-wrap: pretty; }
+
+.grContactActions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.grSocials {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem 1.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.grSocial {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--ink-soft);
+  transition: color 0.25s ease;
+}
+
+.grSocial:hover { color: var(--accent); }
+.grSocial svg { flex: none; }
+.grSocialHandle { font-family: var(--font-serif); font-style: italic; font-size: 1rem; }
+
+/* -------------------------------------------------------------------- footer */
+
+.grFooter { border-top: 1px solid var(--line); padding-top: clamp(3rem, 6vw, 4.5rem); padding-bottom: clamp(2rem, 4vw, 3rem); }
+
+.grFooterTop {
+  display: grid;
+  gap: 2rem;
+  padding-bottom: 2.5rem;
+}
+
+.grFooterBlurb {
+  margin: 0;
+  max-width: 30rem;
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  color: var(--ink-dim);
+  text-wrap: pretty;
+}
+
+.grFooterLinks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.75rem;
+  align-items: start;
+}
+
+.grFooterLink {
+  font-family: var(--font-serif);
+  font-size: 1.0625rem;
+  color: var(--ink-soft);
+  transition: color 0.25s ease;
+}
+
+.grFooterLink:hover { color: var(--accent); }
+
+.grFooterBottom {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 2rem;
+  justify-content: space-between;
+  align-items: baseline;
+  padding-top: 1.75rem;
+  border-top: 1px solid var(--line);
+}
+
+.grFooterCopy { font-size: 0.875rem; color: var(--ink-faint); }
+.grFooterNote { font-family: var(--font-serif); font-style: italic; font-size: 1rem; color: var(--ink-dim); }
+
+/*
+ * The wordmark that closes the page, set huge in outline and allowed to be
+ * clipped by the wrapper — that is the effect, not a bug. It reads like a name
+ * signed lightly in pencil across the bottom of the sheet.
+ */
+.grFooterWord {
+  margin: 0;
+  padding-top: clamp(1.5rem, 5vw, 3rem);
+  font-family: var(--font-serif);
+  font-size: clamp(3.5rem, 15vw, 12rem);
+  font-weight: 600;
+  line-height: 0.82;
+  letter-spacing: -0.03em;
+  color: transparent;
+  -webkit-text-stroke: 1px var(--line-strong);
+  text-stroke: 1px var(--line-strong);
+  user-select: none;
+}
+
+@media (min-width: 52rem) {
+  .grFooterTop { grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 4rem; }
+}
+
+/* ------------------------------------------------------- hand-drawn marks */
+
+/*
+ * Every SVG mark draws itself with `stroke-dashoffset`. The stroke is normalised
+ * to a path length of 1 (`pathLength="1"` in the markup), so the offset is just
+ * a fraction and no per-path measuring is needed. The mark starts fully
+ * "un-drawn" and animates to drawn when an ancestor `.grReveal` flips
+ * `data-shown="true"` — so the ink appears to be laid down as the section
+ * arrives. Marks not inside a Reveal are drawn from the start.
+ */
+.grStroke {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.25;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+}
+
+.grReveal .grStroke {
+  transition: stroke-dashoffset 0.9s cubic-bezier(0.65, 0, 0.35, 1);
+  transition-delay: calc(var(--gr-delay, 0ms) + 120ms);
+}
+
+.grReveal[data-shown="true"] .grStroke { stroke-dashoffset: 0; }
+
+/* -------------------------------------------------------------- scroll reveal */
+
+/*
+ * Reveal on scroll, driven by one IntersectionObserver in `components/reveal.tsx`
+ * that flips `data-shown`. Two rules matter for correctness:
+ *   - The hidden state is set here, not in JS, so nothing flashes in before the
+ *     observer attaches.
+ *   - Under `prefers-reduced-motion` the element is simply visible, with no
+ *     transform and no draw-in — a translate is exactly what triggers vestibular
+ *     discomfort, and the marks are simply shown already inked.
+ */
+.grReveal {
+  opacity: 0;
+  transform: translate3d(0, 1.5rem, 0);
+  transition:
+    opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: var(--gr-delay, 0ms);
+}
+
+.grReveal[data-shown="true"] {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .grReveal,
+  .grReveal[data-shown="true"] {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .grStroke,
+  .grReveal .grStroke,
+  .grReveal[data-shown="true"] .grStroke {
+    stroke-dashoffset: 0;
+    transition: none;
+  }
+
+  .grSite *,
+  .grSite *::before,
+  .grSite *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+  }
+}
