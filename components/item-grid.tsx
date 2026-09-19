@@ -29,7 +29,12 @@ export function ItemGrid({
       )}
     >
       {items.map((item) => (
-        <ItemCard key={item.name} item={item} height={height ?? 240} />
+        // No blanket fallback height: when a caller doesn't force one, the card
+        // sizes itself per kind (`frameHeight` in `ItemCard`) — blocks to their
+        // measured content, components and animations to their authored
+        // `previewHeight` — so the grid varies with content instead of flattening
+        // a command palette and a breadcrumb to the same 240px box.
+        <ItemCard key={item.name} item={item} height={height} />
       ))}
     </div>
   )

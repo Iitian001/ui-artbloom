@@ -12,6 +12,22 @@ import { cn } from "@/lib/utils"
 
 export { itemHref }
 
+/**
+ * The card frame height for an item, by kind.
+ *
+ * Templates get a fixed tall window (a full page shown shrunk). Blocks measure
+ * their own content, so the number here is only a fallback until that lands.
+ * Components and animations mount a card composition authored against the item's
+ * own `previewHeight` — using it verbatim makes every card as tall as the demo it
+ * holds, so the grid varies with content the way the block grid already does,
+ * instead of forcing one height on a breadcrumb and a command palette alike.
+ */
+function frameHeight(item: RegistryItem): number {
+  if (item.kind === "templates") return 420
+  if (item.kind === "blocks") return 300
+  return item.previewHeight ?? 300
+}
+
 export type ItemCardProps = {
   item: RegistryItem
   /**
@@ -64,10 +80,17 @@ export function ItemCard({ item, height, className }: ItemCardProps) {
         <ItemPreview
           name={item.name}
           kind={item.kind}
-          // Templates are whole sites shown shrunk, so they get a taller frame — a
-          // 300px card scaled the hero down to a strip. Everything else (blocks fit
-          // their own height, components mount a card demo) reads fine at 300.
-          height={height ?? (item.kind === "templates" ? 420 : 300)}
+          // Each kind sizes its frame differently:
+          //   • templates — whole sites shown shrunk, so a taller fixed window (420)
+          //     keeps the hero legible; a 300px card scaled it to a strip.
+          //   • blocks — fit their own measured content height (see `blockFit`), so
+          //     this is only the pre-measurement fallback.
+          //   • components / animations — mount a card composition authored to fill a
+          //     specific box, and that box height is the item's own `previewHeight`.
+          //     A uniform 300 left a tall command palette clipped and a short
+          //     breadcrumb marooned in empty space; the authored height is the one
+          //     the demo was actually built for, so each card sizes to its content.
+          height={height ?? frameHeight(item)}
           designHeight={item.previewHeight}
           dark={item.previewDark}
           compact
