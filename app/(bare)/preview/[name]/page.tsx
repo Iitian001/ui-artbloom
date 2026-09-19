@@ -11,6 +11,16 @@ import PaperPortfolioLayout from "@/registry/templates/paper-portfolio/layout"
 import PaperPortfolioHome from "@/registry/templates/paper-portfolio/page"
 import StreetCodeLayout from "@/registry/templates/street-code/layout"
 import StreetCodeHome from "@/registry/templates/street-code/page"
+import Umbra from "@/registry/templates/umbra/page"
+import Slate from "@/registry/templates/slate/page"
+import Solstice from "@/registry/templates/solstice/page"
+import Momentum from "@/registry/templates/momentum/page"
+import Sprig from "@/registry/templates/sprig/page"
+import Riot from "@/registry/templates/riot/page"
+import Flux from "@/registry/templates/flux/page"
+import Assembly from "@/registry/templates/assembly/page"
+import Endpoint from "@/registry/templates/endpoint/page"
+import Folio from "@/registry/templates/folio/page"
 
 import ContactForm from "@/registry/blocks/contact-form/contact-form"
 import CtaBanner from "@/registry/blocks/cta-banner/cta-banner"
@@ -85,6 +95,16 @@ const TEMPLATE_PAGES = new Map<string, () => React.ReactNode>([
   ["monolith-launch", MonolithLaunch],
   ["paper-portfolio", PaperPortfolio],
   ["street-code", StreetCode],
+  ["umbra", Umbra],
+  ["slate", Slate],
+  ["solstice", Solstice],
+  ["momentum", Momentum],
+  ["sprig", Sprig],
+  ["riot", Riot],
+  ["flux", Flux],
+  ["assembly", Assembly],
+  ["endpoint", Endpoint],
+  ["folio", Folio],
   // Blocks — each a single self-contained section component.
   ["contact-form", ContactForm],
   ["cta-banner", CtaBanner],

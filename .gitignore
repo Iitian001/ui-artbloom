@@ -15,3 +15,4 @@ cli/dist
 # Un-ignore a folder here once its work is ready to ship.
 /lab
 /app/(bare)/lab
+.gstack/
