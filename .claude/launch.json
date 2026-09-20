@@ -19,6 +19,11 @@
       "port": 3212
     },
     {
+      "name": "consumer-run",
+      "url": "http://localhost:3213",
+      "port": 3213
+    },
+    {
       "name": "prod-preview",
       "runtimeExecutable": "node",
       "runtimeArgs": ["node_modules/next/dist/bin/next", "start", "--port", "3211"],

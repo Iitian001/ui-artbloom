@@ -55,8 +55,22 @@ export type Plan = {
  */
 const DEP_RE = /^(@[a-z0-9~][a-z0-9-._~]*\/)?[a-z0-9~][a-z0-9-._~]*(@[a-zA-Z0-9.\-+~^*]+)?$/
 
-function remap(target: string, config: Config) {
-  const clean = target.replace(/\\/g, "/").replace(/^\.\//, "")
+function remap(target: string, config: Config, home?: string) {
+  let clean = target.replace(/\\/g, "/").replace(/^\.\//, "")
+
+  /**
+   * `--home` drops a template's own route segment so its page lands at the app
+   * root: `app/solstice/page.tsx` becomes `app/page.tsx`, served at `/` instead
+   * of `/solstice`. Only the route files move — assets live under `public/` and
+   * are referenced by absolute path (`/solstice/hero.mp4`), so they still
+   * resolve from the root. A nested `app/solstice/layout.tsx` becomes
+   * `app/layout.tsx` and so lands on the project's root layout, which the clash
+   * check then guards behind an explicit replace rather than silently swapping.
+   */
+  if (home && clean.startsWith(`app/${home}/`)) {
+    clean = `app/${clean.slice(`app/${home}/`.length)}`
+  }
+
   if (clean.startsWith("components/ui/")) {
     return `${config.paths.ui}/${clean.slice("components/ui/".length)}`
   }
@@ -86,8 +100,8 @@ function remap(target: string, config: Config) {
  * project it is being installed into, so every target — source file or asset —
  * comes through here.
  */
-function resolveTarget(target: string, itemName: string, config: Config) {
-  const rel = remap(target, config)
+function resolveTarget(target: string, itemName: string, config: Config, home?: string) {
+  const rel = remap(target, config, home)
   const absolute = path.resolve(config.cwd, rel)
   const inside = path.relative(config.cwd, absolute)
 
@@ -232,7 +246,7 @@ function claim(claims: Map<string, Claim>, absolute: string, rel: string, mine: 
   return false
 }
 
-export function buildPlan(items: Payload[], config: Config): Plan {
+export function buildPlan(items: Payload[], config: Config, home?: string): Plan {
   const files: PlannedFile[] = []
   const assets: PlannedAsset[] = []
   const dependencies = new Set<string>()
@@ -242,7 +256,7 @@ export function buildPlan(items: Payload[], config: Config): Plan {
 
   for (const item of items) {
     for (const file of item.files) {
-      const { absolute, rel } = resolveTarget(file.target, item.name, config)
+      const { absolute, rel } = resolveTarget(file.target, item.name, config, home)
       const content = asWritten(rewriteImports(file.content, config))
       if (!claim(claims, absolute, rel, { from: item.name, writes: content })) continue
 

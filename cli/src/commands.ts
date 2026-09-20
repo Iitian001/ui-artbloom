@@ -8,11 +8,12 @@ import {
   downloadAssets,
   humanBytes,
   installCommand,
+  type Manager,
   patchCss,
   runInstall,
   writeFiles,
 } from "./apply.js"
-import { CONFIG_FILE, loadConfig, type Overrides } from "./config.js"
+import { CONFIG_FILE, type Config, loadConfig, type Overrides } from "./config.js"
 import { NAME, BIN } from "./pkg.js"
 import { buildPlan, clashes, type Plan } from "./plan.js"
 import { fetchIndex, fetchItem, assertName, type Payload } from "./registry.js"
@@ -26,6 +27,7 @@ export type AddOptions = Overrides & {
   deps?: boolean
   telemetry?: boolean
   silent?: boolean
+  home?: boolean
 }
 
 /**
@@ -178,6 +180,99 @@ class Unfinished {
   }
 }
 
+/**
+ * The single route segment a template lives under, or null.
+ *
+ * `--home` drops this segment so the template's page lands at the app root. It
+ * only means something for a template whose files sit under one folder:
+ * `app/solstice/page.tsx` → "solstice". A template already at `app/page.tsx` has
+ * no segment to drop, and one spanning `app/a/` and `app/b/` has no single one —
+ * both return null, and `resolveHome` turns that into a refusal rather than a
+ * guess. Payload targets carry the `app/` prefix before `remap` moves them.
+ */
+function templateRootSegment(item: Payload): string | null {
+  const segments = new Set<string>()
+  for (const file of item.files) {
+    const clean = file.target.replace(/\\/g, "/").replace(/^\.\//, "")
+    if (!clean.startsWith("app/")) continue
+    const rest = clean.slice("app/".length)
+    const slash = rest.indexOf("/")
+    if (slash === -1) continue
+    segments.add(rest.slice(0, slash))
+  }
+  return segments.size === 1 ? [...segments][0]! : null
+}
+
+/**
+ * Resolve `--home` to the route segment `buildPlan` should strip, or undefined.
+ *
+ * The flag is a promise about one template, so the ways it cannot be kept are
+ * refusals, not silent no-ops: asking to home two things at once, or to home
+ * something that has no page to move. A refusal here happens before anything is
+ * fetched further or written.
+ */
+function resolveHome(
+  items: Payload[],
+  names: string[],
+  options: AddOptions,
+): string | undefined {
+  if (!options.home) return undefined
+
+  const roots = items.filter((item) => names.includes(item.name))
+  const root = roots.length === 1 ? roots[0] : undefined
+  if (!root) {
+    throw new CliError(
+      `--home installs a single template as the homepage; you asked for ${roots.length}.`,
+      "Run it once per template, and drop --home for the rest.",
+    )
+  }
+
+  const segment = templateRootSegment(root)
+  if (!segment) {
+    throw new CliError(
+      `--home has nothing to move for "${root.name}".`,
+      "Its page already sits at the app root, or it spans more than one route — install it without --home.",
+    )
+  }
+  return segment
+}
+
+/**
+ * The URLs the just-written pages will answer at, for the closing hint.
+ *
+ * Only the typed items count — a template pulls in shared helpers and blocks
+ * that ship no page, and listing their absence would be noise. A path becomes a
+ * route by dropping the configured pages directory, the `page.*` filename, and
+ * any `(group)` segments, which the router does not put in the URL. Non-page
+ * files (a layout, a component) contribute nothing, so an item with no page
+ * yields nothing and the caller stays quiet.
+ */
+function pageRoutes(plan: Plan, config: Config, names: string[]): string[] {
+  const prefix = config.paths.pages.replace(/\\/g, "/").replace(/^\.\//, "").replace(/\/+$/, "")
+  const routes = new Set<string>()
+
+  for (const file of plan.files) {
+    if (!names.includes(file.from)) continue
+    if (!file.rel.startsWith(`${prefix}/`)) continue
+
+    const rel = file.rel.slice(prefix.length + 1)
+    if (!/(^|\/)page\.(tsx|ts|jsx|js|mdx)$/.test(rel)) continue
+
+    const dir = rel.replace(/(^|\/)page\.(tsx|ts|jsx|js|mdx)$/, "").replace(/\/+$/, "")
+    const segments = dir
+      ? dir.split("/").filter((part) => part && !(part.startsWith("(") && part.endsWith(")")))
+      : []
+    routes.add(`/${segments.join("/")}`)
+  }
+
+  return [...routes].sort()
+}
+
+/** How this project's package manager runs the dev server. */
+function devCommand(manager: Manager) {
+  return manager === "npm" ? "npm run dev" : `${manager} dev`
+}
+
 export async function add(names: string[], options: AddOptions = {}) {
   setSilent(Boolean(options.silent))
   if (names.length === 0) throw new CliError(`Nothing to add.`, `Try \`${BIN} list\`.`)
@@ -186,7 +281,8 @@ export async function add(names: string[], options: AddOptions = {}) {
   const started = Date.now()
 
   const items = await collect(config.registry, names)
-  const plan = buildPlan(items, config)
+  const home = resolveHome(items, names, options)
+  const plan = buildPlan(items, config, home)
   const cssFileRel = path.relative(config.cwd, plan.cssFile).replace(/\\/g, "/")
 
   line()
@@ -296,6 +392,25 @@ export async function add(names: string[], options: AddOptions = {}) {
   const seconds = ((Date.now() - started) / 1000).toFixed(1)
   line()
   line(`  ${c.green("done")} ${c.dim(`in ${seconds}s`)}`)
+
+  /**
+   * Where the page actually went, said plainly. This is the line whose absence
+   * made a good install feel broken: the page lands at a named route, the dev
+   * server opens `/`, and nothing told anyone to look anywhere else. So name the
+   * route, name the command that serves it, and — when it is not already the
+   * homepage — name the flag that would make it one.
+   */
+  const routes = pageRoutes(plan, config, names)
+  if (routes.length > 0) {
+    const dev = devCommand(detectManager(config.cwd))
+    heading(routes.length === 1 ? "view it" : "view your pages")
+    line(`    run ${c.cyan(dev)}, then open:`)
+    for (const route of routes) line(`      ${c.cyan(`http://localhost:3000${route}`)}`)
+    if (!home && !routes.includes("/") && names.length === 1) {
+      line()
+      line(`  ${c.dim(`want it at / instead? re-run with --home --overwrite`)}`)
+    }
+  }
 
   const docs = plan.items[0]?.meta?.docs
   if (docs) line(`  ${c.dim(docs)}`)

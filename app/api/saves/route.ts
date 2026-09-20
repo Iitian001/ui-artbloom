@@ -149,7 +149,18 @@ export async function GET(request: NextRequest) {
     return reply(failureStatus(result.reason), { ok: false, error: "Could not read your saves" })
   }
 
-  return reply(200, { ok: true, configured: true, saves: result.data })
+  // The verified identity rides along on the list read the page already makes, so
+  // the header can show who is signed in without a second Auth round trip (see the
+  // 60/min budget note in `authorize`). The user id stays server-side — the client
+  // only needs the handle, name and avatar to render, never the id.
+  const who = {
+    handle: caller.user.handle,
+    name: caller.user.name,
+    avatar: caller.user.avatar,
+    email: caller.user.email,
+  }
+
+  return reply(200, { ok: true, configured: true, saves: result.data, user: who })
 }
 
 /**
