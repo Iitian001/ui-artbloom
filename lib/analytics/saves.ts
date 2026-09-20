@@ -19,7 +19,16 @@ import { userRest } from "./server"
  * rows are reachable. The service role key deliberately never appears here.
  */
 
-export type SessionUser = { id: string; email: string | null }
+export type SessionUser = {
+  id: string
+  email: string | null
+  /** GitHub login, from `user_metadata.user_name` — for the header greeting. */
+  handle: string | null
+  /** Display name, from `user_metadata.full_name` or `name`. */
+  name: string | null
+  /** Avatar URL, from `user_metadata.avatar_url`. */
+  avatar: string | null
+}
 
 export type SavesFailure = "unconfigured" | "unauthorized" | "unknown-item" | "error"
 export type SavesResult<T> = { ok: true; data: T } | { ok: false; reason: SavesFailure }
@@ -81,7 +90,11 @@ export function credentialFromRequest(request: NextRequest): Credential | undefi
 export async function getSessionUser(accessToken: string): Promise<SessionUser | null> {
   if (!publicSupabaseReady) return null
 
-  const result = await restFetch<{ id?: unknown; email?: unknown }>({
+  const result = await restFetch<{
+    id?: unknown
+    email?: unknown
+    user_metadata?: Record<string, unknown>
+  }>({
     url: authEndpoint("user"),
     apiKey: SUPABASE_ANON_KEY,
     accessToken,
@@ -96,7 +109,21 @@ export async function getSessionUser(accessToken: string): Promise<SessionUser |
 
   const id = result.data?.id
   if (typeof id !== "string" || id.length === 0) return null
-  return { id, email: typeof result.data?.email === "string" ? result.data.email : null }
+
+  // GitHub's OAuth profile lands in `user_metadata`. `user_name` is the @handle,
+  // `full_name`/`name` the display name, `avatar_url` the picture — all optional,
+  // so each is read defensively and falls back to null.
+  const meta = result.data?.user_metadata ?? {}
+  const str = (value: unknown): string | null =>
+    typeof value === "string" && value.length > 0 ? value : null
+
+  return {
+    id,
+    email: str(result.data?.email),
+    handle: str(meta.user_name) ?? str(meta.preferred_username),
+    name: str(meta.full_name) ?? str(meta.name),
+    avatar: str(meta.avatar_url),
+  }
 }
 
 export type SavedItem = { name: string; savedAt: string | null }

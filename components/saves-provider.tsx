@@ -45,6 +45,19 @@ type Status =
   /** Configured, signed in or not — but the read failed. Nothing to render. */
   | "unavailable"
 
+/**
+ * Who is signed in, for the header to greet. Comes back on the same `/api/saves`
+ * read as the list — the one place the app spends an Auth-server verification — so
+ * the header shows real signed-in state without a second round trip. Null until the
+ * list settles, and whenever nobody is signed in.
+ */
+export type AccountUser = {
+  handle: string | null
+  name: string | null
+  avatar: string | null
+  email: string | null
+}
+
 type SavesValue = {
   status: Status
   /** True if `name` is in the caller's library. Meaningless unless `ready`. */
@@ -52,6 +65,8 @@ type SavesValue = {
   /** True while a write for `name` is in flight. */
   busy: (name: string) => boolean
   toggle: (name: string) => void
+  /** The signed-in visitor, or null. Only meaningful once `status` is `ready`. */
+  user: AccountUser | null
 }
 
 const FALLBACK: SavesValue = {
@@ -59,6 +74,7 @@ const FALLBACK: SavesValue = {
   has: () => false,
   busy: () => false,
   toggle: () => {},
+  user: null,
 }
 
 const SavesContext = createContext<SavesValue>(FALLBACK)
@@ -88,6 +104,7 @@ export function SavesProvider({ children }: { children: React.ReactNode }) {
   const [saved, setSaved] = useState<Set<string>>(() => new Set())
   const [pending, setPending] = useState<Set<string>>(() => new Set())
   const [notice, setNotice] = useState<string | null>(null)
+  const [user, setUser] = useState<AccountUser | null>(null)
 
   /**
    * `saved` as a ref, read by `toggle` instead of the state value.
@@ -115,6 +132,7 @@ export function SavesProvider({ children }: { children: React.ReactNode }) {
         // Configured but signed out. Not an error — the button turns into a
         // sign-in link, which is the one honest thing it can be.
         if (response.status === 401) {
+          setUser(null)
           setStatus("signed-out")
           return
         }
@@ -124,7 +142,7 @@ export function SavesProvider({ children }: { children: React.ReactNode }) {
         }
 
         const body: unknown = await response.json()
-        const shape = body as { configured?: unknown; saves?: unknown }
+        const shape = body as { configured?: unknown; saves?: unknown; user?: unknown }
 
         // A deployment whose keys were removed after this bundle was built.
         if (shape.configured === false) {
@@ -137,6 +155,24 @@ export function SavesProvider({ children }: { children: React.ReactNode }) {
               .map((row) => (row as { name?: unknown }).name)
               .filter((name): name is string => typeof name === "string")
           : []
+
+        // The signed-in identity the route attached to this read. Each field is
+        // optional (GitHub may not send a display name), so read defensively.
+        const raw = (shape.user ?? null) as Record<string, unknown> | null
+        const field = (key: string): string | null => {
+          const value = raw?.[key]
+          return typeof value === "string" && value.length > 0 ? value : null
+        }
+        setUser(
+          raw
+            ? {
+                handle: field("handle"),
+                name: field("name"),
+                avatar: field("avatar"),
+                email: field("email"),
+              }
+            : null,
+        )
 
         setSaved(new Set(names))
         setStatus("ready")
@@ -190,6 +226,7 @@ export function SavesProvider({ children }: { children: React.ReactNode }) {
 
         if (response.status === 401) {
           // The cookie expired between the list and this click.
+          setUser(null)
           setStatus("signed-out")
           setNotice("Your session ended. Sign in again to keep saving.")
         } else if (response.status === 503) {
@@ -214,8 +251,9 @@ export function SavesProvider({ children }: { children: React.ReactNode }) {
       has: (name) => saved.has(name),
       busy: (name) => pending.has(name),
       toggle,
+      user,
     }),
-    [status, saved, pending, toggle],
+    [status, saved, pending, toggle, user],
   )
 
   return (
