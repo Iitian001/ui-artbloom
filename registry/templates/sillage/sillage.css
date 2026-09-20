@@ -1,0 +1,1009 @@
+/* -------------------------------------------------------------------------
+   SILLAGE — LUMEN. LUMINESCENCE direction: a botanical night, glowing.
+
+   Everything is prefixed `lm` and scoped under `.lmRoot`. No rule here
+   touches html, body, :root, or any bare element outside `.lmRoot`, and the
+   background is set on `.lmRoot` only — so this shares the bare origin with
+   its neighbours without either leaking.
+
+   Boldness is spent in exactly ONE place: the silver-jade bloom that opens
+   behind the jasmine heart. Everything else is deep, cool and still.
+------------------------------------------------------------------------- */
+
+.lmRoot {
+  /* --- palette: deep ink-blue night + a single luminous silver-jade --- */
+  --lm-void: #080d14; /* deep ink-blue black — the night */
+  --lm-void-2: #0b121c; /* a half-tone up, for section seams */
+  --lm-jade: #bfe3d0; /* the one accent — moonlit silver-jade */
+  --lm-jade-soft: rgba(191, 227, 208, 0.5);
+  --lm-ivory: #f2efe6; /* luminous ivory — the type */
+  --lm-ivory-dim: rgba(242, 239, 230, 0.72);
+  --lm-ivory-faint: rgba(242, 239, 230, 0.46);
+
+  /* grading layers used to hold the warm film cool + dark */
+  --lm-tint: #0a2230; /* cool teal-blue wash over the film */
+  --lm-sink: 4, 8, 14; /* rgb of near-void, for scrims */
+
+  --lm-gut: clamp(1.35rem, 6vw, 4rem);
+  --lm-measure: 40ch;
+
+  box-sizing: border-box;
+  min-height: 100vh;
+  background: var(--lm-void);
+  color: var(--lm-ivory);
+  color-scheme: dark;
+  font-family: var(--font-geist), "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: clamp(0.95rem, 1.5vw, 1.0625rem);
+  font-weight: 400;
+  line-height: 1.6;
+  letter-spacing: -0.003em;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+.lmRoot *,
+.lmRoot *::before,
+.lmRoot *::after {
+  box-sizing: inherit;
+}
+
+.lmRoot :where(h1, h2, h3, p, figure, figcaption) {
+  margin: 0;
+}
+
+.lmRoot :where(a) {
+  color: inherit;
+  text-decoration: none;
+}
+
+.lmRoot :where(a):focus-visible,
+.lmRoot :where(video):focus-visible {
+  outline: 2px solid var(--lm-jade);
+  outline-offset: 4px;
+  border-radius: 2px;
+}
+
+/* --------------------------------------------------------------------- *
+   MOTION MODE — sticky stage, scroll-scrubbed film
+ * --------------------------------------------------------------------- */
+
+/* 5 panels across the scroll → ~520vh, inside the 450–550vh brief */
+.lmStage {
+  position: relative;
+  height: 520vh;
+}
+
+.lmSticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow: hidden;
+  background: var(--lm-void);
+}
+
+/* the film, full-bleed. Its native grade drifts warm/amber; we darken and
+   desaturate it here, then recolour it cool with the tint layer above. */
+.lmVideo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+  filter: brightness(0.66) saturate(0.5) contrast(1.06);
+}
+
+/* GRADE 1 — a cool teal-blue wash. `color` blend takes this layer's hue over
+   the (now desaturated) film, pulling the whole frame toward night. */
+.lmTint {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(180deg, #0c2b3a 0%, #0a1f30 48%, #081524 100%);
+  mix-blend-mode: color;
+  opacity: 0.62;
+  pointer-events: none;
+}
+
+/* GRADE 2 — sink the frame into the void: a soft central veil for type
+   legibility, deepening hard to near-black at the edges. */
+.lmDeepen {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background:
+    radial-gradient(
+      130% 100% at 50% 42%,
+      rgba(var(--lm-sink), 0.28) 0%,
+      rgba(var(--lm-sink), 0.52) 52%,
+      rgba(var(--lm-sink), 0.86) 100%
+    ),
+    linear-gradient(180deg, rgba(var(--lm-sink), 0.5) 0%, rgba(var(--lm-sink), 0) 26%);
+  pointer-events: none;
+}
+
+/* THE SIGNATURE — one luminous bloom. Silver-jade radial light that swells
+   behind the type as the jasmine heart opens. `screen` adds light to the
+   night; JS drives opacity + scale from the scrub position. */
+.lmBloom {
+  position: absolute;
+  left: 50%;
+  top: 44%;
+  z-index: 3;
+  width: min(150vh, 148vw);
+  height: min(150vh, 148vw);
+  transform: translate(-50%, -50%) scale(0.82);
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at center,
+    rgba(191, 227, 208, 0.9) 0%,
+    rgba(160, 214, 196, 0.42) 24%,
+    rgba(120, 180, 180, 0.16) 46%,
+    rgba(80, 140, 160, 0.05) 62%,
+    rgba(8, 13, 20, 0) 74%
+  );
+  mix-blend-mode: screen;
+  filter: blur(14px);
+  opacity: 0.12;
+  pointer-events: none;
+  will-change: opacity, transform;
+}
+
+/* panels, stacked and centred; JS crossfades them on their scroll centres */
+.lmPanels {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+}
+
+.lmPanel {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12vh var(--lm-gut) 14vh;
+  will-change: opacity, transform;
+  /* PRE-JS STATE — the fix for the pile-up. The scrub loop assigns each
+     panel's opacity from scroll position, but until it first runs (SSR'd
+     markup, the paint before hydration, a resting preview frame) every panel
+     would otherwise sit at its default opacity of 1 and stack on top of the
+     hero. Start them hidden; the hero below overrides itself back to visible,
+     so the resting state already matches scroll progress 0 — only "sillage"
+     shows, and JS takes it from there. */
+  opacity: 0;
+  visibility: hidden;
+}
+
+/* the hero is the one panel visible at rest (progress 0), so it is the one
+   panel that opts back in before the scrub loop touches anything */
+.lmPanel--hero {
+  opacity: 1;
+  visibility: visible;
+}
+
+.lmPanelInner {
+  width: 100%;
+  max-width: var(--lm-measure);
+  text-align: center;
+}
+
+/* --- hero --- */
+.lmWordmark {
+  font-family: var(--font-fraunces), Georgia, "Times New Roman", serif;
+  font-variation-settings: "opsz" 144, "SOFT" 0, "WONK" 0;
+  font-weight: 330;
+  font-size: clamp(3.6rem, 17vw, 11rem);
+  line-height: 0.9;
+  letter-spacing: -0.02em;
+  color: var(--lm-ivory);
+  /* legibility over film — a faint luminous halo, not decoration */
+  text-shadow: 0 1px 60px rgba(191, 227, 208, 0.14), 0 2px 30px rgba(var(--lm-sink), 0.6);
+}
+
+.lmTagline {
+  margin-top: clamp(1.1rem, 2.4vw, 1.9rem);
+  font-family: var(--font-instrument), Georgia, serif;
+  font-style: italic;
+  font-size: clamp(1.15rem, 3vw, 1.7rem);
+  line-height: 1.4;
+  letter-spacing: 0.002em;
+  color: var(--lm-ivory);
+  text-wrap: balance;
+  text-shadow: 0 1px 24px rgba(var(--lm-sink), 0.7);
+}
+
+.lmMeta {
+  margin-top: clamp(1.6rem, 3.4vw, 2.6rem);
+  font-size: clamp(0.82rem, 1.5vw, 0.95rem);
+  line-height: 1.6;
+  color: var(--lm-ivory-faint);
+  text-shadow: 0 1px 18px rgba(var(--lm-sink), 0.7);
+}
+
+/* --- beats (top / heart / base) --- */
+.lmNote {
+  font-family: var(--font-instrument), Georgia, serif;
+  font-style: italic;
+  font-size: clamp(1rem, 2.3vw, 1.35rem);
+  line-height: 1.4;
+  color: var(--lm-jade);
+  letter-spacing: 0.004em;
+}
+
+.lmTitle {
+  margin-top: clamp(0.5rem, 1.4vw, 0.9rem);
+  font-family: var(--font-fraunces), Georgia, "Times New Roman", serif;
+  font-variation-settings: "opsz" 72, "SOFT" 0, "WONK" 0;
+  font-weight: 360;
+  font-size: clamp(2.3rem, 8.5vw, 5rem);
+  line-height: 0.98;
+  letter-spacing: -0.015em;
+  color: var(--lm-ivory);
+  text-wrap: balance;
+  text-shadow: 0 2px 40px rgba(var(--lm-sink), 0.6);
+}
+
+.lmBody {
+  margin: clamp(1.1rem, 2.6vw, 1.7rem) auto 0;
+  max-width: 34ch;
+  font-size: clamp(1rem, 1.9vw, 1.15rem);
+  line-height: 1.65;
+  color: var(--lm-ivory-dim);
+  text-wrap: pretty;
+  text-shadow: 0 1px 22px rgba(var(--lm-sink), 0.72);
+}
+
+/* the heart title gets the light — a touch of the accent in its halo, in
+   concert with the bloom behind it (the one bold moment) */
+.lmPanel--heart .lmTitle {
+  text-shadow: 0 0 46px rgba(191, 227, 208, 0.3), 0 2px 40px rgba(var(--lm-sink), 0.5);
+}
+
+/* --- closing --- */
+.lmClosing {
+  font-family: var(--font-fraunces), Georgia, "Times New Roman", serif;
+  font-variation-settings: "opsz" 96, "SOFT" 0, "WONK" 0;
+  font-weight: 340;
+  font-size: clamp(1.9rem, 6.5vw, 3.6rem);
+  line-height: 1.1;
+  letter-spacing: -0.012em;
+  color: var(--lm-ivory);
+  text-wrap: balance;
+  text-shadow: 0 2px 40px rgba(var(--lm-sink), 0.6);
+}
+
+.lmCta {
+  display: inline-block;
+  margin-top: clamp(1.8rem, 4vw, 2.8rem);
+  padding-bottom: 0.35rem;
+  font-size: clamp(0.9rem, 1.7vw, 1rem);
+  letter-spacing: 0.05em;
+  color: var(--lm-jade);
+  border-bottom: 1px solid var(--lm-jade-soft);
+  transition: border-color 0.4s ease, color 0.4s ease;
+}
+
+.lmCta:hover {
+  color: var(--lm-ivory);
+  border-color: var(--lm-ivory);
+}
+
+/* --- scroll cue --- */
+.lmCue {
+  position: absolute;
+  left: 50%;
+  bottom: clamp(1.6rem, 4vh, 3rem);
+  transform: translateX(-50%);
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.9rem;
+  color: var(--lm-ivory-faint);
+  pointer-events: none;
+}
+
+.lmCueWord {
+  font-family: var(--font-instrument), Georgia, serif;
+  font-style: italic;
+  font-size: clamp(0.85rem, 1.6vw, 0.98rem);
+  letter-spacing: 0.01em;
+}
+
+.lmCueLine {
+  width: 1px;
+  height: clamp(2.2rem, 6vh, 3.4rem);
+  background: linear-gradient(180deg, var(--lm-jade-soft), rgba(191, 227, 208, 0));
+}
+
+/* --------------------------------------------------------------------- *
+   REDUCED-MOTION / STATIC MODE — poster hero + stills, bloom preserved
+ * --------------------------------------------------------------------- */
+
+.lmHeroStatic {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12vh var(--lm-gut);
+  overflow: hidden;
+}
+
+.lmHeroStaticImg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+  filter: brightness(0.66) saturate(0.5) contrast(1.06);
+}
+
+.lmHeroStaticInner {
+  position: relative;
+  z-index: 4;
+}
+
+.lmSections {
+  /* seams a half-tone up from the void so the sections breathe */
+  background: linear-gradient(180deg, var(--lm-void) 0%, var(--lm-void-2) 50%, var(--lm-void) 100%);
+}
+
+.lmSection {
+  max-width: 74rem;
+  margin: 0 auto;
+  padding: clamp(4rem, 12vh, 9rem) var(--lm-gut);
+  display: grid;
+  gap: clamp(1.8rem, 5vw, 4rem);
+  align-items: center;
+}
+
+@media (min-width: 820px) {
+  .lmSection {
+    grid-template-columns: 1fr 1fr;
+  }
+  .lmSection--heart {
+    /* keep the heart image on the left so its bloom leads the eye */
+    direction: ltr;
+  }
+}
+
+.lmSectionFig {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  border-radius: 2px;
+}
+
+.lmSectionFig img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(0.72) saturate(0.55) contrast(1.05);
+}
+
+.lmSectionGrade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, #0c2b3a 0%, #081524 100%);
+  mix-blend-mode: color;
+  opacity: 0.55;
+  pointer-events: none;
+}
+
+/* the signature survives without motion: a CSS-only bloom on the heart still */
+.lmBloom--static {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 150%;
+  height: 150%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at center,
+    rgba(191, 227, 208, 0.8) 0%,
+    rgba(160, 214, 196, 0.36) 26%,
+    rgba(120, 180, 180, 0.12) 48%,
+    rgba(8, 13, 20, 0) 68%
+  );
+  mix-blend-mode: screen;
+  filter: blur(10px);
+  opacity: 1;
+  pointer-events: none;
+}
+
+.lmSectionText {
+  max-width: var(--lm-measure);
+}
+
+.lmSection .lmBody {
+  margin-left: 0;
+  margin-right: 0;
+  text-shadow: none;
+}
+
+.lmSection .lmNote,
+.lmSection .lmTitle,
+.lmClosingStatic .lmClosing {
+  text-shadow: none;
+}
+
+.lmClosingStatic {
+  min-height: 70vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: clamp(4rem, 14vh, 10rem) var(--lm-gut);
+}
+
+/* ===================================================================== *
+   THE COMPLETE SITE — sections below the hero, shared by both modes.
+   Deep ink ground, one silver-jade light, serif voice. No cards, no
+   shadows, no numbered chrome — graded imagery, space, and type.
+ * ===================================================================== */
+
+.lmSite {
+  position: relative;
+  z-index: 1;
+  background: var(--lm-void);
+}
+
+/* shared section rhythm */
+.lmSite section,
+.lmSite footer {
+  padding-inline: var(--lm-gut);
+}
+
+/* --- THE COMPOSITION — the pyramid, read plainly --- */
+.lmComposition {
+  max-width: 60rem;
+  margin: 0 auto;
+  padding-block: clamp(5rem, 16vh, 11rem);
+  border-top: 1px solid rgba(191, 227, 208, 0.1);
+}
+
+.lmCompHead {
+  margin-bottom: clamp(2.4rem, 6vh, 4.5rem);
+}
+
+.lmCompTitle {
+  margin-top: clamp(0.5rem, 1.4vw, 0.9rem);
+  font-family: var(--font-fraunces), Georgia, "Times New Roman", serif;
+  font-variation-settings: "opsz" 96, "SOFT" 0, "WONK" 0;
+  font-weight: 340;
+  font-size: clamp(2.1rem, 6.5vw, 3.9rem);
+  line-height: 1.02;
+  letter-spacing: -0.014em;
+  color: var(--lm-ivory);
+  text-wrap: balance;
+}
+
+.lmPyramid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.lmTier {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.9rem 2rem;
+  padding-block: clamp(1.5rem, 4vh, 2.6rem);
+  border-top: 1px solid rgba(242, 239, 230, 0.09);
+}
+.lmTier:last-child {
+  border-bottom: 1px solid rgba(242, 239, 230, 0.09);
+}
+
+@media (min-width: 680px) {
+  .lmTier {
+    grid-template-columns: 12rem 1fr;
+    align-items: baseline;
+  }
+}
+
+.lmTierName {
+  font-family: var(--font-instrument), Georgia, serif;
+  font-style: italic;
+  font-size: clamp(1.3rem, 3vw, 1.9rem);
+  color: var(--lm-jade);
+  letter-spacing: 0.004em;
+}
+
+.lmTierNotes {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+
+.lmAccord {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.4rem 0.9rem;
+}
+
+.lmAccordNote {
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-variation-settings: "opsz" 40;
+  font-weight: 400;
+  font-size: clamp(1.25rem, 2.6vw, 1.65rem);
+  color: var(--lm-ivory);
+  letter-spacing: -0.008em;
+}
+
+.lmAccordMatter {
+  font-size: clamp(0.86rem, 1.5vw, 0.98rem);
+  color: var(--lm-ivory-faint);
+  font-style: italic;
+  font-family: var(--font-instrument), Georgia, serif;
+}
+
+/* --- THE BOTTLE — object + price + one buy action --- */
+.lmProduct {
+  max-width: 78rem;
+  margin: 0 auto;
+  padding-block: clamp(4rem, 12vh, 8rem);
+  display: grid;
+  gap: clamp(2rem, 6vw, 5rem);
+  align-items: center;
+}
+
+@media (min-width: 860px) {
+  .lmProduct {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.lmProductFig {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  border-radius: 2px;
+}
+
+.lmProductFig img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(0.7) saturate(0.55) contrast(1.05);
+}
+
+.lmProductName {
+  margin-top: clamp(0.5rem, 1.4vw, 0.9rem);
+  font-family: var(--font-fraunces), Georgia, "Times New Roman", serif;
+  font-variation-settings: "opsz" 144, "SOFT" 0, "WONK" 0;
+  font-weight: 330;
+  font-size: clamp(3rem, 9vw, 5.6rem);
+  line-height: 0.92;
+  letter-spacing: -0.02em;
+  color: var(--lm-ivory);
+}
+
+.lmProductSub {
+  margin-top: 0.6rem;
+  font-family: var(--font-instrument), Georgia, serif;
+  font-style: italic;
+  font-size: clamp(1.05rem, 2.4vw, 1.4rem);
+  color: var(--lm-jade);
+}
+
+.lmProductCopy {
+  margin-top: clamp(1.3rem, 3vh, 2rem);
+  max-width: 42ch;
+  font-size: clamp(1rem, 1.9vw, 1.12rem);
+  line-height: 1.65;
+  color: var(--lm-ivory-dim);
+  text-wrap: pretty;
+}
+
+.lmProductConc {
+  margin-top: clamp(1rem, 2.4vh, 1.6rem);
+  font-family: var(--font-instrument), Georgia, serif;
+  font-style: italic;
+  font-size: clamp(0.9rem, 1.6vw, 1.02rem);
+  color: var(--lm-ivory-faint);
+}
+
+.lmPrices {
+  display: flex;
+  gap: clamp(1.6rem, 4vw, 2.8rem);
+  margin-top: clamp(1.6rem, 4vh, 2.4rem);
+}
+
+.lmPrice {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.lmPriceMl {
+  font-size: 0.82rem;
+  letter-spacing: 0.04em;
+  color: var(--lm-ivory-faint);
+}
+
+.lmPriceValue {
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-variation-settings: "opsz" 40;
+  font-size: clamp(1.4rem, 3vw, 1.8rem);
+  color: var(--lm-ivory);
+}
+
+/* the one buy action: hairline at rest, fills with light on hover */
+.lmBuy {
+  margin-top: clamp(1.8rem, 4.5vh, 2.8rem);
+  padding: 0.85rem 2.2rem;
+  font: inherit;
+  font-size: clamp(0.9rem, 1.7vw, 1rem);
+  letter-spacing: 0.05em;
+  color: var(--lm-jade);
+  background: transparent;
+  border: 1px solid var(--lm-jade-soft);
+  border-radius: 2px;
+  cursor: pointer;
+  transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease;
+}
+
+.lmBuy:hover {
+  background: var(--lm-jade);
+  border-color: var(--lm-jade);
+  color: var(--lm-void);
+}
+
+.lmBuy:focus-visible {
+  outline: 2px solid var(--lm-jade);
+  outline-offset: 4px;
+}
+
+/* --- PROVENANCE — full-bleed graded still, text over the frame --- */
+.lmProvenance {
+  position: relative;
+  overflow: hidden;
+  padding-block: clamp(6rem, 20vh, 13rem);
+  padding-inline: var(--lm-gut);
+}
+
+.lmProvImg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+  filter: brightness(0.5) saturate(0.5) contrast(1.05);
+}
+
+/* reuse the cool tint; deepen for legibility */
+.lmProvScrim {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background:
+    radial-gradient(120% 120% at 30% 50%, rgba(var(--lm-sink), 0.55) 0%, rgba(var(--lm-sink), 0.82) 70%),
+    linear-gradient(90deg, rgba(var(--lm-sink), 0.7) 0%, rgba(var(--lm-sink), 0.1) 60%);
+  pointer-events: none;
+}
+
+.lmProvInner {
+  position: relative;
+  z-index: 3;
+  max-width: 46rem;
+}
+
+.lmProvTitle {
+  margin-top: clamp(0.5rem, 1.4vw, 0.9rem);
+  font-family: var(--font-fraunces), Georgia, "Times New Roman", serif;
+  font-variation-settings: "opsz" 96, "SOFT" 0, "WONK" 0;
+  font-weight: 340;
+  font-size: clamp(2.1rem, 6vw, 4rem);
+  line-height: 1.02;
+  letter-spacing: -0.014em;
+  color: var(--lm-ivory);
+  text-wrap: balance;
+  text-shadow: 0 2px 40px rgba(var(--lm-sink), 0.6);
+}
+
+.lmProvBody {
+  margin-top: clamp(1.2rem, 3vh, 1.9rem);
+  max-width: 46ch;
+  font-size: clamp(1rem, 1.9vw, 1.15rem);
+  line-height: 1.7;
+  color: var(--lm-ivory-dim);
+  text-wrap: pretty;
+  text-shadow: 0 1px 22px rgba(var(--lm-sink), 0.7);
+}
+
+.lmStats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: clamp(1.8rem, 5vw, 3.4rem);
+  margin: clamp(2.4rem, 6vh, 4rem) 0 0;
+}
+
+.lmStat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.lmStatValue {
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-variation-settings: "opsz" 72;
+  font-weight: 350;
+  font-size: clamp(1.8rem, 4.5vw, 2.8rem);
+  line-height: 1;
+  color: var(--lm-ivory);
+}
+
+.lmStatLabel {
+  margin: 0;
+  max-width: 18ch;
+  font-family: var(--font-instrument), Georgia, serif;
+  font-style: italic;
+  font-size: clamp(0.85rem, 1.5vw, 0.98rem);
+  color: var(--lm-jade);
+}
+
+/* --- THE HOUSE — companion scents, editorial rows --- */
+.lmCollection {
+  max-width: 82rem;
+  margin: 0 auto;
+  padding-block: clamp(5rem, 16vh, 11rem);
+}
+
+.lmCollHead {
+  margin-bottom: clamp(2.4rem, 7vh, 5rem);
+}
+
+.lmCompanions {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1.5rem, 5vh, 3.2rem);
+}
+
+.lmCompanionLink {
+  display: grid;
+  gap: clamp(1.2rem, 4vw, 3rem);
+  align-items: center;
+  padding-block: clamp(1.5rem, 4vh, 2.4rem);
+  border-top: 1px solid rgba(242, 239, 230, 0.09);
+}
+.lmCompanion:last-child .lmCompanionLink {
+  border-bottom: 1px solid rgba(242, 239, 230, 0.09);
+}
+
+@media (min-width: 760px) {
+  .lmCompanionLink {
+    grid-template-columns: 26rem 1fr;
+  }
+  /* alternate the image side for rhythm */
+  .lmCompanion:nth-child(even) .lmCompanionFig {
+    order: 2;
+  }
+}
+
+.lmCompanionFig {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  border-radius: 2px;
+}
+
+.lmCompanionFig img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(0.66) saturate(0.5) contrast(1.05);
+  transition: transform 0.9s cubic-bezier(0.2, 0.7, 0.2, 1), filter 0.9s ease;
+}
+
+.lmCompanionLink:hover .lmCompanionFig img,
+.lmCompanionLink:focus-visible .lmCompanionFig img {
+  transform: scale(1.03);
+  filter: brightness(0.78) saturate(0.62) contrast(1.05);
+}
+
+.lmCompanionName {
+  margin-top: clamp(0.4rem, 1.2vw, 0.8rem);
+  font-family: var(--font-fraunces), Georgia, "Times New Roman", serif;
+  font-variation-settings: "opsz" 96, "SOFT" 0, "WONK" 0;
+  font-weight: 336;
+  font-size: clamp(2.2rem, 6vw, 3.6rem);
+  line-height: 0.98;
+  letter-spacing: -0.016em;
+  color: var(--lm-ivory);
+}
+
+.lmCompanionMood {
+  margin-top: clamp(0.7rem, 1.8vh, 1.1rem);
+  max-width: 40ch;
+  font-size: clamp(0.98rem, 1.8vw, 1.1rem);
+  line-height: 1.6;
+  color: var(--lm-ivory-dim);
+  text-wrap: pretty;
+}
+
+.lmCompanionCue {
+  display: inline-block;
+  margin-top: clamp(1rem, 2.4vh, 1.5rem);
+  padding-bottom: 0.25rem;
+  font-size: 0.9rem;
+  letter-spacing: 0.05em;
+  color: var(--lm-jade);
+  border-bottom: 1px solid var(--lm-jade-soft);
+  transition: border-color 0.4s ease, color 0.4s ease;
+}
+.lmCompanionLink:hover .lmCompanionCue,
+.lmCompanionLink:focus-visible .lmCompanionCue {
+  color: var(--lm-ivory);
+  border-color: var(--lm-ivory);
+}
+
+/* --- FOOTER --- */
+.lmFooter {
+  border-top: 1px solid rgba(191, 227, 208, 0.12);
+  padding-block: clamp(4rem, 12vh, 7rem);
+  background: var(--lm-void-2);
+}
+
+.lmFootTop {
+  max-width: 82rem;
+  margin: 0 auto;
+  display: grid;
+  gap: clamp(2.4rem, 6vw, 4rem);
+}
+
+@media (min-width: 780px) {
+  .lmFootTop {
+    grid-template-columns: 1.2fr 2fr;
+  }
+}
+
+.lmFootMark {
+  font-family: var(--font-fraunces), Georgia, "Times New Roman", serif;
+  font-variation-settings: "opsz" 96, "SOFT" 0, "WONK" 0;
+  font-weight: 330;
+  font-size: clamp(2rem, 5vw, 2.8rem);
+  letter-spacing: -0.02em;
+  color: var(--lm-ivory);
+}
+
+.lmFootStatement {
+  margin-top: 0.9rem;
+  max-width: 34ch;
+  font-family: var(--font-instrument), Georgia, serif;
+  font-style: italic;
+  font-size: clamp(1rem, 2vw, 1.2rem);
+  line-height: 1.5;
+  color: var(--lm-ivory-dim);
+}
+
+.lmFootNav {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(1.4rem, 4vw, 2.5rem);
+}
+
+@media (max-width: 520px) {
+  .lmFootNav {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.lmFootHead {
+  font-family: var(--font-instrument), Georgia, serif;
+  font-style: italic;
+  font-size: 1.05rem;
+  color: var(--lm-jade);
+  margin-bottom: 0.9rem;
+}
+
+.lmFootCol ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.lmFootCol a {
+  font-size: 0.95rem;
+  color: var(--lm-ivory-dim);
+  transition: color 0.3s ease;
+}
+.lmFootCol a:hover {
+  color: var(--lm-ivory);
+}
+
+.lmSignup {
+  max-width: 82rem;
+  margin: clamp(3rem, 8vh, 5rem) auto 0;
+  padding-top: clamp(2.4rem, 6vh, 3.6rem);
+  border-top: 1px solid rgba(242, 239, 230, 0.09);
+}
+
+.lmSignupLabel {
+  display: block;
+  font-family: var(--font-instrument), Georgia, serif;
+  font-style: italic;
+  font-size: clamp(1rem, 2vw, 1.25rem);
+  color: var(--lm-ivory-dim);
+  margin-bottom: 1.1rem;
+}
+
+.lmSignupRow {
+  display: flex;
+  gap: 0.75rem;
+  max-width: 30rem;
+  align-items: stretch;
+}
+
+.lmSignupInput {
+  flex: 1;
+  min-width: 0;
+  padding: 0.8rem 0;
+  font: inherit;
+  color: var(--lm-ivory);
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid rgba(242, 239, 230, 0.24);
+  border-radius: 0;
+  transition: border-color 0.3s ease;
+}
+.lmSignupInput::placeholder {
+  color: var(--lm-ivory-faint);
+}
+.lmSignupInput:focus {
+  outline: none;
+  border-bottom-color: var(--lm-jade);
+}
+
+.lmSignupBtn {
+  padding: 0 1.6rem;
+  font: inherit;
+  font-size: 0.92rem;
+  letter-spacing: 0.05em;
+  color: var(--lm-jade);
+  background: transparent;
+  border: 1px solid var(--lm-jade-soft);
+  border-radius: 2px;
+  cursor: pointer;
+  transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease;
+}
+.lmSignupBtn:hover {
+  background: var(--lm-jade);
+  border-color: var(--lm-jade);
+  color: var(--lm-void);
+}
+.lmSignupBtn:focus-visible {
+  outline: 2px solid var(--lm-jade);
+  outline-offset: 3px;
+}
+
+.lmFine {
+  max-width: 82rem;
+  margin: clamp(3rem, 8vh, 4.5rem) auto 0;
+  font-size: 0.82rem;
+  letter-spacing: 0.02em;
+  color: var(--lm-ivory-faint);
+}
+
+/* --------------------------------------------------------------------- *
+   reduced motion: neutralise any transitions if this class tree is shown
+ * --------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  .lmRoot * {
+    transition: none !important;
+    animation: none !important;
+  }
+}

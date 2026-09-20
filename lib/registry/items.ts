@@ -1614,6 +1614,70 @@ export const ITEMS: RegistryItem[] = [
     previewHeight: 420,
     previewDark: true,
   },
+  {
+    name: "afterglow",
+    title: "Afterglow",
+    kind: "templates",
+    description:
+      "A prom-night invitation on a scroll-scrubbed film: a single 30s take runs dusk to a confetti finale as full-screen beats fade through the frame, then the film releases and loops at the bottom while a silver bloom crests on the RSVP. Below the fold, a midnight-and-moonlight invitation — a gold-threaded timeline of the evening, tickets and details. Ships the hero film and five graded stills; reduced-motion gets a static fallback.",
+    categories: ["experiences", "events"],
+    author: AUTHORS.artbloom,
+    // A whole page on one stylesheet scoped to `.pnRoot`. The scrub logic is the
+    // client view; the server page composes it and owns the route metadata.
+    files: [
+      { source: "templates/afterglow/page.tsx", target: "app/afterglow/page.tsx", type: "registry:page" },
+      { source: "templates/afterglow/afterglow-view.tsx", target: "app/afterglow/afterglow-view.tsx", type: "registry:component" },
+      { source: "templates/afterglow/afterglow.css", target: "app/afterglow/afterglow.css", type: "registry:style" },
+    ],
+    // The film and five stills. Bytes that cannot be inlined as text, so they
+    // stream into `public/`, which is what makes the `/afterglow/<file>` URLs resolve.
+    assets: [
+      { source: "templates/afterglow/assets/journey.mp4", target: "public/afterglow/journey.mp4" },
+      { source: "templates/afterglow/assets/poster.jpg", target: "public/afterglow/poster.jpg" },
+      { source: "templates/afterglow/assets/still-bluehour.jpg", target: "public/afterglow/still-bluehour.jpg" },
+      { source: "templates/afterglow/assets/still-dance.jpg", target: "public/afterglow/still-dance.jpg" },
+      { source: "templates/afterglow/assets/still-slow.jpg", target: "public/afterglow/still-slow.jpg" },
+      { source: "templates/afterglow/assets/still-confetti.jpg", target: "public/afterglow/still-confetti.jpg" },
+    ],
+    createdAt: "2026-09-20",
+    featured: true,
+    isNew: true,
+    previewHeight: 420,
+    previewDark: true,
+  },
+  {
+    name: "sillage",
+    title: "Sillage",
+    kind: "templates",
+    description:
+      "A night-blooming fragrance house on a scroll-scrubbed film: a 30s take held cool and dark reads as a night garden, its beats — bergamot, night jasmine, oud — fading through the frame, with one silver-jade bloom swelling behind the type as jasmine opens at centre. Below the film, a real house: the composition read plainly, the bottle, where the jasmine is grown, the rest of the collection. Ships the hero film and six graded stills; reduced-motion gets a static fallback.",
+    categories: ["landing", "experiences"],
+    author: AUTHORS.artbloom,
+    // A whole page on one stylesheet scoped to `.lmRoot`. The scrub logic is the
+    // client view; the server page composes it and owns the route metadata.
+    files: [
+      { source: "templates/sillage/page.tsx", target: "app/sillage/page.tsx", type: "registry:page" },
+      { source: "templates/sillage/sillage-view.tsx", target: "app/sillage/sillage-view.tsx", type: "registry:component" },
+      { source: "templates/sillage/sillage.css", target: "app/sillage/sillage.css", type: "registry:style" },
+    ],
+    // The film and six stills. Bytes that cannot be inlined as text, so they
+    // stream into `public/`, which is what makes the `/sillage/<file>` URLs resolve.
+    assets: [
+      { source: "templates/sillage/assets/journey.mp4", target: "public/sillage/journey.mp4" },
+      { source: "templates/sillage/assets/poster.jpg", target: "public/sillage/poster.jpg" },
+      { source: "templates/sillage/assets/still-1.jpg", target: "public/sillage/still-1.jpg" },
+      { source: "templates/sillage/assets/still-2.jpg", target: "public/sillage/still-2.jpg" },
+      { source: "templates/sillage/assets/still-3.jpg", target: "public/sillage/still-3.jpg" },
+      { source: "templates/sillage/assets/still-4.jpg", target: "public/sillage/still-4.jpg" },
+      { source: "templates/sillage/assets/still-5.jpg", target: "public/sillage/still-5.jpg" },
+      { source: "templates/sillage/assets/still-6.jpg", target: "public/sillage/still-6.jpg" },
+    ],
+    createdAt: "2026-09-20",
+    featured: true,
+    isNew: true,
+    previewHeight: 420,
+    previewDark: true,
+  },
 
   // ── Blocks ─────────────────────────────────────────────────────────────────
   // Each block is one self-contained section: a single Tailwind file with a

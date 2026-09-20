@@ -21,6 +21,8 @@ import Flux from "@/registry/templates/flux/page"
 import Assembly from "@/registry/templates/assembly/page"
 import Endpoint from "@/registry/templates/endpoint/page"
 import Folio from "@/registry/templates/folio/page"
+import Afterglow from "@/registry/templates/afterglow/page"
+import Sillage from "@/registry/templates/sillage/page"
 
 import ContactForm from "@/registry/blocks/contact-form/contact-form"
 import CtaBanner from "@/registry/blocks/cta-banner/cta-banner"
@@ -105,6 +107,8 @@ const TEMPLATE_PAGES = new Map<string, () => React.ReactNode>([
   ["assembly", Assembly],
   ["endpoint", Endpoint],
   ["folio", Folio],
+  ["afterglow", Afterglow],
+  ["sillage", Sillage],
   // Blocks — each a single self-contained section component.
   ["contact-form", ContactForm],
   ["cta-banner", CtaBanner],
