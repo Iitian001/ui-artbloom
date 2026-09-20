@@ -27,6 +27,7 @@ program
   .option("--css <path>", "stylesheet that receives keyframes")
   .option("--ui <path>", "where component files land")
   .option("--registry <url>", "read from a different registry origin")
+  .option("--home", "install a template's page as the site homepage (/) instead of its own route")
   .option("--dry-run", "print the plan and exit")
   .option("--no-deps", "skip the npm install step")
   // Commander turns a `--no-x` flag into `x: false`, which is exactly what
@@ -84,6 +85,7 @@ Examples:
   npx ${NAME} info marquee
   npx ${NAME} add text-shimmer number-ticker
   npx ${NAME} add cinematic-supercar --yes --overwrite
+  npx ${NAME} add solstice --home --overwrite   # make it the site homepage (/)
 
 Installed as a dependency, the command is \`${BIN}\`.
 `,
