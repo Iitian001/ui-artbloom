@@ -1,0 +1,19 @@
+# Configures the "Sponsor" button GitHub shows on this repository.
+#
+# The button appears only when BOTH are true:
+#   1. this file is on the repository's default branch (main), and
+#   2. the linked account has an active funding profile.
+#
+# GitHub Sponsors: renders once @Iitian001 has enrolled at
+# https://github.com/sponsors. Until then GitHub silently ignores this line —
+# no broken button, it simply does not appear.
+github: [Iitian001]
+
+# Other platforms are intentionally left commented out until there is a real
+# account to point at. An entry pointing nowhere renders a dead link, which is
+# worse than no button. Uncomment and fill one in when it exists.
+#
+# ko_fi: your-handle
+# open_collective: your-collective
+# buy_me_a_coffee: your-handle
+# custom: ["https://ui.artbloom.tech"]
