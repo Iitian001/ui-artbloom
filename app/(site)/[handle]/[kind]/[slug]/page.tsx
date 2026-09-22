@@ -10,7 +10,6 @@ import { InstallTabs } from "@/components/install-tabs"
 import { ItemCard } from "@/components/item-card"
 import { ItemPreview } from "@/components/item-preview"
 import { PreviewCodeTabs } from "@/components/preview-code-tabs"
-import { SaveButton } from "@/components/save-button"
 import { Badge } from "@/components/ui/badge"
 import { registryUrl } from "@/lib/brand"
 import { categoryLabel, KIND_LABEL, KIND_SINGULAR } from "@/lib/categories"
@@ -130,7 +129,6 @@ export default async function ItemPage({ params }: { params: Promise<Params> }) 
         </div>
 
         <div className="flex shrink-0 items-center gap-2">
-          <SaveButton name={item.name} title={item.title} variant="wide" />
           {(item.kind === "templates" || item.kind === "blocks") && (
             <Link
               href={`/preview/${item.name}`}

@@ -2,15 +2,15 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { BookmarkIcon, HomeIcon, LayersIcon, UserIcon } from "lucide-react"
+import { HomeIcon, LayersIcon, PaletteIcon, PlugZapIcon } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 
 const TABS = [
   { label: "Home", href: "/", Icon: HomeIcon },
   { label: "Browse", href: "/community/templates", Icon: LayersIcon },
-  { label: "Bookmarks", href: "/bookmarks", Icon: BookmarkIcon },
-  { label: "Profile", href: "/login", Icon: UserIcon },
+  { label: "Themes", href: "/themes", Icon: PaletteIcon },
+  { label: "MCP", href: "/docs/mcp", Icon: PlugZapIcon },
 ]
 
 /** Fixed bottom navigation, phones only. */

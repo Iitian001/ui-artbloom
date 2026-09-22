@@ -33,11 +33,11 @@ export default function TermsPage() {
             runtime dependency: nothing we host ends up in your production bundle.
           </p>
 
-          <h2>Your account</h2>
+          <h2>Using the service</h2>
           <p>
-            Accounts are not live yet. When they are: one person per account, keep your credentials
-            to yourself, and you are responsible for what happens under yours. We may suspend an
-            account that is used to scrape the catalogue, resell it, or attack the service.
+            There are no accounts: the catalogue, the registry and the CLI are open to everyone with
+            no sign-in. In return, use them as intended. We may block traffic that scrapes the
+            catalogue in bulk, resells it, or attacks the service.
           </p>
 
           <h2>What it costs</h2>
@@ -76,9 +76,8 @@ export default function TermsPage() {
 
           <h2>Changes</h2>
           <p>
-            We will change these terms as the product grows. Material changes get a note on the site
-            and, once accounts exist, an email. Continuing to use the service after a change means you
-            accept it.
+            We will change these terms as the product grows. Material changes get a note on the site.
+            Continuing to use the service after a change means you accept it.
           </p>
 
           <h2>Contact</h2>

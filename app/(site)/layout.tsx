@@ -2,7 +2,6 @@ import type { Metadata, Viewport } from "next"
 import { Inter, Instrument_Serif, JetBrains_Mono } from "next/font/google"
 
 import { MobileTabBar } from "@/components/mobile-tab-bar"
-import { SavesProvider } from "@/components/saves-provider"
 import { SiteFooter } from "@/components/site-footer"
 import { SiteHeader } from "@/components/site-header"
 import { ThemeProvider } from "@/components/theme-provider"
@@ -77,20 +76,18 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       >
         <ThemeProvider>
           <TooltipProvider>
-            <SavesProvider>
-              <a
-                href="#content"
-                className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-100 focus:rounded-md focus:bg-foreground focus:px-3 focus:py-2 focus:text-sm focus:text-background"
-              >
-                Skip to content
-              </a>
-              <SiteHeader />
-              <main id="content" className="pb-16 md:pb-0">
-                {children}
-              </main>
-              <SiteFooter />
-              <MobileTabBar />
-            </SavesProvider>
+            <a
+              href="#content"
+              className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-100 focus:rounded-md focus:bg-foreground focus:px-3 focus:py-2 focus:text-sm focus:text-background"
+            >
+              Skip to content
+            </a>
+            <SiteHeader />
+            <main id="content" className="pb-16 md:pb-0">
+              {children}
+            </main>
+            <SiteFooter />
+            <MobileTabBar />
           </TooltipProvider>
         </ThemeProvider>
       </body>

@@ -8,7 +8,6 @@ import { CodeShowcase } from "@/components/landing/code-showcase"
 import { CollectionsGrid } from "@/components/landing/collections-grid"
 import { Faq } from "@/components/landing/faq"
 import { Hero } from "@/components/landing/hero"
-import { ListsSection } from "@/components/landing/lists-section"
 import { ItemGrid } from "@/components/item-grid"
 import { featured, newest, type RegistryItem } from "@/lib/registry"
 import { cn } from "@/lib/utils"
@@ -123,7 +122,6 @@ export default function HomePage() {
       <CatalogueScale />
       <AgentMockups />
       <CodeShowcase />
-      <ListsSection />
       <CollectionsGrid />
       <ClosingCta />
       <Faq />

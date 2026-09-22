@@ -94,18 +94,14 @@ export type RegistryItem = {
   /*
    * No `installs` or `bookmarks` here on purpose.
    *
-   * They used to be required fields, and every one of the 29 entries in
-   * `items.ts` carried `0` — because the real counters live in `public.items`
-   * (see `supabase/schema.sql`) and are moved by `/api/track/install`, not by a
-   * literal in this repo. So the field was a seed for a number nobody had: the
-   * cards rendered "0", `popular()` sorted by a key that was equal for every
-   * item, and `totalInstalls()` fed the landing page the sentence "0 components
-   * installed by builders".
-   *
-   * The read path for the live numbers already exists in
-   * `lib/analytics/counts.ts` — `getItemCounts()` falls back per item and tags each
-   * result `"live"` or `"unknown"`. Wiring it into the UI is the change to make when
-   * there is traffic worth showing; adding a zero back to this type is not.
+   * They used to be required fields, and every entry in `items.ts` carried `0`,
+   * because nothing in this repo ever held a real count: the numbers lived in a
+   * Supabase table fed by an install endpoint. That backend has since been
+   * removed along with accounts and saves, so there is no live number to seed
+   * and nowhere for one to come from. A field whose only possible value was `0`
+   * made the cards render "0" and sorted every item by a key equal to every
+   * other — worse than no field, so it is gone. If real counts ever matter
+   * again they arrive with the system that produces them, not as a zero here.
    */
   featured?: boolean
   /** Renders the "New" pill in rails. */
