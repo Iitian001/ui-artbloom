@@ -1,7 +1,7 @@
 import { version as siteVersion } from "@/package.json"
 
 import { brand, installCommand, registryUrl, siteOrigin } from "@/lib/brand"
-import { isKind, KIND_LABEL, type Kind } from "@/lib/categories"
+import { isKind, KIND_LABEL, KINDS, type Kind } from "@/lib/categories"
 import { itemUrl } from "@/lib/hrefs"
 import {
   browsableKinds,
@@ -131,9 +131,9 @@ export const TOOLS = [
         },
         kind: {
           type: "string",
-          enum: ["animations", "templates"],
+          enum: [...KINDS],
           description:
-            "`animations` are single components or effects; `templates` are whole multi-page sites.",
+            "Filter by kind: `templates` are whole multi-page sites, `blocks` are single-file page sections, `components` are interactive UI primitives, and `animations` are drop-in motion effects.",
         },
         category: {
           type: "string",
@@ -306,7 +306,7 @@ function searchTool(args: Record<string, unknown>): ToolResult {
   if (args.kind !== undefined) {
     if (typeof args.kind !== "string" || !isKind(args.kind)) {
       return fail(
-        `\`kind\` must be "animations" or "templates". Got ${JSON.stringify(args.kind)}.`,
+        `\`kind\` must be one of ${KINDS.map((k) => `"${k}"`).join(", ")}. Got ${JSON.stringify(args.kind)}.`,
       )
     }
     kind = args.kind

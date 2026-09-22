@@ -23,7 +23,9 @@
  * `isKind(value) && kindCount(value) > 0`, so a kind with no items 404s on the
  * count regardless of whether the word is spelled here.
  */
-export type Kind = "templates" | "animations" | "blocks" | "components"
+export const KINDS = ["templates", "animations", "blocks", "components"] as const
+
+export type Kind = (typeof KINDS)[number]
 
 export type Category = {
   /** URL segment under /community/{kind}/s/{slug} */
@@ -151,10 +153,5 @@ export function categoryLabel(kind: Kind, slug: string) {
 }
 
 export function isKind(value: string): value is Kind {
-  return (
-    value === "templates" ||
-    value === "animations" ||
-    value === "blocks" ||
-    value === "components"
-  )
+  return (KINDS as readonly string[]).includes(value)
 }
