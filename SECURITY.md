@@ -14,7 +14,7 @@ Report privately through either:
 
 - GitHub's [private vulnerability reporting](https://github.com/Iitian001/ui-artbloom/security/advisories/new)
   (Security → Report a vulnerability), or
-- email **hey@ui.artbloom.tech** with the details.
+- email **hello@shreyashmishra.in** with the details.
 
 Include what you found, where (URL, item, CLI command, or file), how to reproduce it,
 and the impact you believe it has. A proof of concept helps.
