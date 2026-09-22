@@ -1,7 +1,18 @@
-import { CheckIcon, GitPullRequestIcon, SparklesIcon, TerminalIcon } from "lucide-react"
+import Link from "next/link"
+import {
+  ArrowRightIcon,
+  CheckIcon,
+  GitPullRequestIcon,
+  PlugZapIcon,
+  SparklesIcon,
+  TerminalIcon,
+} from "lucide-react"
 
-import { brand } from "@/lib/brand"
+import { CopyButton } from "@/components/copy-button"
+import { brand, siteOrigin } from "@/lib/brand"
 import { cn } from "@/lib/utils"
+
+const ENDPOINT = `${siteOrigin}/mcp`
 
 function Frame({
   label,
@@ -157,6 +168,36 @@ export function AgentMockups() {
               </p>
             </div>
           </Frame>
+        </div>
+
+        {/* Every agent — and the client that skips copy-paste entirely: an MCP
+            client reads the catalogue and installs from it directly. */}
+        <div className="mx-auto mt-8 flex max-w-2xl flex-col items-center gap-4 rounded-2xl border border-border bg-card p-5 sm:flex-row sm:gap-5 sm:p-6">
+          <span className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-brand/10 text-brand">
+            <PlugZapIcon className="size-5" />
+          </span>
+          <div className="min-w-0 flex-1 text-center sm:text-left">
+            <p className="text-sm font-medium">Or skip the copy-paste — connect over MCP</p>
+            <p className="mt-0.5 text-[13px] text-muted-foreground">
+              Point an MCP client at the endpoint and it searches the catalogue and reads
+              any piece&rsquo;s source itself. No key, read-only.
+            </p>
+          </div>
+          <div className="flex shrink-0 flex-col items-center gap-2 sm:items-end">
+            <div className="flex items-center gap-2">
+              <code className="rounded-lg border border-border bg-secondary px-2.5 py-1.5 font-mono text-xs text-foreground">
+                {ENDPOINT}
+              </code>
+              <CopyButton value={ENDPOINT} variant="solid" label="Copy MCP endpoint" />
+            </div>
+            <Link
+              href="/docs/mcp"
+              className="inline-flex items-center gap-1 text-xs font-medium text-brand transition-colors hover:text-brand/80"
+            >
+              Read the MCP docs
+              <ArrowRightIcon className="size-3.5" />
+            </Link>
+          </div>
         </div>
       </div>
     </section>
