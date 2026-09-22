@@ -36,7 +36,7 @@
   /* Surfaces that sit *behind* the page — preview checkerboards, code gutters. */
   --subtle: oklch(0.985 0 0);
   --elevated: oklch(1 0 0);
-  --brand: oklch(0.62 0.19 12);
+  --brand: oklch(0.55 0.17 250);
 }
 
 .dark {
@@ -62,7 +62,7 @@
 
   --subtle: oklch(0.125 0 0);
   --elevated: oklch(0.195 0 0);
-  --brand: oklch(0.72 0.19 12);
+  --brand: oklch(0.70 0.16 250);
 }
 
 @theme inline {

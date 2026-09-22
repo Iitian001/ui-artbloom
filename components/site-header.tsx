@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { ChevronDownIcon } from "lucide-react"
+import { ChevronDownIcon, PlugZapIcon } from "lucide-react"
 
 import { signOut } from "@/app/(site)/(auth)/actions"
 import { CategoryPanel } from "@/components/category-panel"
@@ -14,10 +14,13 @@ import { ThemeToggle } from "@/components/theme-toggle"
 import { buttonVariants } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 
-const NAV = [
+const NAV: { label: string; href: string; wide?: boolean; feature?: boolean }[] = [
   { label: "Templates", href: "/community/templates" },
+  { label: "Components", href: "/community/components" },
+  { label: "Blocks", href: "/community/blocks" },
   { label: "Animations", href: "/community/animations" },
-  { label: "Themes", href: "/themes" },
+  { label: "Themes", href: "/themes", wide: true },
+  { label: "MCP", href: "/docs/mcp", feature: true },
 ]
 
 export function SiteHeader() {
@@ -85,7 +88,7 @@ export function SiteHeader() {
           {panelOpen && <CategoryPanel onNavigate={() => setPanelOpen(false)} />}
         </div>
 
-        <nav className="hidden items-center gap-1 lg:flex">
+        <nav className="hidden items-center gap-0.5 lg:flex">
           {NAV.map((link) => {
             const active = pathname === link.href || pathname.startsWith(`${link.href}/`)
             return (
@@ -93,10 +96,18 @@ export function SiteHeader() {
                 key={link.href}
                 href={link.href}
                 className={cn(
-                  "rounded-lg px-2.5 py-1.5 text-sm font-medium transition-colors",
-                  active ? "text-foreground" : "text-muted-foreground hover:text-foreground",
+                  "inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-sm font-medium transition-colors",
+                  link.wide && "hidden xl:inline-flex",
+                  link.feature
+                    ? active
+                      ? "text-brand"
+                      : "text-brand/80 hover:text-brand"
+                    : active
+                      ? "text-foreground"
+                      : "text-muted-foreground hover:text-foreground",
                 )}
               >
+                {link.feature && <PlugZapIcon className="size-3.5" />}
                 {link.label}
               </Link>
             )
