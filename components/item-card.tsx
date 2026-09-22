@@ -3,7 +3,6 @@ import { ArrowUpRightIcon } from "lucide-react"
 
 import { AuthorAvatar } from "@/components/author"
 import { ItemPreview } from "@/components/item-preview"
-import { SaveButton } from "@/components/save-button"
 import { Badge } from "@/components/ui/badge"
 import { categoryLabel } from "@/lib/categories"
 import { itemHref } from "@/lib/hrefs"
@@ -138,8 +137,6 @@ export function ItemCard({ item, height, className }: ItemCardProps) {
             {categoryLabel(item.kind, primary)}
           </span>
         )}
-
-        <SaveButton name={item.name} title={item.title} className="-mr-1" />
       </div>
     </article>
   )

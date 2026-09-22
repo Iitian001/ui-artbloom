@@ -5,13 +5,10 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { ChevronDownIcon, PlugZapIcon } from "lucide-react"
 
-import { signOut } from "@/app/(site)/(auth)/actions"
 import { CategoryPanel } from "@/components/category-panel"
 import { CommandMenu } from "@/components/command-menu"
 import { Logo } from "@/components/logo"
-import { useSaves } from "@/components/saves-provider"
 import { ThemeToggle } from "@/components/theme-toggle"
-import { buttonVariants } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 
 const NAV: { label: string; href: string; wide?: boolean; feature?: boolean }[] = [
@@ -117,88 +114,9 @@ export function SiteHeader() {
         <div className="ml-auto flex items-center gap-2">
           <CommandMenu />
           <ThemeToggle className="hidden sm:flex" />
-          <AccountControls />
         </div>
       </div>
     </header>
   )
 }
 
-/**
- * The sign-in corner, driven by the one session read the page already makes
- * (`SavesProvider`). Signed in, it becomes the account: avatar/handle to the
- * saved list, and a real sign-out. Signed out — or while auth is off, loading or
- * unreachable — it stays the two links it always was, so nothing regresses on a
- * deployment with no accounts.
- *
- * `loading` holds a fixed-width placeholder instead of flashing "Log in" for the
- * moment before the session settles, matching how the save buttons wait on the
- * same fetch.
- */
-function AccountControls() {
-  const { status, user } = useSaves()
-
-  if (status === "ready" && user) {
-    const label = user.handle ? `@${user.handle}` : (user.name ?? "Account")
-    const initial = (user.handle ?? user.name ?? user.email ?? "?").charAt(0).toUpperCase()
-
-    return (
-      <div className="flex items-center gap-1.5">
-        <Link
-          href="/bookmarks"
-          className="flex items-center gap-2 rounded-lg py-1 pr-1 pl-1 text-sm font-medium text-foreground transition-colors hover:bg-accent"
-          title={label}
-        >
-          {user.avatar ? (
-            // Remote GitHub avatar — a plain img so no remote-image config or
-            // optimizer round trip is needed for one 28px picture.
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={user.avatar}
-              alt=""
-              width={28}
-              height={28}
-              className="size-7 rounded-full border border-border object-cover"
-            />
-          ) : (
-            <span
-              aria-hidden="true"
-              className="flex size-7 items-center justify-center rounded-full border border-border bg-secondary text-xs font-semibold text-muted-foreground"
-            >
-              {initial}
-            </span>
-          )}
-          <span className="hidden max-w-32 truncate sm:inline">{label}</span>
-        </Link>
-        <form action={signOut}>
-          <button
-            type="submit"
-            className={cn(buttonVariants({ variant: "ghost", size: "sm" }))}
-          >
-            Sign out
-          </button>
-        </form>
-      </div>
-    )
-  }
-
-  // The session read is still in flight — hold the space rather than flash a
-  // "Log in" that is about to become an avatar.
-  if (status === "loading") {
-    return <div aria-hidden="true" className="h-8 w-20 sm:w-28" />
-  }
-
-  return (
-    <>
-      <Link
-        href="/login"
-        className={cn(buttonVariants({ variant: "ghost", size: "sm" }), "hidden sm:inline-flex")}
-      >
-        Log in
-      </Link>
-      <Link href="/signup" className={buttonVariants({ size: "sm" })}>
-        Sign up
-      </Link>
-    </>
-  )
-}

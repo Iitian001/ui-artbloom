@@ -26,9 +26,6 @@ import {
  *
  * What is deliberately absent:
  *
- * - `/bookmarks`, `/login`, `/signup`. Each carries `robots: { index: false }`;
- *   listing a page you have asked not to be indexed is a contradiction, not a
- *   hedge.
  * - The template mounts (`/monolith-launch`, `/paper-portfolio`, …) and every
  *   `/preview/<name>`. `app/(bare)/layout.tsx` sets `robots: { index: false,
  *   follow: false }` on that whole group, and rightly — they are fixtures whose

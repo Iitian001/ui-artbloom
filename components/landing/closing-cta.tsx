@@ -29,10 +29,10 @@ export function ClosingCta() {
             Browse templates
           </Link>
           <Link
-            href="/signup"
+            href="/docs/mcp"
             className={cn(buttonVariants({ variant: "outline", size: "lg" }))}
           >
-            Join for free
+            Connect via MCP
           </Link>
         </div>
       </div>

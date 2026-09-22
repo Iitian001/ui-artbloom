@@ -34,7 +34,6 @@ const COLUMNS: FooterColumn[] = [
     links: [
       { label: "Docs", href: "/docs" },
       { label: "CLI", href: "/docs/cli" },
-      { label: "Sign in", href: "/login" },
     ],
   },
   {

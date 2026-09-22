@@ -7,27 +7,26 @@ import { pageMeta } from "@/lib/seo"
 
 export const metadata: Metadata = pageMeta({
   title: "Privacy",
-  description: `Every cookie ${brand.name} sets, and the one thing the CLI reports back.`,
+  description: `What ${brand.name} collects: no account, no analytics, and a CLI ping we do not record.`,
   path: "/privacy",
 })
 
 const UPDATED = "4 September 2026"
 
 /*
- * WRITTEN FROM THE CODE, NOT FROM MEMORY. Three things this page used to claim, and the
- * files that contradict them:
+ * WRITTEN FROM THE CODE, NOT FROM MEMORY. A privacy notice that denies what the product
+ * does is worse than no notice at all, so the rule for editing this file is: name the
+ * file that does the thing, and read that file first.
  *
- *   "no accounts, no analytics, no cookies of ours"
- *      -> `app/(site)/(auth)/auth.ts` sets three, and Supabase holds a user row.
- *   "The CLI itself sends no telemetry ... reports nothing back"
- *      -> `cli/src/track.ts` posts one line per installed item, and the CLI's own
- *         README documents it. This page was the only place denying it.
- *   "Payment will go through a payment processor that handles card details"
- *      -> there is no payment. Everything in the catalogue is free.
+ * What the code actually does, as of this writing:
  *
- * A privacy notice that denies what the product does is worse than no notice at all, so
- * the rule for editing this file is: name the file that does the thing, and read that
- * file first.
+ *   - No accounts. There is no sign-in, no user row, and no cookie this site sets; the
+ *     theme choice lives in local storage, not a cookie.
+ *   - The CLI still posts one line per installed piece (`cli/src/track.ts`), but the
+ *     route that recorded it is gone, so the request reaches this origin and is dropped.
+ *   - Error monitoring is Sentry, and only when a DSN is configured — see
+ *     `instrumentation.ts` and `instrumentation-client.ts`. With no DSN it never loads.
+ *   - No payment. Everything in the catalogue is free.
  */
 export default function PrivacyPage() {
   return (
@@ -35,7 +34,7 @@ export default function PrivacyPage() {
       <PageHeader
         eyebrow="Privacy"
         title="What we collect"
-        lede="An install count with no name attached to it and, only if you sign in, your GitHub identity and the pieces you bookmarked. No ads, no third-party analytics, nothing to buy."
+        lede="No account, no third-party analytics, no cookies of ours, and nothing to buy. What little reaches us carries no name."
       />
 
       <div className="container-page pb-20">
@@ -45,45 +44,16 @@ export default function PrivacyPage() {
           </p>
           <h2>Browsing the site</h2>
           <p>
-            Every page here is generated at build time and served as static HTML. There is no
-            tracking script, no ad network, no session recorder, and no third-party analytics of any
-            kind. Signed out, the only thing we put in your browser is your theme choice, which
-            lives in local storage on your own device and is never sent anywhere.
+            Every page here is generated at build time and served as static HTML. There is no ad
+            network, no session recorder, and no third-party analytics of any kind; the only
+            third-party code that can load is the error monitor described below, and only when a
+            deployment switches it on. The one thing we put in your browser is your theme choice,
+            which lives in local storage on your own device and is never sent anywhere.
           </p>
           <p>
             Our host keeps ordinary server logs — IP address, user agent, the path requested — for a
             short window, to serve traffic and absorb abuse. We do not join those logs to anything
             else described on this page.
-          </p>
-
-          <h2>Signing in</h2>
-          <p>
-            Sign-in is GitHub only, through Supabase Auth. GitHub tells us your account id, your
-            handle, your display name, your avatar URL and the email address on your GitHub account;
-            Supabase keeps that as your user row. What we add to it is one line per bookmark — the
-            name of the piece, when you saved it, and which account it belongs to. That is the whole
-            of it; there is no password here, because there is no password to set.
-          </p>
-          <p>Signing in sets three cookies, and only signing in sets them:</p>
-          <ul>
-            <li>
-              <code>ab-access</code> — your Supabase access token, so a page load knows who you are.
-              Expires when the token does, usually an hour.
-            </li>
-            <li>
-              <code>ab-refresh</code> — the token that fetches a fresh one, so you are not signed
-              out every hour. 30 days.
-            </li>
-            <li>
-              <code>ab-verifier</code> — a single-use value proving the sign-in coming back from
-              GitHub is the one you started. 10 minutes, then it is deleted.
-            </li>
-          </ul>
-          <p>
-            All three are <code>httpOnly</code>, so no script on the page can read them — not ours
-            and not anybody else&apos;s — <code>SameSite=Lax</code>, and <code>Secure</code> in
-            production. None of them measures anything or follows you anywhere; without them the
-            bookmark button cannot work at all. Signing out deletes all three on the spot.
           </p>
 
           <h2>The CLI</h2>
@@ -114,12 +84,22 @@ export default function PrivacyPage() {
             </li>
           </ul>
           <p>
-            What we keep of that message is the name of the piece, the day, and a salted SHA-256 hash
-            of your IP address cut to 128 bits. The hash is there so one machine installing one piece
-            twice in a day counts once; the salt is a server secret we do not publish. Your address
-            itself is never written to the database, and the hash cannot be turned back into it. The
-            result is a number per piece per day, and nothing on this site displays those numbers
-            today.
+            We keep none of it. The endpoint that once recorded these pings has been removed, so the
+            request arrives at our origin and is dropped with nothing written down — no counter, no
+            database, no hash of your address. The CLI still sends it because the same command works
+            against any registry, and yours may run one that listens; ours does not. Sending nothing
+            in the first place is still the cleaner option, so the opt-outs above continue to work.
+          </p>
+
+          <h2>Error monitoring</h2>
+          <p>
+            When a deployment is configured with a Sentry key, an uncaught error — in the browser or
+            on the server — sends a report to <strong>Sentry</strong> so it can be fixed. A report is
+            a stack trace and the technical context around the failure: the URL, the browser and
+            operating system, and the error message. It is sent only when something breaks, never on
+            an ordinary page view, and it carries no name because we have none to attach. We do not
+            enable session replay, so your browsing is not recorded. When no key is configured —
+            which is the default — the monitoring code never loads and nothing leaves your browser.
           </p>
 
           <h2>What we do not do</h2>
@@ -133,18 +113,18 @@ export default function PrivacyPage() {
           <h2>Your rights</h2>
           <p>
             Under the GDPR and similar laws you can ask for a copy of anything we hold about you, ask
-            for it corrected, or ask for it deleted. Signed out, the honest answer is that we hold
-            nothing we can tie to you. Signed in, it is your user row and your bookmarks, and
-            deleting the account takes both with it. Write to{" "}
-            <a href={`mailto:${brand.email}`}>{brand.email}</a>.
+            for it corrected, or ask for it deleted. The honest answer is that we hold nothing we can
+            tie to you: there is no account, and the one request your machine sends us is discarded
+            unread. If a Sentry error report has captured something you believe identifies you, write
+            to <a href={`mailto:${brand.email}`}>{brand.email}</a> and we will remove it.
           </p>
 
           <h2>Other people&apos;s services</h2>
           <p>
-            <strong>Supabase</strong> hosts the authentication service and the database the rows
-            above live in. <strong>GitHub</strong> is the identity provider, and sees that you signed
-            in here. Our <strong>host</strong> serves the pages and keeps the logs. That is the
-            entire list.
+            Our <strong>host</strong> serves the pages and keeps the ordinary server logs described
+            above. <strong>Sentry</strong> receives an error report if — and only if — monitoring is
+            switched on for a deployment, and then only when something breaks. That is the entire
+            list.
           </p>
           <p>
             Separately, a template you install may load fonts or images from a third party inside{" "}
@@ -157,7 +137,8 @@ export default function PrivacyPage() {
           <p>
             If what we collect changes, the date at the top changes with it and the section that
             changed says what it now does. This page is meant to be checked against the code rather
-            than believed: the cookies are set in one file, and the counter is one route.
+            than believed: there are no cookies to find, and error monitoring lives in the two
+            instrumentation files named above.
           </p>
 
           <h2>Children</h2>
