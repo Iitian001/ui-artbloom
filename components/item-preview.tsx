@@ -154,12 +154,33 @@ export function ItemPreview({
   const [contentHeight, setContentHeight] = useState(0)
 
   useEffect(() => {
+    // There is no need to observe the dozens of previews still below the fold.
+    if (!near) return
     const node = wrapRef.current
     if (!node) return
-    const observer = new ResizeObserver(([entry]) => setWidth(entry.contentRect.width))
+
+    let frame = 0
+    const observer = new ResizeObserver(([entry]) => {
+      if (!entry) return
+      const nextWidth = entry.contentRect.width
+
+      // React commits can change the observed layout. Defer them until after
+      // ResizeObserver delivery so they cannot trigger more delivery in this frame.
+      if (frame) cancelAnimationFrame(frame)
+      frame = requestAnimationFrame(() => {
+        frame = 0
+        setWidth((previous) =>
+          Math.abs(previous - nextWidth) < 0.5 ? previous : nextWidth,
+        )
+      })
+    })
     observer.observe(node)
-    return () => observer.disconnect()
-  }, [wrapRef])
+
+    return () => {
+      observer.disconnect()
+      if (frame) cancelAnimationFrame(frame)
+    }
+  }, [near])
 
   // Templates and blocks are both framed: the real source loads in an iframe at
   // desktop width via /preview/<name> and is scaled down, rather than mounting a
@@ -189,6 +210,7 @@ export function ItemPreview({
     const iframe = iframeRef.current
     if (!iframe) return
     let ro: ResizeObserver | undefined
+    let readFrame = 0
     // The body's own rendered height, not `documentElement.scrollHeight`: the latter
     // is floored at the iframe's viewport height, so a section shorter than the frame
     // measured back as the frame itself and the block sat over its own dead space. The
@@ -197,15 +219,24 @@ export function ItemPreview({
       const body = iframe.contentDocument?.body
       if (!body) return
       const h = Math.ceil(body.getBoundingClientRect().height)
-      if (h > 0) setContentHeight(h)
+      if (h > 0) setContentHeight((previous) => (previous === h ? previous : h))
+    }
+    // Height updates change the iframe viewport and can trigger another resize.
+    // Coalesce notifications and let the current layout pass finish first.
+    const queueRead = () => {
+      if (readFrame) return
+      readFrame = requestAnimationFrame(() => {
+        readFrame = 0
+        read()
+      })
     }
     const measure = () => {
-      read()
+      queueRead()
       // The section reflows as fonts land and at every width — track it live so the
       // frame never lags the content it holds.
       const body = iframe.contentDocument?.body
       if (body && !ro && typeof ResizeObserver !== "undefined") {
-        ro = new ResizeObserver(read)
+        ro = new ResizeObserver(queueRead)
         ro.observe(body)
       }
     }
@@ -215,6 +246,7 @@ export function ItemPreview({
     return () => {
       iframe.removeEventListener("load", measure)
       ro?.disconnect()
+      if (readFrame) cancelAnimationFrame(readFrame)
     }
   }, [blockFit, near, width])
 
