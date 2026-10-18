@@ -1,5 +1,0 @@
-import type {ReactNode} from "react";import type {Metadata} from "next";import {BASE,festival} from "./data/content";import "./nocturne-festival.css";
-export const metadata:Metadata={title:"NOCTURNE — A Festival After Dark",description:festival.description};
-export default function Layout({children}:{children:ReactNode}){return <div className="nfSite" id="top"><div className="nfTopBar"><span>NOCTURNE / EDITION 01</span><span>{festival.dates} — {festival.city.toUpperCase()}</span></div>
-<header className="nfHeader"><a className="nfLogo" href={BASE}>N<span>✳</span>CTURNE<span className="nfLogoPeriod">.</span></a><nav aria-label="Festival navigation"><a href={BASE}>THE FESTIVAL</a><a href={BASE+"/lineup"}>LINEUP</a><a href={BASE+"/tickets"}>PASSES ↗</a></nav></header>
-<main>{children}</main><footer className="nfFooter"><div><p>UNTIL WE MEET<br/>AGAIN.</p><a href={BASE+"/tickets"}>FIND YOUR PLACE ↗</a></div><div><span>© 2026 NOCTURNE — FICTIONAL DEMO EVENT</span><a href={BASE+"/lineup"}>LINEUP</a><a href="#top">BACK TO TOP ↑</a></div></footer></div>}

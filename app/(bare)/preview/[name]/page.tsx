@@ -24,13 +24,6 @@ import Folio from "@/registry/templates/folio/page"
 import Afterglow from "@/registry/templates/afterglow/page"
 import Sillage from "@/registry/templates/sillage/page"
 
-import AtelierArcLayout from "@/registry/templates/atelier-arc/layout"
-import AtelierArcHome from "@/registry/templates/atelier-arc/page"
-import OrbitLayout from "@/registry/templates/orbit-saas/layout"
-import OrbitHome from "@/registry/templates/orbit-saas/page"
-import NocturneLayout from "@/registry/templates/nocturne-festival/layout"
-import NocturneHome from "@/registry/templates/nocturne-festival/page"
-
 import ContactForm from "@/registry/blocks/contact-form/contact-form"
 import CtaBanner from "@/registry/blocks/cta-banner/cta-banner"
 import Faq from "@/registry/blocks/faq/faq"
@@ -97,10 +90,6 @@ function StreetCode() {
  * `Object.prototype`, which is truthy, so the 404 below would be skipped and
  * React handed a value that is not a component. A `Map` knows only these keys.
  */
-function AtelierArcPreview(){return <AtelierArcLayout><AtelierArcHome /></AtelierArcLayout>}
-function OrbitPreview(){return <OrbitLayout><OrbitHome /></OrbitLayout>}
-function NocturnePreview(){return <NocturneLayout><NocturneHome /></NocturneLayout>}
-
 const TEMPLATE_PAGES = new Map<string, () => React.ReactNode>([
   ["cinematic-supercar", CinematicSupercar],
   ["daylight", Daylight],
@@ -120,9 +109,6 @@ const TEMPLATE_PAGES = new Map<string, () => React.ReactNode>([
   ["folio", Folio],
   ["afterglow", Afterglow],
   ["sillage", Sillage],
-  ["atelier-arc", AtelierArcPreview],
-  ["orbit-saas", OrbitPreview],
-  ["nocturne-festival", NocturnePreview],
   // Blocks — each a single self-contained section component.
   ["contact-form", ContactForm],
   ["cta-banner", CtaBanner],

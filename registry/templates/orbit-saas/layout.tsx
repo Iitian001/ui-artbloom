@@ -1,6 +1,0 @@
-import type {ReactNode} from "react";import type {Metadata} from "next";
-import {BASE,product} from "./data/content";import "./orbit-saas.css";
-export const metadata:Metadata={title:"Vector — Operational intelligence",description:product.description};
-export default function Layout({children}:{children:ReactNode}){return <div className="osSite" id="top">
-<header className="osHeader"><a className="osLogo" href={BASE}><img src="/orbit-saas/vector-mark.svg" width="30" height="30" alt=""/><b>vector<span>.</span></b></a><nav aria-label="Main navigation"><a href={BASE+"#features"}>Product</a><a href={BASE+"/pricing"}>Pricing</a><a href={BASE+"/updates"}>Updates</a></nav><a className="osHeaderButton" href={BASE+"#contact"}>Get access ↗</a></header>
-<main>{children}</main><footer className="osFooter"><a className="osLogo" href={BASE}><img src="/orbit-saas/vector-mark.svg" width="30" height="30" alt=""/><b>vector<span>.</span></b></a><p>Move with more clarity.</p><div><a href={BASE}>Home</a><a href={BASE+"/pricing"}>Pricing</a><a href={BASE+"/updates"}>Updates</a></div><small>© 2026 VECTOR · FICTIONAL PRODUCT DEMO TEMPLATE</small></footer></div>}
