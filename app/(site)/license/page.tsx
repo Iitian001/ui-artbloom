@@ -15,8 +15,10 @@ export const metadata: Metadata = pageMeta({
 
 const UPDATED = "9 November 2026"
 
-/** The only template that bundles work I did not make. */
+/** The template that bundles third-party media. */
 const SUPERCAR = getItem("cinematic-supercar")
+/** Bundles third-party code and fonts, all under permissive terms. */
+const ROOM = getItem("developer-room")
 
 /**
  * Read from the LICENSE files that ship inside that template, not from memory:
@@ -127,8 +129,15 @@ export default function LicensePage() {
             ))}
           </ul>
           <p>
-            No other item bundles third-party assets. Those three licence files are the only ones in
-            the whole registry, so everywhere else the MIT grant above is the entire story.
+            {ROOM ? <Link href={itemHref(ROOM)}>{ROOM.title}</Link> : "Developer Room"} ships three.js
+            (MIT), the Helvetiker typeface that comes with three.js (its licence is embedded in the font
+            file) and technology logos from Simple Icons (CC0; the marks belong to their owners). None
+            of that asks anything extra of you. The full list lands at{" "}
+            <code>public/developer-room/LICENSES.md</code>.
+          </p>
+          <p>
+            No other item bundles third-party assets, so everywhere else the MIT grant above is the
+            entire story.
           </p>
 
           <h2>npm packages</h2>

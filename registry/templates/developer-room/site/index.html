@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<meta name="theme-color" content="#080b12" />
+<meta name="description" content="A 3D developer studio portfolio. Projects, skills, certificates, and contact." />
+<meta property="og:title" content="Developer Studio" />
+<meta property="og:type" content="website" />
+<!-- Add og:url, og:image and a canonical link for your own domain. -->
+<title>Developer Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+<link rel="stylesheet" href="./site.css" />
+</head>
+<body>
+<main class="experience" id="main" aria-label="3D developer portfolio">
+  <div class="stage" id="stage">
+    <img class="stage-poster" src="./assets/room-working-poster.jpg" alt="" aria-hidden="true" />
+    <canvas id="room-canvas" aria-label="Interactive 3D developer room. Drag to look around; use the room stations to explore the portfolio." role="img"></canvas>
+    <div class="stage-vignette" aria-hidden="true"></div>
+    <section class="load-status" id="load-status" aria-label="Loading the developer room">
+      <div class="loader-card">
+        <p class="loader-name"></p>
+        <h1>Loading room</h1>
+        <p id="load-label" role="status" aria-live="polite">Loading</p>
+        <progress id="load-progress" max="100" value="0" aria-label="Room loading progress"></progress>
+        <p id="load-amount" class="load-amount"></p>
+        <div class="loader-actions"><button type="button" id="enter-room" disabled>Enter room</button><button type="button" id="retry-room" hidden>Retry</button></div>
+      </div>
+    </section>
+  </div>
+
+  <header class="top-hud">
+    <a class="identity" href="#main" aria-label="Home"><b></b><small></small></a>
+    <div class="hud-actions"><button id="view-toggle" class="hud-button" type="button" aria-pressed="false">Simple view</button></div>
+  </header>
+
+  <div class="simple-portfolio" id="simple-portfolio" hidden></div>
+
+  <aside class="info-panel minimized" id="info-panel" aria-live="polite" aria-label="Portfolio details">
+    <div class="panel-top"><button id="panel-close" class="panel-close" type="button" aria-label="Minimize details">Close</button></div>
+    <div class="panel-content" id="panel-content" tabindex="-1"></div>
+  </aside>
+
+  <nav class="room-dock" id="room-dock" aria-label="Portfolio sections">
+    <button type="button" data-room="about" class="dock-item active">About</button>
+    <button type="button" data-room="work" class="dock-item">Projects</button>
+    <button type="button" data-room="skills" class="dock-item">Skills</button>
+    <button type="button" data-room="credentials" class="dock-item">Certificates</button>
+    <button type="button" data-room="contact" class="dock-item">Contact</button>
+  </nav>
+
+  <details class="room-tools" id="room-tools"><summary>Room controls</summary><div class="control-options">
+    <button type="button" id="music-toggle" aria-pressed="false">Sound off</button>
+    <button type="button" id="video-toggle">Pause screens</button>
+    <button type="button" id="dance-toggle">Pause pet</button>
+    <button type="button" id="tour-toggle">Tour the room</button>
+    <button type="button" id="terminal-toggle">Open terminal</button>
+    <button type="button" id="ambience-toggle" aria-pressed="false">Night mode</button>
+    <button type="button" id="spin-toggle">Reset view</button>
+  </div></details>
+
+  <noscript><div class="no-script"><h1>Developer Studio</h1><p>Enable JavaScript to explore the studio.</p></div></noscript>
+</main>
+
+<dialog class="certificate-viewer" id="certificate-viewer" aria-label="Certificate image">
+  <button class="viewer-close" id="viewer-close" type="button" aria-label="Close certificate">Close</button>
+  <button class="viewer-prev" id="viewer-prev" type="button" aria-label="Previous certificate">Previous</button>
+  <img id="viewer-image" alt="" />
+  <button class="viewer-next" id="viewer-next" type="button" aria-label="Next certificate">Next</button>
+  <p id="viewer-caption"></p>
+</dialog>
+<dialog class="room-terminal" id="room-terminal" aria-label="Portfolio terminal">
+  <header><span>workspace</span><button type="button" id="terminal-close">Close</button></header>
+  <div class="terminal-output" id="terminal-output" role="log" aria-live="polite"></div>
+  <form id="terminal-form"><label for="terminal-input">$</label><input id="terminal-input" autocomplete="off" spellcheck="false" placeholder="Type help" aria-label="Terminal command"><button type="submit">Run</button></form>
+</dialog>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script type="module" src="./app.js"></script>
+</body>
+</html>
