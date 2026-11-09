@@ -28,6 +28,13 @@
 - [ ] Registered in the manifest under `lib/registry/`
 - [ ] Its card renders and `/r/<name>.json` is generated
 - [ ] Any bundled third-party assets are license-cleared for redistribution
+- [ ] It simulates something (not an easing curve) and looks unlike existing pieces
+- [ ] `prefers-reduced-motion` renders one static frame
+- [ ] It has a `role`/`aria-label`, and works by keyboard if interactive
+- [ ] No new runtime dependencies
+- [ ] I added myself to `AUTHORS` in `lib/registry/items.ts`
+
+<!-- Contributions are MIT, inbound = outbound. Opening this PR agrees to that. -->
 
 ## Anything else?
 

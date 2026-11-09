@@ -17,7 +17,9 @@ ui.artbloom is two things in one repository:
 The remit is production-ready React templates and animations that are free to
 copy and safe to redistribute. Work that fits that remit is in scope; anything
 requiring a backend, an account system, or a paywall is not — the registry is
-static and stays that way.
+static and stays that way. The one exception planned is a community page that reads
+public GitHub data on the server (with a read-only token) to show contributor
+stats; it stores nothing and needs no account.
 
 ## Roles
 
