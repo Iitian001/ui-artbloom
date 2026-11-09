@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation"
 
 import CinematicSupercar from "@/registry/templates/cinematic-supercar/page"
+import DeveloperRoom from "@/registry/templates/developer-room/page"
 import DaylightLayout from "@/registry/templates/daylight/layout"
 import DaylightHome from "@/registry/templates/daylight/page"
 import GraphiteLayout from "@/registry/templates/graphite/layout"
@@ -92,6 +93,7 @@ function StreetCode() {
  */
 const TEMPLATE_PAGES = new Map<string, () => React.ReactNode>([
   ["cinematic-supercar", CinematicSupercar],
+  ["developer-room", DeveloperRoom],
   ["daylight", Daylight],
   ["graphite", Graphite],
   ["monolith-launch", MonolithLaunch],
