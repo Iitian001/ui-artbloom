@@ -13,7 +13,7 @@ export const metadata: Metadata = pageMeta({
   path: "/license",
 })
 
-const UPDATED = "3 September 2026"
+const UPDATED = "9 November 2026"
 
 /** The only template that bundles work I did not make. */
 const SUPERCAR = getItem("cinematic-supercar")
@@ -96,12 +96,14 @@ export default function LicensePage() {
             MIT — it is the second half of MIT, and it is the half people skip.
           </p>
 
-          <h2>The catalogue is closed to submissions</h2>
+          <h2>The catalogue is open to contributions</h2>
           <p>
-            Everything here is one author&apos;s own work. There is no submission queue, no review
-            process to enter, and no revenue share — there is no revenue. That is a statement about
-            who adds to the catalogue, not about who may use it. What is already here is yours under
-            the terms above, whoever you are.
+            Anyone can add a piece. Open a pull request on{" "}
+            {brand.social.github ? <a href={brand.social.github}>GitHub</a> : "GitHub"} — the{" "}
+            <a href={`${brand.social.github ?? ""}/blob/main/CONTRIBUTING.md`}>contributing guide</a>{" "}
+            walks through it — and once it is merged it is live here and installable, with your name
+            on it. Contributions come in under the same MIT licence they go out under: no CLA, no
+            sign-off, no revenue share — there is no revenue.
           </p>
           <p>
             MIT permits redistribution, and I am not going to bolt on a clause that contradicts the

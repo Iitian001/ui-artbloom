@@ -74,7 +74,7 @@ export function instructions() {
   )
 
   return [
-    `${brand.name} — ${total} free MIT interface pieces, all by one author, each installable`,
+    `${brand.name} — ${total} free MIT interface pieces, each installable`,
     "into an existing project with one command. Call `search_registry` to find something,",
     "then `get_item` for the install command and, with `includeSource: true`, the code.",
     "",

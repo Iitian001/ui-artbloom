@@ -24,7 +24,7 @@ const FAQS = [
   },
   {
     q: "Can I publish my own?",
-    a: `No — ${brand.name} is not a marketplace. Everything here is made and maintained by one author, which is what keeps the quality and the licensing predictable. You are free to take any of it, change it, and ship it as your own; you just cannot list your work in this catalogue.`,
+    a: `Yes. Open a pull request on GitHub: run npm run new-piece -- <name> in the repo, build it on the shared canvas hook, and follow CONTRIBUTING.md. Every piece is reviewed for the same bar as the rest of the catalogue, ships under MIT, and carries your name once merged. It is not a marketplace: nothing is sold, and there is no revenue share.`,
   },
   {
     q: "What exactly is a template?",

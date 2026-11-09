@@ -8,7 +8,8 @@
     "build": "next build",
     "start": "next start --port 3210",
     "lint": "next lint",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "new-piece": "node scripts/new-piece.mjs"
   },
   "dependencies": {
     "@sentry/nextjs": "10.75.2",

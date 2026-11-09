@@ -10,5 +10,7 @@
   "tagline": "The living library of interfaces",
   "description": "Production-ready React templates and animations. Copy the code, run one command, ship it.",
   "email": "hello@shreyashmishra.in",
-  "social": {}
+  "social": {
+    "github": "https://github.com/Iitian001/ui-artbloom"
+  }
 }

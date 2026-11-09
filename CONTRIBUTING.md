@@ -57,22 +57,60 @@ There is no database. Every item is a static, shadcn-compatible payload served a
 
 ## Adding an item to the registry
 
-An item is a template or an animation under `registry/`. To add one:
+The fastest path is an animation — one file, built on the shared canvas hook.
 
-1. Create its source under `registry/templates/<name>/` or
-   `registry/animations/<name>/`.
-2. Register it in the manifest under `lib/registry/` so the catalog and the
-   `/r/*` routes pick it up.
-3. Run `npm run build` and confirm the item's card renders and its
-   `/r/<name>.json` payload is generated.
+### Ship a piece in 30 minutes
 
-Text files are inlined in the payload's `files[]`. Binary assets are declared in
-`assets[]` as a same-origin URL plus a byte count, and streamed to disk one at a
-time by the CLI.
+1. Pick an idea. Issues labelled [`good first piece`](https://github.com/Iitian001/ui-artbloom/labels/good%20first%20piece)
+   are ready to claim — comment on one so nobody doubles up — or bring your own.
+2. Scaffold it:
+
+   ```bash
+   npm run new-piece -- pendulum-progress --handle your-github-handle
+   ```
+
+   This writes `registry/animations/pendulum-progress.tsx`: a working damped
+   pendulum on `registry/hooks/use-canvas-scene.ts`, with reduced motion already
+   handled. It prints the two snippets to paste into `lib/registry/items.ts`
+   (your `AUTHORS` entry and the item) and `components/demos.tsx`.
+3. Replace the pendulum with your physics. Read a neighbour first —
+   `registry/animations/chip-pile.tsx` (rigid bodies) or
+   `registry/animations/ripple-tank.tsx` (wave field) show the house style.
+4. `npm run dev`, open `/artbloom/animations/<name>`, then `npm run typecheck`
+   and `npm run build`.
+
+Templates and components follow the same registration, with their source under
+`registry/templates/` or `registry/components/`.
+
+### What gets merged
+
+A piece is accepted when it:
+
+- **simulates something** — mass, springs, contacts, fluid, waves. An easing curve
+  or a keyframed tween is not a physics piece;
+- **looks and behaves unlike what is already here;**
+- **respects `prefers-reduced-motion`** — one settled, static frame, no loop;
+- **is keyboard- and screen-reader-sane** — a `role` and `aria-label` that say
+  what the scene shows, and real controls if it is interactive;
+- **adds no runtime dependencies** beyond the shared hook;
+- **stays smooth** — aim for 60fps on a mid-range laptop (check with Chrome DevTools
+  Performance at 4x CPU slowdown);
+- **reads well** — comment the physics the way the existing pieces do.
+
+If a review asks for changes you get one revision round; we will say exactly which
+point above it misses. Bulk or generated submissions that skip this list are
+closed with a pointer back here.
+
+### How it is served
+
+There is no database. Every item is a static, shadcn-compatible payload served at
+`/r/{name}.json`, prerendered at build time. Text files are inlined in the
+payload’s `files[]`. Binary assets are declared in `assets[]` as a same-origin
+URL plus a byte count, and streamed to disk one at a time by the CLI.
 
 If an item bundles third-party assets (fonts, images, models), include their license
-alongside the item and make sure redistribution is permitted. Assets whose license
-forbids redistribution cannot be published here.
+file next to the asset and make sure redistribution is permitted. Assets whose
+license forbids redistribution cannot be published here.
 
 ## Making changes
 
@@ -102,5 +140,7 @@ item or page affected, what you expected, what happened, and steps to reproduce.
 
 ## License
 
-By contributing, you agree that your contributions are licensed under the
-[MIT License](LICENSE) that covers the site and the CLI.
+Contributions come in under the same [MIT License](LICENSE) they go out under
+(inbound = outbound). There is no CLA and no sign-off step: opening a pull request
+is agreeing to that. Your GitHub handle is credited on the piece’s page and in a
+header comment of its source.

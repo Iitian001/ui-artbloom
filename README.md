@@ -76,6 +76,10 @@ npx ui.artbloom list --kind templates
 npx ui.artbloom info cinematic-supercar
 ```
 
+## Contribute a piece
+
+The catalogue is open. `npm run new-piece -- <name> --handle <you>` scaffolds a physically simulated starter; [CONTRIBUTING.md](CONTRIBUTING.md) covers the rest, and issues labelled [`good first piece`](https://github.com/Iitian001/ui-artbloom/labels/good%20first%20piece) are ready to claim.
+
 ## Deploy
 
 The site is a stock Next.js app — `next build` prerenders the whole catalog plus every registry payload and asset route, so it runs on any host that supports Next.js. The production deployment is hosted on [Vercel](https://vercel.com).
