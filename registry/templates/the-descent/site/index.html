@@ -1,0 +1,296 @@
+<!doctype html>
+<html lang="en" class="is-intro">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>The Descent Foundation — protecting the deep ocean</title>
+    <meta name="description" content="Scroll is a dive. Descend 10,935 metres to the floor of the Challenger Deep with The Descent Foundation, a charity protecting the deep ocean from mining, trawling and plastic." />
+    <meta name="theme-color" content="#48c6cf" />
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Gloock&family=Martian+Mono:wght@300;400;500&family=Schibsted+Grotesk:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet" />
+    <script type="module" crossorigin src="./assets/index-CHTAkICv.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-DN58tnzh.css">
+  </head>
+  <body>
+    <a class="skip" href="#donate">Skip the dive and go to donations</a>
+
+    <!-- fixed layers: water, light/particles canvas, instruments -->
+    <div class="water" aria-hidden="true"></div>
+    <canvas class="lamp-canvas" aria-hidden="true"></canvas>
+
+    <header class="bar">
+      <a class="wordmark" href="#top" aria-label="The Descent Foundation, back to the surface">
+        <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3v20" /><path d="M9 17l7 9 7-9" /><circle cx="16" cy="3" r="2" /></svg>
+        <span>The Descent<br />Foundation</span>
+      </a>
+      <a class="bar-cta" href="#donate">Donate</a>
+    </header>
+
+    <aside class="hud" aria-label="Dive instruments">
+      <div class="gauge" aria-hidden="true">
+        <div class="gauge-track">
+          <span class="gauge-tick" style="--d: 200"><i>200</i></span>
+          <span class="gauge-tick" style="--d: 1000"><i>1,000</i></span>
+          <span class="gauge-tick" style="--d: 4000"><i>4,000</i></span>
+          <span class="gauge-tick" style="--d: 6000"><i>6,000</i></span>
+          <span class="gauge-tick" style="--d: 10935"><i>10,935</i></span>
+          <span class="gauge-fill"></span>
+          <span class="gauge-sub"></span>
+        </div>
+      </div>
+      <dl class="readout" aria-live="off">
+        <div class="ro ro-depth"><dt>Depth</dt><dd><b data-ro="depth">0</b><small>m</small></dd></div>
+        <div class="ro"><dt>Pressure</dt><dd><b data-ro="pressure">1</b><small>atm</small></dd></div>
+        <div class="ro"><dt>Water</dt><dd><b data-ro="temp">24.0</b><small>°C</small></dd></div>
+        <div class="ro"><dt>Sunlight</dt><dd><b data-ro="light">100</b><small>%</small></dd></div>
+        <p class="ro-zone" data-ro="zone">Epipelagic, the sunlit zone</p>
+      </dl>
+    </aside>
+
+    <div class="zone-call" aria-hidden="true">
+      <p class="zc-range"></p>
+      <p class="zc-name"></p>
+      <p class="zc-alias"></p>
+    </div>
+    <p class="sr-only" aria-live="polite" data-zone-live></p>
+
+    <main id="top" class="dive">
+      <!-- 0 m: the surface -->
+      <section class="hero" data-depth="0" aria-labelledby="hero-title">
+        <div class="sky" aria-hidden="true">
+          <div class="sun"></div>
+          <svg class="ship" viewBox="0 0 420 150" aria-hidden="true">
+            <g class="ship-body">
+              <path class="ship-cable" d="M372 46 L372 150" />
+              <path d="M396 40 L372 46 L350 92" class="ship-frame" />
+              <path d="M8 96 L412 96 L392 128 Q380 136 360 136 L44 136 Q22 134 14 118 Z" class="ship-hull" />
+              <path d="M14 112 L404 112" class="ship-stripe" />
+              <path d="M70 96 L70 66 L200 66 L214 96 Z" class="ship-house" />
+              <path d="M96 66 L96 44 L176 44 L184 66 Z" class="ship-house" />
+              <path d="M118 44 L118 30 L156 30 L160 44 Z" class="ship-house" />
+              <path d="M138 30 L138 6" class="ship-mast" />
+              <path d="M128 14 L148 14" class="ship-mast" />
+              <path d="M102 80 h12 M126 80 h12 M150 80 h12 M174 80 h12 M106 56 h10 M126 56 h10 M146 56 h10" class="ship-window" />
+              <path d="M226 96 L226 82 L330 82 L330 96 Z" class="ship-deck" />
+              <rect x="300" y="68" width="34" height="14" rx="7" class="ship-sub" />
+            </g>
+          </svg>
+          <svg class="waves" viewBox="0 0 1200 40" preserveAspectRatio="none" aria-hidden="true">
+            <path d="M0 22 Q75 8 150 22 T300 22 T450 22 T600 22 T750 22 T900 22 T1050 22 T1200 22 V40 H0 Z" />
+          </svg>
+        </div>
+        <div class="hero-copy">
+          <p class="hero-kicker"><span>Expedition log, surface</span></p>
+          <h1 id="hero-title" class="hero-title">
+            <span class="line"><span>Ten thousand</span></span>
+            <span class="line"><span>metres of <em>reasons.</em></span></span>
+          </h1>
+          <p class="hero-lede">The deep ocean is the largest living space on Earth, and most of it has never been seen by a human eye. Scroll to dive with us to the floor of the Challenger Deep.</p>
+          <p class="hero-cue"><span class="cue-line" aria-hidden="true"></span>Scroll to begin the descent</p>
+        </div>
+      </section>
+
+      <!-- epipelagic 0-200 m -->
+      <figure class="creature c-right" data-depth="25" data-creature="turtle" data-speed="-0.25" style="--w: 30rem">
+        <div class="swim"><img src="creatures/turtle.webp" alt="A green sea turtle gliding through sunlit water" width="1200" height="624" /></div>
+        <figcaption><b>Green sea turtle</b><span>Chelonia mydas, observed at 25 m</span></figcaption>
+      </figure>
+
+      <article class="block" data-depth="110">
+        <h2 class="h-sect">Everything you have ever breathed has passed through the sea.</h2>
+        <p>Drifting phytoplankton in this thin sunlit layer make roughly half of the oxygen on the planet. The ocean has soaked up about ninety per cent of the extra heat our emissions have trapped, and around a quarter of the carbon dioxide.</p>
+        <p>Most of that carbon does not stay up here. It sinks, as falling flakes of dead plankton, into a deep sea that holds over ninety per cent of the habitable space on Earth. That is where we are going.</p>
+      </article>
+
+      <div class="mark" data-depth="200" data-zone="1" aria-hidden="true"></div>
+
+      <!-- mesopelagic 200-1000 m -->
+      <article class="block block-right" data-depth="420">
+        <h2 class="h-sect">The twilight zone is the busiest commute on Earth.</h2>
+        <p>Below 200 metres there is too little light for anything to photosynthesise, and the water turns the blue of a gas flame. Every night, trillions of lanternfish, krill and squid swim hundreds of metres up to feed, then sink back before dawn: the largest animal migration on the planet, repeated every day.</p>
+        <p>Each round trip carries carbon down with it. Scientists call it the biological pump, and it has barely been measured.</p>
+      </article>
+
+      <aside class="log" data-depth="700" aria-label="Observation one: The Twilight Census programme">
+        <p class="log-head"><span>Observation 01</span><span>700 m</span></p>
+        <h3>The Twilight Census</h3>
+        <p>Our first programme fits autonomous gliders with echo-sounders and cameras that ride the migration up and down, counting what lives here and how much carbon it moves. The data is open to every researcher, free.</p>
+        <ul class="log-stats">
+          <li><b data-count="38">38</b> gliders in three ocean basins</li>
+          <li><b data-count="2.4" data-decimals="1">2.4</b> million hours of acoustic data, published</li>
+        </ul>
+      </aside>
+
+      <figure class="creature c-left c-big" data-depth="960" data-creature="whale" data-speed="-0.4" style="--w: 46rem">
+        <div class="swim"><img src="creatures/whale.webp" alt="A sperm whale diving head first into the dark" width="1200" height="738" loading="lazy" /></div>
+        <figcaption><b>Sperm whale</b><span>Physeter macrocephalus, hunting squid at 960 m. They hold their breath for over an hour.</span></figcaption>
+      </figure>
+
+      <div class="mark" data-depth="1000" data-zone="2" aria-hidden="true"></div>
+
+      <!-- bathypelagic 1000-4000 m -->
+      <article class="block block-center lamp-hint" data-depth="1200">
+        <h2 class="h-sect">From here down, the only light is the light you bring.</h2>
+        <p class="hint-desktop">Your lamp is on. Move your cursor to look around. Some animals will answer it with a flash of their own.</p>
+        <p class="hint-touch">Your lamp is on. Drag a finger to aim it, or let it sweep on its own. Some animals will answer with a flash of their own.</p>
+      </article>
+
+      <figure class="creature c-right" data-depth="1550" data-creature="atolla" data-speed="-0.2" data-glow="0.06,0.15,0.016;0.17,0.2,0.016;0.29,0.23,0.016;0.41,0.245,0.016;0.53,0.24,0.016;0.65,0.22,0.016;0.76,0.18,0.016;0.84,0.14,0.016" style="--w: 22rem">
+        <div class="swim"><img src="creatures/atolla.webp" alt="A crimson Atolla crown jellyfish with a ring of blue light" width="804" height="917" loading="lazy" /></div>
+        <figcaption><b>Atolla jellyfish</b><span>Atolla wyvillei, 1,550 m. Red reads as black down here; it is the best camouflage there is.</span></figcaption>
+      </figure>
+
+      <article class="block" data-depth="1800">
+        <p class="threat-label">Threat one</p>
+        <h2 class="h-sect">Bottom trawling ploughs ecosystems older than cities.</h2>
+        <p>Industrial trawlers drag weighted nets across seamounts and slopes as deep as two thousand metres. A single pass can flatten deep-water coral that has been growing for thousands of years. The fish they target, like orange roughy, can live past 150 and breed late, so populations collapse long before anyone notices.</p>
+      </article>
+
+      <figure class="creature c-left" data-depth="2000" data-creature="angler" data-speed="-0.3" data-glow="0.952,0.135,0.05" style="--w: 30rem">
+        <div class="swim"><img src="creatures/angler.webp" alt="A black anglerfish with needle teeth and a glowing lure" width="1200" height="854" loading="lazy" /></div>
+        <figcaption><b>Humpback anglerfish</b><span>Melanocetus johnsonii, 2,000 m. The lure glows with bacteria she farms.</span></figcaption>
+      </figure>
+
+      <aside class="log log-right" data-depth="2700" aria-label="Observation two: Seamount Sentinels programme">
+        <p class="log-head"><span>Observation 02</span><span>2,700 m</span></p>
+        <h3>Seamount Sentinels</h3>
+        <p>We pair satellite vessel-tracking with machine-learning models that recognise the zig-zag of a trawl. When a boat fishes inside a closed area, coastguards and certification bodies hear about it within hours, with evidence attached.</p>
+        <ul class="log-stats">
+          <li><b data-count="1.8" data-decimals="1">1.8</b> million km² of seamounts under watch</li>
+          <li><b data-count="63">63</b> illegal trawl tracks reported last year</li>
+        </ul>
+      </aside>
+
+      <div class="mark" data-depth="4000" data-zone="3" aria-hidden="true"></div>
+
+      <!-- abyssopelagic 4000-6000 m -->
+      <figure class="creature c-right" data-depth="4150" data-creature="dumbo" data-speed="-0.15" style="--w: 24rem">
+        <div class="swim"><img src="creatures/dumbo.webp" alt="A pale dumbo octopus flapping its ear-like fins" width="965" height="847" loading="lazy" /></div>
+        <figcaption><b>Dumbo octopus</b><span>Grimpoteuthis, 4,150 m. It swallows prey whole and swims with its ears.</span></figcaption>
+      </figure>
+
+      <article class="block" data-depth="4600">
+        <p class="threat-label">Threat two</p>
+        <h2 class="h-sect">Mining companies want to vacuum the abyssal plain.</h2>
+        <p>Scattered across the Pacific floor between Hawaii and Mexico lie potato-sized polymetallic nodules, rich in nickel, cobalt and manganese. They grow a few millimetres every million years. Machines designed to collect them would strip the seafloor, the animals living on the nodules with it, and send plumes of sediment drifting for kilometres.</p>
+        <p>Most species found in survey areas have never been named. Once the nodules are gone, nothing that depends on them comes back on any timescale that matters to us.</p>
+      </article>
+
+      <aside class="log" data-depth="5200" aria-label="Observation three: Nodule Watch programme">
+        <p class="log-head"><span>Observation 03</span><span>5,200 m</span></p>
+        <h3>Nodule Watch</h3>
+        <p>Our legal team sits in the room at the International Seabed Authority in Kingston, arming government delegations with independent science and pressing for a moratorium on deep-sea mining until the ecosystem is understood.</p>
+        <ul class="log-stats">
+          <li><b data-count="27">27</b> delegations briefed this year</li>
+          <li><b data-count="214">214</b> new species described with partner labs</li>
+        </ul>
+      </aside>
+
+      <section class="impact" data-depth="5650" aria-labelledby="impact-title">
+        <h2 id="impact-title" class="h-sect">Twelve years of diving, logged.</h2>
+        <ol class="impact-grid">
+          <li><b data-count="46">46</b><span>expeditions to seven ocean trenches</span></li>
+          <li><b data-count="9.6" data-decimals="1">9.6</b><span>million km² under new protection we helped win</span></li>
+          <li><b data-count="1300" data-sep="1">1,300</b><span>students who have sailed with us</span></li>
+          <li><b data-count="91">91</b><span>pence in every pound spent on the work itself</span></li>
+        </ol>
+      </section>
+
+      <div class="mark" data-depth="6000" data-zone="4" aria-hidden="true"></div>
+
+      <!-- hadal 6000-10935 m -->
+      <article class="block block-right" data-depth="6600">
+        <h2 class="h-sect">The hadal zone is named after the underworld.</h2>
+        <p>It exists only in trenches, where one plate of the Earth's crust dives beneath another. The pressure is the weight of fifty jumbo jets on a single person. Life here is not rare. It is simply unvisited: fewer people have reached the bottom of the Challenger Deep than have flown into space.</p>
+      </article>
+
+      <figure class="creature c-left" data-depth="8150" data-creature="snailfish" data-speed="-0.25" style="--w: 28rem">
+        <div class="swim"><img src="creatures/snailfish.webp" alt="A translucent pink snailfish" width="1200" height="499" loading="lazy" /></div>
+        <figcaption><b>Mariana snailfish</b><span>Pseudoliparis swirei, 8,150 m. Fish cannot survive much deeper; their cells would fail.</span></figcaption>
+      </figure>
+
+      <article class="block" data-depth="9300">
+        <p class="threat-label">Threat three</p>
+        <h2 class="h-sect">The deepest animals on Earth are already eating our plastic.</h2>
+        <p>When researchers opened amphipods collected from six of the world's deepest trenches, more than seven in ten had plastic fibres in their guts. In the Mariana Trench, every single one did. Industrial chemicals banned in the 1970s have turned up in them too, at levels higher than in crabs from some of China's most polluted rivers.</p>
+      </article>
+
+      <figure class="creature c-right c-small" data-depth="10250" data-creature="amphipod" data-speed="-0.1" style="--w: 18rem">
+        <div class="swim"><img src="creatures/amphipod.webp" alt="A pale deep-sea amphipod, a shrimp-like scavenger" width="986" height="734" loading="lazy" /></div>
+        <figcaption><b>Hadal amphipod</b><span>Hirondellea gigas, 10,250 m. A scavenger that can digest sunken wood.</span></figcaption>
+      </figure>
+
+      <section class="find" data-depth="10898" aria-labelledby="find-title">
+        <figure class="creature c-bag" data-creature="bag" data-speed="0" style="--w: 17rem">
+          <div class="swim"><img src="creatures/bag.webp" alt="A torn white plastic shopping bag resting near the trench floor" width="796" height="1200" loading="lazy" /></div>
+        </figure>
+        <div class="find-copy">
+          <p class="log-head"><span>Observation 04</span><span>10,898 m</span></p>
+          <h2 id="find-title" class="h-find">Our lamp finds a shopping bag.</h2>
+          <p>This is not invented for effect. A single-use plastic bag lies on the seafloor of the Mariana Trench at 10,898 metres, catalogued by scientists in the Deep-sea Debris Database. It is the deepest piece of litter ever recorded. It got here before we did.</p>
+        </div>
+      </section>
+
+      <!-- 10,935 m: the floor -->
+      <section id="donate" class="floor" data-depth="10935" data-anchor="top" aria-labelledby="donate-title">
+        <svg class="seabed" viewBox="0 0 1200 220" preserveAspectRatio="none" aria-hidden="true">
+          <path d="M0 120 Q120 90 230 112 T470 104 T720 118 T960 98 T1200 116 V220 H0 Z" />
+          <path d="M0 160 Q160 140 300 156 T620 150 T900 162 T1200 150 V220 H0 Z" />
+        </svg>
+        <div class="floor-inner">
+          <p class="floor-depth">10,935 m. The floor of the Challenger Deep.</p>
+          <h2 id="donate-title" class="h-donate">Bring light back<br /> to the deep.</h2>
+          <p class="floor-lede">Every expedition, every court brief and every satellite watch starts with a donation. Choose what you can give, and we will send you the footage of what it found.</p>
+
+          <form class="give" novalidate>
+            <fieldset class="give-freq">
+              <legend class="sr-only">How often</legend>
+              <label><input type="radio" name="freq" value="once" checked /><span>Once</span></label>
+              <label><input type="radio" name="freq" value="monthly" /><span>Monthly</span></label>
+            </fieldset>
+            <fieldset class="give-amounts">
+              <legend class="sr-only">Amount</legend>
+              <label><input type="radio" name="amount" value="15" /><span>£15</span></label>
+              <label><input type="radio" name="amount" value="40" checked /><span>£40</span></label>
+              <label><input type="radio" name="amount" value="120" /><span>£120</span></label>
+              <label><input type="radio" name="amount" value="500" /><span>£500</span></label>
+              <label class="give-other"><span class="sr-only">Other amount in pounds</span><input type="number" name="other" min="2" step="1" inputmode="numeric" placeholder="Other £" /></label>
+            </fieldset>
+            <p class="give-impact" aria-live="polite">£40 pays for a sediment core to be analysed for microplastics.</p>
+            <button class="btn-light" type="submit"><span class="btn-glow" aria-hidden="true"></span><span class="btn-label">Turn the lights on with £40</span></button>
+            <p class="give-note">This is a demonstration site; no payment will be taken.</p>
+          </form>
+          <p class="give-thanks" role="status" hidden>Thank you. You just lit the trench. Watch your inbox for the dive footage.</p>
+        </div>
+      </section>
+
+      <section class="surface-log" aria-labelledby="crew-title">
+        <div class="sl-col">
+          <h2 id="crew-title" class="h-small">Join the crew</h2>
+          <p>We train volunteers to annotate deep-sea video from home. Two hours a week, and you will see animals that may not have names yet.</p>
+          <a class="link-line" href="#top">Apply to annotate footage</a>
+        </div>
+        <form class="sl-col news" novalidate>
+          <h2 class="h-small"><label for="email">The surface log</label></h2>
+          <p>One letter a month from the ship: what we found, what we fought, what is next.</p>
+          <div class="news-row">
+            <input id="email" type="email" name="email" placeholder="you@example.org" autocomplete="email" required />
+            <button type="submit">Subscribe</button>
+          </div>
+          <p class="news-msg" aria-live="polite"></p>
+        </form>
+      </section>
+
+      <footer class="foot">
+        <button class="resurface" type="button">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20V4M5 11l7-7 7 7" /></svg>
+          <span>Resurface</span>
+        </button>
+        <p>The Descent Foundation is a fictional charity created for this design template. Ocean science on this page is real; organisation figures are illustrative.</p>
+      </footer>
+    </main>
+
+  </body>
+</html>

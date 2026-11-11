@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Walk through Shreyash Mishra's garden: a day from dawn to night where every project blooms." />
+    <meta name="theme-color" content="#F6C9A8" />
+    <title>Shreyash's Garden — a walk through my work</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..800;1,9..144,300..800&family=Caveat:wght@500..700&family=Geist:wght@400..600&display=swap" rel="stylesheet" />
+    <script type="module" crossorigin src="./assets/index-B4Sp57nb.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-CI627T4m.css">
+  </head>
+  <body class="is-loading">
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+      <filter id="painterly" x="-2%" y="-10%" width="104%" height="120%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.012 0.04" numOctaves="3" seed="4" result="n" />
+        <feDisplacementMap in="SourceGraphic" in2="n" scale="14" result="d" />
+        <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="9" result="g" />
+        <feColorMatrix in="g" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .22 0" result="ga" />
+        <feComposite in="ga" in2="d" operator="in" result="grain" />
+        <feMerge><feMergeNode in="d" /><feMergeNode in="grain" /></feMerge>
+      </filter>
+    </svg>
+
+    <div class="loader" aria-hidden="true">
+      <svg class="sprout" viewBox="0 0 120 160"><path d="M60 158 C 60 120, 58 90, 60 60" /><path d="M60 92 C 40 86, 26 70, 24 52 C 44 54, 58 70, 60 92" /><path d="M60 74 C 80 66, 92 48, 94 30 C 72 34, 60 52, 60 74" /></svg>
+      <p>the garden is waking up… <span class="loader__pct">0%</span></p>
+    </div>
+
+    <div id="app"></div>
+  </body>
+</html>

@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Monolith Atelier, architecture of concrete and light</title>
+    <meta name="description" content="Monolith Atelier is a small architecture studio in Porto. We build in concrete and design with shadow." />
+    <meta name="theme-color" content="#16181b" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=IBM+Plex+Mono:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,300..500;1,6..72,300..500&display=swap" rel="stylesheet" />
+    <script type="module" crossorigin src="./assets/index-CLvW_t9b.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-0n3Su0h8.css">
+  </head>
+  <body>
+    <a class="skip" href="#work">Skip to the projects</a>
+
+    <div class="intro" aria-hidden="true">
+      <div class="intro__horizon"></div>
+      <p class="intro__time"><span class="intro__clock">04:50</span><span class="intro__note">before sunrise, Porto</span></p>
+    </div>
+
+    <div class="sun-cursor" aria-hidden="true"></div>
+
+    <header class="mast">
+      <a class="mast__logo" href="#top" aria-label="Monolith Atelier, back to top">
+        <svg viewBox="0 0 26 32" aria-hidden="true"><rect x="0" y="0" width="11.5" height="32" /><rect x="14.5" y="0" width="11.5" height="32" /></svg>
+        <span>Monolith Atelier</span>
+      </a>
+      <nav class="mast__nav" aria-label="Primary">
+        <a href="#work">Work</a>
+        <a href="#philosophy">Philosophy</a>
+        <a href="#studio">Studio</a>
+        <a href="#contact" class="mast__cta">Contact</a>
+      </nav>
+    </header>
+
+    <main id="top">
+      <section class="stage" id="stage" aria-label="The atelier and four buildings, drawn in light">
+        <div class="stage__sticky">
+          <canvas class="stage__gl" aria-hidden="true"></canvas>
+          <svg class="stage__dims" aria-hidden="true"></svg>
+          <div class="stage__vignette" aria-hidden="true"></div>
+
+          <div class="hero" data-panel="0">
+            <h1 class="hero__title">
+              <span class="mask"><span class="hero__line">We build</span></span>
+              <span class="mask"><span class="hero__line">with light.</span></span>
+            </h1>
+            <p class="hero__lede">A small studio in Porto working in one material, concrete, and one collaborator, the sun. Everything else is shadow.</p>
+          </div>
+
+          <div class="panel" data-panel="1">
+            <p class="panel__num">01</p>
+            <p class="panel__name">Chapel of the Long Noon</p>
+            <p class="panel__meta">Atacama, Chile <span>2019</span> <span>86 m²</span></p>
+          </div>
+          <div class="panel" data-panel="2">
+            <p class="panel__num">02</p>
+            <p class="panel__name">Casa Recuo</p>
+            <p class="panel__meta">Sagres, Portugal <span>2021</span> <span>312 m²</span></p>
+          </div>
+          <div class="panel" data-panel="3">
+            <p class="panel__num">03</p>
+            <p class="panel__name">The Reading Room</p>
+            <p class="panel__meta">Porto, Portugal <span>2023</span> <span>4 200 m²</span></p>
+          </div>
+          <div class="panel" data-panel="4">
+            <p class="panel__num">04</p>
+            <p class="panel__name">Thermae Umbra</p>
+            <p class="panel__meta">Kirishima, Japan <span>2025</span> <span>1 150 m²</span></p>
+          </div>
+
+          <p class="sheet" aria-hidden="true"><span class="sheet__no">Sheet 01 of 05</span><span class="sheet__name">The Atelier, Porto</span><span class="sheet__scale">1:200, sun path overlaid</span></p>
+
+          <ol class="stage__index" aria-label="Buildings in this sequence">
+            <li class="is-on"><span>00</span> Atelier</li>
+            <li><span>01</span> Chapel</li>
+            <li><span>02</span> Casa Recuo</li>
+            <li><span>03</span> Reading Room</li>
+            <li><span>04</span> Thermae</li>
+          </ol>
+
+          <div class="sundial" role="group" aria-label="Time of day in the scene">
+            <svg class="sundial__face" viewBox="-60 -60 120 70" aria-hidden="true">
+              <path class="sundial__arc" d="M-50,0 A50,50 0 0 1 50,0" />
+              <g class="sundial__ticks"></g>
+              <line class="sundial__shadow" x1="0" y1="0" x2="0" y2="-46" />
+              <circle class="sundial__sun" r="4" cx="0" cy="-50" />
+              <rect class="sundial__base" x="-56" y="0" width="112" height="2" />
+            </svg>
+            <p class="sundial__read"><span class="sundial__time" aria-live="off">06:30</span><span class="sundial__alt">sun at 2°</span></p>
+            <button class="sundial__btn" type="button" aria-label="Advance the sun by one hour">+1 h</button>
+            <p class="sundial__hint"><span class="hint-pointer">Move across the page to move the sun</span><span class="hint-touch">Scroll or tilt to move the sun</span></p>
+          </div>
+        </div>
+      </section>
+
+      <section class="work" id="work" aria-labelledby="work-title">
+        <header class="work__head">
+          <h2 id="work-title" class="h2">Four buildings,<br /><em>four times of day</em></h2>
+          <p class="work__intro">Each project begins as a sun-path diagram before it becomes a plan. We photograph them only in the hour they were drawn for.</p>
+        </header>
+
+        <article class="project" data-side="left">
+          <figure class="shot">
+            <div class="shot__frame"><img src="img/chapel.webp" alt="A tall concrete chapel in the desert, split by a vertical slot that glows with low sunlight" width="1536" height="1024" loading="lazy" /></div>
+            <div class="shot__light" aria-hidden="true"></div>
+            <div class="shot__shade" aria-hidden="true"></div>
+          </figure>
+          <div class="project__text">
+            <p class="project__num">01</p>
+            <h3 class="h3">Chapel of the Long Noon</h3>
+            <dl class="specs"><div><dt>Location</dt><dd>Atacama, Chile</dd></div><div><dt>Year</dt><dd>2019</dd></div><div><dt>Area</dt><dd>86 m²</dd></div></dl>
+            <p>A box of board-formed concrete with a single instruction: at solar noon on the winter solstice, a 600 mm blade of light crosses the floor and touches the altar. The rest of the year the chapel keeps time for the goat herders who poured its walls.</p>
+            <p class="project__hour">Photographed at 07:10</p>
+          </div>
+        </article>
+
+        <article class="project" data-side="right">
+          <figure class="shot">
+            <div class="shot__frame"><img src="img/cliff.webp" alt="A long concrete house cantilevered over a sea cliff in late afternoon sun" width="1536" height="1024" loading="lazy" /></div>
+            <div class="shot__light" aria-hidden="true"></div>
+            <div class="shot__shade" aria-hidden="true"></div>
+          </figure>
+          <div class="project__text">
+            <p class="project__num">02</p>
+            <h3 class="h3">Casa Recuo</h3>
+            <dl class="specs"><div><dt>Location</dt><dd>Sagres, Portugal</dd></div><div><dt>Year</dt><dd>2021</dd></div><div><dt>Area</dt><dd>312 m²</dd></div></dl>
+            <p>A house that steps back from the Atlantic, then leans five metres out over it. Its only window is a 700 mm ribbon at sitting height, so the horizon becomes a line drawn through every room.</p>
+            <p class="project__hour">Photographed at 17:40</p>
+          </div>
+        </article>
+
+        <article class="project" data-side="left">
+          <figure class="shot">
+            <div class="shot__frame"><img src="img/library.webp" alt="A concrete library interior with square skylights pouring shafts of sun onto wooden reading tables" width="1536" height="1024" loading="lazy" /></div>
+            <div class="shot__light" aria-hidden="true"></div>
+            <div class="shot__shade" aria-hidden="true"></div>
+          </figure>
+          <div class="project__text">
+            <p class="project__num">03</p>
+            <h3 class="h3">The Reading Room</h3>
+            <dl class="specs"><div><dt>Location</dt><dd>Porto, Portugal</dd></div><div><dt>Year</dt><dd>2023</dd></div><div><dt>Area</dt><dd>4 200 m²</dd></div></dl>
+            <p>A public library under nine square skylights. Through the day nine squares of sun walk across the oak stacks and the readers move with them. Nobody had to install a clock.</p>
+            <p class="project__hour">Photographed at 11:20</p>
+          </div>
+        </article>
+
+        <article class="project" data-side="right">
+          <figure class="shot">
+            <div class="shot__frame"><img src="img/bathhouse.webp" alt="A vaulted concrete bathhouse with a round oculus casting a disc of sun onto the wall above a dark pool" width="1536" height="1024" loading="lazy" /></div>
+            <div class="shot__light" aria-hidden="true"></div>
+            <div class="shot__shade" aria-hidden="true"></div>
+          </figure>
+          <div class="project__text">
+            <p class="project__num">04</p>
+            <h3 class="h3">Thermae Umbra</h3>
+            <dl class="specs"><div><dt>Location</dt><dd>Kirishima, Japan</dd></div><div><dt>Year</dt><dd>2025</dd></div><div><dt>Area</dt><dd>1 150 m²</dd></div></dl>
+            <p>Bathing in near darkness. One oculus over the hot pool is the only source of light, and the steam turns it into a column solid enough to lean against.</p>
+            <p class="project__hour">Photographed at 14:05</p>
+          </div>
+        </article>
+      </section>
+
+      <section class="philosophy" id="philosophy" aria-labelledby="phil-title">
+        <div class="philosophy__glow" aria-hidden="true"></div>
+        <h2 id="phil-title" class="phil">
+          <span class="phil__word" data-w>We</span>
+          <span class="phil__word" data-w>design</span>
+          <span class="phil__word" data-w>with</span>
+          <span class="phil__word phil__word--accent" data-w>shadow.</span>
+        </h2>
+        <div class="philosophy__body">
+          <p class="philosophy__lead">Every studio says it designs with light. Light is easy, it arrives for free. Shadow is the part you have to build.</p>
+          <p>We draw the dark first: where the sun will not reach at four in the afternoon, which wall will hold the cool of the morning, how deep a slot has to be before it stops being an opening and becomes a line.</p>
+          <ol class="tenets">
+            <li><strong>One material.</strong> Concrete, poured against timber so the grain of the boards stays in the wall.</li>
+            <li><strong>The sun is the client.</strong> We model a full year of sun before we draw a single plan.</li>
+            <li><strong>Nothing moves but the light.</strong> No screens, no mechanisms. The building stays still so the day can happen to it.</li>
+          </ol>
+        </div>
+      </section>
+
+      <section class="studio" id="studio" aria-labelledby="studio-title">
+        <figure class="studio__img">
+          <img src="img/studio.webp" alt="The studio interior: a white plaster model on a long table under a skylight" width="1024" height="1536" loading="lazy" />
+        </figure>
+        <div class="studio__text">
+          <h2 id="studio-title" class="h2">Fourteen people<br /><em>and a heliodon</em></h2>
+          <p>Monolith Atelier was founded in Porto in 2009. We work from the building on the first sheet of this site, in a room with one skylight and a table long enough to lay a whole building out in plaster.</p>
+          <ul class="people">
+            <li><span class="people__name">Inês Valadares</span><span class="people__role">Founding partner. Draws every section by hand before anyone opens a model.</span></li>
+            <li><span class="people__name">Tomás Reyes-Kaur</span><span class="people__role">Partner, structure. Makes the cantilevers stay where the drawings put them.</span></li>
+            <li><span class="people__name">Aiko Brandt</span><span class="people__role">Partner, daylight. Runs the heliodon and the year-long sun studies.</span></li>
+          </ul>
+          <dl class="figures">
+            <div><dt>Buildings completed</dt><dd data-count="36">36</dd></div>
+            <div><dt>Countries</dt><dd data-count="11">11</dd></div>
+            <div><dt>Materials</dt><dd data-count="1">1</dd></div>
+          </dl>
+        </div>
+      </section>
+
+      <section class="contact" id="contact" aria-labelledby="contact-title">
+        <h2 id="contact-title" class="contact__title">Bring us a site<br />and a <em>sun path.</em></h2>
+        <div class="contact__grid">
+          <a class="contact__mail" href="mailto:studio@monolith-atelier.pt">studio@monolith-atelier.pt</a>
+          <address>
+            Rua do Sol Poente 18<br />4050-112 Porto, Portugal<br /><a href="tel:+351222018409">+351 222 018 409</a>
+          </address>
+          <p class="contact__sun">In Porto right now the sun is <strong class="live-sun">at 0°</strong>. We answer between sunrise and sunset.</p>
+        </div>
+      </section>
+    </main>
+
+    <footer class="foot">
+      <p>Monolith Atelier, Porto, 2009 to now</p>
+      <p>A fictional studio. Photography generated for this template.</p>
+    </footer>
+
+  </body>
+</html>

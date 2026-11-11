@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Shreyash Mishra, full stack developer and AI engineer. A pencil sketchbook you paint to life." />
+    <meta name="theme-color" content="#F3EFE7" />
+    <meta property="og:title" content="Shreyash Mishra — I sketch ideas. Then I make them real." />
+    <meta property="og:description" content="Full stack developer & AI engineer. Bloom Chat, ArtBloom, AutoGPT contributor." />
+    <title>Shreyash Mishra — I sketch ideas. Then I make them real.</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400..700&family=Geist:wght@300..700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
+    <script type="module" crossorigin src="./assets/index-DIY9Optx.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-BUIbqx0P.css">
+  </head>
+  <body class="is-loading">
+    <a class="skip" href="#work">Skip to work</a>
+
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+      <filter id="boil" x="-5%" y="-5%" width="110%" height="110%">
+        <feTurbulence id="boil-noise" type="fractalNoise" baseFrequency="0.035" numOctaves="2" seed="1" />
+        <feDisplacementMap in="SourceGraphic" scale="2.6" />
+      </filter>
+    </svg>
+
+    <div class="loader" aria-hidden="true">
+      <svg viewBox="0 0 760 220"><text x="50%" y="160" text-anchor="middle">Shreyash</text></svg>
+      <p><span>sharpening pencils…</span><span class="loader__pct">0%</span></p>
+    </div>
+
+    <div class="cover-wrap" aria-hidden="true">
+      <div class="cover">
+        <span class="cover__spine"></span>
+        <div class="cover__title">
+          <small>Sketchbook, volume 26</small>
+          <strong>Shreyash Mishra</strong>
+          <em>ideas, drawn first</em>
+        </div>
+        <span class="cover__band"></span>
+        <div class="cover__back"></div>
+      </div>
+    </div>
+
+    <canvas id="paint" aria-hidden="true"></canvas>
+    <div class="fibres" aria-hidden="true"></div>
+    <div class="margin-line" aria-hidden="true"></div>
+
+    <div class="cursor" aria-hidden="true">
+      <div class="cursor__ring"></div>
+      <svg class="cursor__pencil" viewBox="0 0 46 46">
+        <path d="M2 44 L8 30 L34 4 L42 12 L16 38 Z" fill="#f2c14e" stroke="#2a2826" stroke-width="1.6" stroke-linejoin="round" />
+        <path d="M2 44 L8 30 L16 38 Z" fill="#f3e3c4" stroke="#2a2826" stroke-width="1.6" stroke-linejoin="round" />
+        <path d="M2 44 L4.6 38.4 L7.6 41.4 Z" fill="#2a2826" />
+        <path d="M30 8 L38 16" stroke="#2a2826" stroke-width="1.6" />
+        <path d="M34 4 L42 12 L45 9 Q46 6 43 3 L40 1 Q38 0 37 1 Z" fill="#e88a8a" stroke="#2a2826" stroke-width="1.6" stroke-linejoin="round" />
+      </svg>
+      <span class="cursor__label"></span>
+    </div>
+
+    <div id="app"></div>
+  </body>
+</html>

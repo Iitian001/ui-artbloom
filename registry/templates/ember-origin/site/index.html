@@ -1,0 +1,314 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#140c08" />
+    <title>Ember &amp; Origin, Coffee Roasters</title>
+    <meta name="description" content="Ember &amp; Origin roasts small-lot single-origin coffee in Bristol. Choose a pour, draw in the crema, brew it like the bar does." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,200..800&family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,100..900,0..100,0..1;1,9..144,100..900,0..100,0..1&display=swap" rel="stylesheet" />
+    <script type="module" crossorigin src="./assets/index-BIptWM1W.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-Bc-qs-ID.css">
+  </head>
+  <body>
+    <a class="skip" href="#pours">Skip to the coffee</a>
+
+    <!-- Intro: one drop of water lands, the name rises out of the ripple -->
+    <div class="intro" aria-hidden="true">
+      <span class="intro__drop"></span>
+      <span class="intro__ring"></span>
+      <span class="intro__ring intro__ring--2"></span>
+      <p class="intro__mark"><span>Ember</span> <em>&amp;</em> <span>Origin</span></p>
+    </div>
+
+    <canvas class="pour-gl" aria-hidden="true"></canvas>
+    <canvas class="aroma" aria-hidden="true"></canvas>
+    <div class="cursor" aria-hidden="true"><span class="cursor__label">draw</span></div>
+
+    <header class="nav">
+      <a class="nav__mark" href="#top" aria-label="Ember and Origin, back to top">
+        <svg viewBox="0 0 40 40" aria-hidden="true"><path d="M20 4c6 7 10 12 10 18a10 10 0 0 1-20 0c0-6 4-11 10-18Z" /><path d="M20 14c-3 4-4 7-2 12" /></svg>
+        <span>Ember <em>&amp;</em> Origin</span>
+      </a>
+      <nav aria-label="Main">
+        <ul class="nav__links">
+          <li><a href="#pours">The pours</a></li>
+          <li><a href="#origins">Origins</a></li>
+          <li><a href="#brew">Brew guide</a></li>
+          <li><a href="#standing-order">Standing order</a></li>
+          <li><a href="#visit">Visit the bar</a></li>
+        </ul>
+      </nav>
+      <p class="nav__status"><span class="nav__pulse"></span>Bar open till six</p>
+    </header>
+
+    <main id="top">
+      <!-- 1. HERO: the pour-over, scroll-driven -->
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="hero__pin">
+          <div class="hero__copy">
+            <h1 id="hero-title" class="hero__title">
+              <span class="line"><span>Patience,</span></span>
+              <span class="line line--indent"><span><em>poured.</em></span></span>
+            </h1>
+            <p class="hero__lede">Small-lot single origins, roasted every Thursday in a 1962 drum roaster beside our Bristol bar, and posted while the bags still smell of the fire.</p>
+            <div class="hero__chapters" aria-live="polite">
+              <article class="chapter is-on">
+                <p class="chapter__num">94<sup>°C</sup></p>
+                <p class="chapter__text">Just off the boil. Any hotter scorches a light roast; any cooler leaves the sweetness stuck in the bed.</p>
+              </article>
+              <article class="chapter">
+                <p class="chapter__num">0:45</p>
+                <p class="chapter__text">The bloom. Fresh grounds sigh out their carbon dioxide. Rush it and the water runs straight past the flavour.</p>
+              </article>
+              <article class="chapter">
+                <p class="chapter__num">3:00</p>
+                <p class="chapter__text">The drawdown. Whatever lands in the cup is everything the farm put into the cherry, nothing added.</p>
+              </article>
+            </div>
+            <p class="hero__cue"><span class="hero__cue-line"></span>Keep scrolling to pour</p>
+          </div>
+
+          <div class="hero__stage">
+            <div class="cup-anchor cup-anchor--hero" data-cup="hero">
+              <div class="kettle">
+                <img src="img/kettle.webp" alt="" width="1000" height="598" />
+                <span class="kettle__spout" data-spout></span>
+              </div>
+              <svg class="dripper" viewBox="0 0 200 170" aria-hidden="true">
+                <defs>
+                  <linearGradient id="glass" x1="0" x2="1">
+                    <stop offset="0" stop-color="#f6d9b8" stop-opacity=".34" />
+                    <stop offset=".18" stop-color="#f6d9b8" stop-opacity=".08" />
+                    <stop offset=".8" stop-color="#f6d9b8" stop-opacity=".05" />
+                    <stop offset="1" stop-color="#f6d9b8" stop-opacity=".26" />
+                  </linearGradient>
+                  <linearGradient id="paper" x1="0" x2="1">
+                    <stop offset="0" stop-color="#e9dccb" stop-opacity=".9" />
+                    <stop offset=".5" stop-color="#f5ece0" stop-opacity=".95" />
+                    <stop offset="1" stop-color="#cfbfae" stop-opacity=".9" />
+                  </linearGradient>
+                  <radialGradient id="bed" cx=".5" cy=".4" r=".6">
+                    <stop offset="0" stop-color="#6b3a1c" />
+                    <stop offset="1" stop-color="#2a150b" />
+                  </radialGradient>
+                </defs>
+                <path class="dripper__paper" d="M14 14 L96 140 L104 140 L186 14 Z" fill="url(#paper)" />
+                <ellipse class="dripper__bed" cx="100" cy="42" rx="70" ry="8" fill="#3a1d0e" />
+                <path d="M30 42 L98 136 L102 136 L170 42 Z" fill="url(#bed)" opacity=".95" />
+                <path d="M6 12 L92 146 L108 146 L194 12" fill="url(#glass)" stroke="#f3d6b4" stroke-opacity=".55" stroke-width="2" />
+                <g stroke="#f3d6b4" stroke-opacity=".18" stroke-width="1.4" fill="none">
+                  <path d="M60 14 Q72 70 96 128" /><path d="M140 14 Q128 70 104 128" /><path d="M36 14 Q58 64 92 124" /><path d="M164 14 Q142 64 108 124" />
+                </g>
+                <ellipse cx="100" cy="12" rx="94" ry="8" fill="none" stroke="#f3d6b4" stroke-opacity=".7" stroke-width="2" />
+                <ellipse cx="100" cy="138" rx="92" ry="10" fill="#f3d6b4" fill-opacity=".1" stroke="#f3d6b4" stroke-opacity=".55" stroke-width="2" />
+                <path d="M94 146 L100 160 L106 146" fill="#f3d6b4" fill-opacity=".35" />
+              </svg>
+              <span class="dripper__top" data-dripper-top></span>
+              <span class="dripper__tip" data-dripper-tip></span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. THE POURS: pick an origin, the cup re-pours -->
+      <section class="pours" id="pours" aria-labelledby="pours-title">
+        <div class="pours__cup">
+          <div class="cup-anchor cup-anchor--pours" data-cup="pours"></div>
+          <p class="pours__hint" id="cup-hint">Hover the crema to etch it. Press and drag to pour milk.</p>
+          <div class="pours__tools">
+            <button class="btn btn--ghost" type="button" data-rosetta>Pour a tulip for me</button>
+            <button class="btn btn--quiet" type="button" data-clear>Clear the crema</button>
+          </div>
+        </div>
+
+        <div class="pours__menu">
+          <h2 id="pours-title" class="h-section">Choose your <em>pour.</em></h2>
+          <p class="pours__intro">Three coffees on the bar this season. Pick one and the cup empties, then fills again with it. The crema is yours to draw on.</p>
+
+          <div class="tabs" role="tablist" aria-label="Single origin coffees">
+            <button role="tab" id="tab-yirgacheffe" aria-controls="pour-panel" aria-selected="true" data-origin="yirgacheffe"><span class="tabs__n">01</span><span class="tabs__name">Yirgacheffe</span><span class="tabs__land">Ethiopia</span></button>
+            <button role="tab" id="tab-huila" aria-controls="pour-panel" aria-selected="false" tabindex="-1" data-origin="huila"><span class="tabs__n">02</span><span class="tabs__name">Huila</span><span class="tabs__land">Colombia</span></button>
+            <button role="tab" id="tab-lintong" aria-controls="pour-panel" aria-selected="false" tabindex="-1" data-origin="lintong"><span class="tabs__n">03</span><span class="tabs__name">Lintong</span><span class="tabs__land">Sumatra</span></button>
+          </div>
+
+          <div class="pour-panel" id="pour-panel" role="tabpanel" aria-labelledby="tab-yirgacheffe">
+            <p class="notes" aria-label="Tasting notes"></p>
+            <p class="pour-panel__line"></p>
+            <dl class="specs">
+              <div><dt>Roast</dt><dd data-f="roast"></dd></div>
+              <div><dt>Process</dt><dd data-f="process"></dd></div>
+              <div><dt>Altitude</dt><dd data-f="altitude"></dd></div>
+              <div><dt>250 g bag</dt><dd data-f="price"></dd></div>
+            </dl>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. ORIGINS: three long-form stories -->
+      <section class="origins" id="origins" aria-labelledby="origins-title">
+        <header class="origins__head">
+          <h2 id="origins-title" class="h-section">Where the cherries <em>grow up.</em></h2>
+          <p>We buy whole lots from three farms and one co-operative, and visit each one at harvest. These are the people behind this season's pours.</p>
+        </header>
+
+        <article class="story" data-story="yirgacheffe">
+          <figure class="story__img"><img src="img/yirgacheffe.webp" alt="Ripe red coffee cherries on a branch above misty Ethiopian hills" loading="lazy" width="1600" height="1067" /></figure>
+          <div class="story__body">
+            <p class="story__n">01</p>
+            <h3 class="story__title">Chelelektu, <em>Kochere</em></h3>
+            <p class="story__place">Gedeo Zone, Ethiopia</p>
+            <p class="story__text">Chelelektu washing station sits on a ridge where some eight hundred smallholders walk their cherries in at dusk. Every lot is floated, the light cherries skimmed off, then fermented for thirty-six hours before two weeks on raised beds under shade netting. It tastes the way the hillside smells after rain.</p>
+            <dl class="story__facts">
+              <div><dt>Producers</dt><dd>812 smallholders</dd></div>
+              <div><dt>Variety</dt><dd>Kurume, 74110</dd></div>
+              <div><dt>Harvest</dt><dd>November to January</dd></div>
+            </dl>
+          </div>
+        </article>
+
+        <article class="story story--flip" data-story="huila">
+          <figure class="story__img"><img src="img/huila.webp" alt="A woven basket of red coffee cherries on a post above steep Andean coffee rows" loading="lazy" width="1600" height="1067" /></figure>
+          <div class="story__body">
+            <p class="story__n">02</p>
+            <h3 class="story__title">Finca La Esperanza, <em>Pitalito</em></h3>
+            <p class="story__place">Huila, Colombia</p>
+            <p class="story__text">Adriana Muñoz farms six hectares outside Pitalito with her two brothers. Her Pink Bourbon is picked in three passes so only the ripest cherry goes in, then fermented in sealed tanks for forty hours. We have bought her whole lot three years running, at a price she sets.</p>
+            <dl class="story__facts">
+              <div><dt>Producer</dt><dd>Adriana Muñoz</dd></div>
+              <div><dt>Variety</dt><dd>Pink Bourbon, Caturra</dd></div>
+              <div><dt>Harvest</dt><dd>April to June</dd></div>
+            </dl>
+          </div>
+        </article>
+
+        <article class="story" data-story="lintong">
+          <figure class="story__img"><img src="img/sumatra.webp" alt="Wet-hulled coffee beans drying on a tarp beside a volcanic lake in Sumatra" loading="lazy" width="1600" height="1067" /></figure>
+          <div class="story__body">
+            <p class="story__n">03</p>
+            <h3 class="story__title">Dolok Sanggul, <em>Lake Toba</em></h3>
+            <p class="story__place">Lintong, North Sumatra</p>
+            <p class="story__text">Around Lake Toba the coffee is hulled while it is still wet, a method born of monsoon humidity called giling basah. It gives Lintong its deep, cedary body. The Dolok Sanggul co-operative dries the parchment on tarps between the rains and hulls it the same afternoon.</p>
+            <dl class="story__facts">
+              <div><dt>Producers</dt><dd>Dolok Sanggul co-op</dd></div>
+              <div><dt>Variety</dt><dd>Ateng, Tim Tim</dd></div>
+              <div><dt>Harvest</dt><dd>October to March</dd></div>
+            </dl>
+          </div>
+        </article>
+      </section>
+
+      <!-- 4. BREW GUIDE: a live three-minute pour -->
+      <section class="brew" id="brew" aria-labelledby="brew-title">
+        <div class="brew__cup">
+          <div class="cup-anchor cup-anchor--brew" data-cup="brew">
+            <svg class="dripper dripper--brew" viewBox="0 0 200 170" aria-hidden="true">
+              <path d="M14 14 L96 140 L104 140 L186 14 Z" fill="url(#paper)" />
+              <path class="brew__bed" d="M30 42 L98 136 L102 136 L170 42 Z" fill="url(#bed)" opacity=".95" />
+              <path d="M6 12 L92 146 L108 146 L194 12" fill="url(#glass)" stroke="#f3d6b4" stroke-opacity=".55" stroke-width="2" />
+              <ellipse cx="100" cy="12" rx="94" ry="8" fill="none" stroke="#f3d6b4" stroke-opacity=".7" stroke-width="2" />
+              <ellipse cx="100" cy="138" rx="92" ry="10" fill="#f3d6b4" fill-opacity=".1" stroke="#f3d6b4" stroke-opacity=".55" stroke-width="2" />
+              <path d="M94 146 L100 160 L106 146" fill="#f3d6b4" fill-opacity=".35" />
+            </svg>
+            <span class="dripper__top" data-brew-top></span>
+            <span class="dripper__tip" data-brew-tip></span>
+          </div>
+        </div>
+
+        <div class="brew__guide">
+          <h2 id="brew-title" class="h-section">Brew it like <em>the bar does.</em></h2>
+          <p class="brew__recipe"><strong>15 g</strong> coffee, ground like coarse sea salt. <strong>250 g</strong> water at 94°C. A V60, a scale, three minutes.</p>
+
+          <figure class="brew__bloom"><img src="img/bloom.webp" alt="Looking down into a paper filter as the coffee bed blooms and bubbles" loading="lazy" width="1024" height="1024" /><figcaption>A good bloom domes and bubbles like this. Flat and dull means the beans are stale.</figcaption></figure>
+
+          <div class="timer" role="timer" aria-live="off">
+            <p class="timer__clock"><span data-clock>0:00</span><small data-grams>0 g</small></p>
+            <div class="timer__track" aria-hidden="true"><span class="timer__fill"></span></div>
+            <div class="timer__controls">
+              <button class="btn btn--solid" type="button" data-brew-play aria-pressed="false">Start the brew</button>
+              <button class="btn btn--quiet" type="button" data-brew-reset>Reset</button>
+              <button class="btn btn--quiet" type="button" data-brew-speed aria-pressed="false">Fast-forward ×8</button>
+            </div>
+          </div>
+
+          <ol class="steps">
+            <li class="step" data-from="0" data-to="45"><span class="step__t">0:00</span><div><h3>Bloom</h3><p>Pour 45 g in a slow spiral and give the dripper one gentle swirl. Wait while the bed puffs and breathes.</p></div></li>
+            <li class="step" data-from="45" data-to="75"><span class="step__t">0:45</span><div><h3>First pour</h3><p>Coin-sized circles up to 150 g. Keep the stream thin and close to the bed.</p></div></li>
+            <li class="step" data-from="75" data-to="105"><span class="step__t">1:15</span><div><h3>Second pour</h3><p>Straight down the centre to 250 g. A steady pour pushes the grounds off the paper walls.</p></div></li>
+            <li class="step" data-from="105" data-to="180"><span class="step__t">1:45</span><div><h3>Drawdown</h3><p>One last swirl so the bed settles flat. It should drain by three minutes; if not, grind a touch coarser tomorrow.</p></div></li>
+            <li class="step" data-from="180" data-to="999"><span class="step__t">3:00</span><div><h3>Serve, then wait</h3><p>Give it two minutes. The fruit only really shows once the cup drops below sixty degrees.</p></div></li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- 5. SUBSCRIPTION -->
+      <section class="order" id="standing-order" aria-labelledby="order-title">
+        <div class="order__inner">
+          <div class="order__pitch">
+            <h2 id="order-title" class="order__title">Never meet <em>the last scoop.</em></h2>
+            <p>The Standing Order: freshly roasted bags on your doormat, timed to land a day before you run out. Pause, skip or switch origins whenever you like.</p>
+            <ul class="order__perks">
+              <li>Roasted the Thursday before it ships</li>
+              <li>A handwritten tasting card in every box</li>
+              <li>Free postage from two bags</li>
+            </ul>
+          </div>
+
+          <form class="ticket" novalidate>
+            <fieldset class="ticket__row">
+              <legend>How often</legend>
+              <div class="seg">
+                <input type="radio" name="rhythm" id="r-fort" value="2" checked /><label for="r-fort">Every fortnight</label>
+                <input type="radio" name="rhythm" id="r-month" value="1" /><label for="r-month">Every month</label>
+              </div>
+            </fieldset>
+            <fieldset class="ticket__row">
+              <legend>Bags each delivery</legend>
+              <div class="stepper">
+                <button type="button" data-bags="-1" aria-label="One bag fewer">−</button>
+                <output data-bag-count aria-live="polite">1</output>
+                <button type="button" data-bags="1" aria-label="One bag more">+</button>
+              </div>
+            </fieldset>
+            <fieldset class="ticket__row">
+              <legend>Which coffee</legend>
+              <div class="seg">
+                <input type="radio" name="which" id="w-rot" value="rotate" checked /><label for="w-rot">Rotate the three</label>
+                <input type="radio" name="which" id="w-fav" value="current" /><label for="w-fav" data-fav-label>Stick with Yirgacheffe</label>
+              </div>
+            </fieldset>
+            <div class="ticket__total">
+              <p><span data-total>£26.00</span> a month</p>
+              <small data-total-note>Two deliveries, £13.00 each including postage</small>
+            </div>
+            <label class="ticket__email"><span>Your email</span><input type="email" name="email" placeholder="you@example.com" autocomplete="email" required /></label>
+            <button class="btn btn--solid btn--big" type="submit">Start my standing order</button>
+            <p class="ticket__msg" role="status"></p>
+          </form>
+        </div>
+      </section>
+    </main>
+
+    <!-- 6. CAFÉ FOOTER -->
+    <footer class="cafe" id="visit" aria-labelledby="visit-title">
+      <figure class="cafe__img"><img src="img/cafe.webp" alt="The Ember and Origin roastery bar at dusk, the drum roaster glowing behind a walnut bar" loading="lazy" width="1600" height="1067" /></figure>
+      <div class="cafe__info">
+        <h2 id="visit-title" class="h-section">Come by <em>the bar.</em></h2>
+        <p class="cafe__addr">Arch 7, Kiln Wharf<br />Bristol BS1 4RN</p>
+        <dl class="cafe__hours">
+          <div><dt>Monday to Friday</dt><dd>7:30 to 18:00</dd></div>
+          <div><dt>Saturday</dt><dd>8:30 to 17:00</dd></div>
+          <div><dt>Sunday</dt><dd>9:00 to 15:00</dd></div>
+        </dl>
+        <p class="cafe__note">We roast on Thursday mornings. Follow the smell down the wharf and we'll pour you whatever just came out of the drum.</p>
+        <a class="btn btn--ghost" href="https://www.openstreetmap.org/search?query=Bristol%20harbourside" rel="noopener" target="_blank">Find us on the map</a>
+      </div>
+      <p class="cafe__word" aria-hidden="true"><span>Ember</span><em>&amp;</em><span>Origin</span></p>
+      <p class="cafe__small">© 2026 Ember &amp; Origin Coffee Roasters. A fictional roastery, built as a website template.</p>
+    </footer>
+
+  </body>
+</html>
