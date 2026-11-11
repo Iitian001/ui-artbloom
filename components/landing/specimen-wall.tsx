@@ -39,7 +39,7 @@ const COLUMNS: Specimen[][] = [
     { name: "slate", kind: "templates", height: 240, dark: true },
   ],
   [
-    { name: "afterglow", kind: "templates", height: 236, dark: true },
+    { name: "the-descent", kind: "templates", height: 236 },
     { name: "sillage", kind: "templates", height: 312, dark: true },
   ],
 ]

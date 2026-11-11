@@ -1056,6 +1056,292 @@ export const ITEMS: RegistryItem[] = [
     previewHeight: 420,
   },
   {
+    name: "sketchbook",
+    title: "Sketchbook Portfolio",
+    kind: "templates",
+    description:
+      "A pencil-sketchbook portfolio that paints itself: a full-screen desk drawing you colour in with a watercolour lens, a WebGL sketchbook whose pages curl as you scroll, a graphite cursor trail and a physics toolbox.",
+    categories: ["portfolio","personal","experiences"],
+    author: AUTHORS.artbloom,
+    files: [
+      { source: "templates/sketchbook/page.tsx", target: "app/sketchbook/page.tsx", type: "registry:page" },
+      { source: "templates/sketchbook/sketchbook.css", target: "app/sketchbook/sketchbook.css", type: "registry:style" },
+      { source: "templates/sketchbook/site/LICENSES.md", target: "public/sketchbook/LICENSES.md", type: "registry:file" },
+      { source: "templates/sketchbook/site/favicon.svg", target: "public/sketchbook/favicon.svg", type: "registry:file" },
+      { source: "templates/sketchbook/site/index.html", target: "public/sketchbook/index.html", type: "registry:file" },
+    ],
+    // About 3.5MB streamed by the CLI: the built bundle's images and media. The
+    // document loads them by relative path, so they land beside it.
+    assets: [
+      { source: "templates/sketchbook/site/assets/index-BUIbqx0P.css", target: "public/sketchbook/assets/index-BUIbqx0P.css" },
+      { source: "templates/sketchbook/site/assets/index-DIY9Optx.js", target: "public/sketchbook/assets/index-DIY9Optx.js" },
+      { source: "templates/sketchbook/site/paint/artbloom.webp", target: "public/sketchbook/paint/artbloom.webp" },
+      { source: "templates/sketchbook/site/paint/autogpt.webp", target: "public/sketchbook/paint/autogpt.webp" },
+      { source: "templates/sketchbook/site/paint/bloom-chat.webp", target: "public/sketchbook/paint/bloom-chat.webp" },
+      { source: "templates/sketchbook/site/paint/desk.webp", target: "public/sketchbook/paint/desk.webp" },
+      { source: "templates/sketchbook/site/paint/n8n.webp", target: "public/sketchbook/paint/n8n.webp" },
+      { source: "templates/sketchbook/site/paint/portrait.webp", target: "public/sketchbook/paint/portrait.webp" },
+      { source: "templates/sketchbook/site/paint/shreyash-code.webp", target: "public/sketchbook/paint/shreyash-code.webp" },
+      { source: "templates/sketchbook/site/work/artbloom.webp", target: "public/sketchbook/work/artbloom.webp" },
+      { source: "templates/sketchbook/site/work/autogpt.webp", target: "public/sketchbook/work/autogpt.webp" },
+      { source: "templates/sketchbook/site/work/bloom-chat.webp", target: "public/sketchbook/work/bloom-chat.webp" },
+      { source: "templates/sketchbook/site/work/n8n.webp", target: "public/sketchbook/work/n8n.webp" },
+      { source: "templates/sketchbook/site/work/portrait.webp", target: "public/sketchbook/work/portrait.webp" },
+      { source: "templates/sketchbook/site/work/shreyash-code.webp", target: "public/sketchbook/work/shreyash-code.webp" },
+    ],
+    createdAt: "2026-11-11",
+    isNew: true,
+    previewDark: false,
+    previewHeight: 420,
+  },
+  {
+    name: "garden-walk",
+    title: "Garden Walk",
+    kind: "templates",
+    description:
+      "An illustrated character walks visitors through a garden from dawn to night: projects bloom out of the ground, skills drift as dandelion seeds, certificates glow as lanterns, with a synthesised day-and-night soundscape.",
+    categories: ["portfolio","personal","experiences"],
+    author: AUTHORS.artbloom,
+    files: [
+      { source: "templates/garden-walk/page.tsx", target: "app/garden-walk/page.tsx", type: "registry:page" },
+      { source: "templates/garden-walk/garden-walk.css", target: "app/garden-walk/garden-walk.css", type: "registry:style" },
+      { source: "templates/garden-walk/site/LICENSES.md", target: "public/garden-walk/LICENSES.md", type: "registry:file" },
+      { source: "templates/garden-walk/site/favicon.svg", target: "public/garden-walk/favicon.svg", type: "registry:file" },
+      { source: "templates/garden-walk/site/index.html", target: "public/garden-walk/index.html", type: "registry:file" },
+      { source: "templates/garden-walk/site/world/walk/meta.json", target: "public/garden-walk/world/walk/meta.json", type: "registry:file" },
+    ],
+    // About 2.7MB streamed by the CLI: the built bundle's images and media. The
+    // document loads them by relative path, so they land beside it.
+    assets: [
+      { source: "templates/garden-walk/site/assets/index-B4Sp57nb.js", target: "public/garden-walk/assets/index-B4Sp57nb.js" },
+      { source: "templates/garden-walk/site/assets/index-CI627T4m.css", target: "public/garden-walk/assets/index-CI627T4m.css" },
+      { source: "templates/garden-walk/site/world/bush.webp", target: "public/garden-walk/world/bush.webp" },
+      { source: "templates/garden-walk/site/world/easel.webp", target: "public/garden-walk/world/easel.webp" },
+      { source: "templates/garden-walk/site/world/lotus.webp", target: "public/garden-walk/world/lotus.webp" },
+      { source: "templates/garden-walk/site/world/mailbox.webp", target: "public/garden-walk/world/mailbox.webp" },
+      { source: "templates/garden-walk/site/world/mill.webp", target: "public/garden-walk/world/mill.webp" },
+      { source: "templates/garden-walk/site/world/robot.webp", target: "public/garden-walk/world/robot.webp" },
+      { source: "templates/garden-walk/site/world/signpost.webp", target: "public/garden-walk/world/signpost.webp" },
+      { source: "templates/garden-walk/site/world/snake.webp", target: "public/garden-walk/world/snake.webp" },
+      { source: "templates/garden-walk/site/world/title.webp", target: "public/garden-walk/world/title.webp" },
+      { source: "templates/garden-walk/site/world/tree.webp", target: "public/garden-walk/world/tree.webp" },
+      { source: "templates/garden-walk/site/world/walk/0.webp", target: "public/garden-walk/world/walk/0.webp" },
+      { source: "templates/garden-walk/site/world/walk/1.webp", target: "public/garden-walk/world/walk/1.webp" },
+      { source: "templates/garden-walk/site/world/walk/2.webp", target: "public/garden-walk/world/walk/2.webp" },
+      { source: "templates/garden-walk/site/world/walk/3.webp", target: "public/garden-walk/world/walk/3.webp" },
+      { source: "templates/garden-walk/site/world/walk/4.webp", target: "public/garden-walk/world/walk/4.webp" },
+      { source: "templates/garden-walk/site/world/walk/5.webp", target: "public/garden-walk/world/walk/5.webp" },
+      { source: "templates/garden-walk/site/world/walker.webp", target: "public/garden-walk/world/walker.webp" },
+    ],
+    createdAt: "2026-11-11",
+    isNew: true,
+    previewDark: false,
+    previewHeight: 420,
+  },
+  {
+    name: "film-reel",
+    title: "Film Reel",
+    kind: "templates",
+    description:
+      "A portfolio that plays like a film: a countdown leader, letterbox and 24 fps grain, film-burn transitions between project scenes, lower-third credits, rolling end credits and a post-credits contact scene.",
+    categories: ["portfolio","personal","experiences"],
+    author: AUTHORS.artbloom,
+    files: [
+      { source: "templates/film-reel/page.tsx", target: "app/film-reel/page.tsx", type: "registry:page" },
+      { source: "templates/film-reel/film-reel.css", target: "app/film-reel/film-reel.css", type: "registry:style" },
+      { source: "templates/film-reel/site/LICENSES.md", target: "public/film-reel/LICENSES.md", type: "registry:file" },
+      { source: "templates/film-reel/site/favicon.svg", target: "public/film-reel/favicon.svg", type: "registry:file" },
+      { source: "templates/film-reel/site/index.html", target: "public/film-reel/index.html", type: "registry:file" },
+    ],
+    // About 1.5MB streamed by the CLI: the built bundle's images and media. The
+    // document loads them by relative path, so they land beside it.
+    assets: [
+      { source: "templates/film-reel/site/assets/index-C_7gmytT.js", target: "public/film-reel/assets/index-C_7gmytT.js" },
+      { source: "templates/film-reel/site/assets/index-DftgznEM.css", target: "public/film-reel/assets/index-DftgznEM.css" },
+      { source: "templates/film-reel/site/scenes/artbloom-thumb.webp", target: "public/film-reel/scenes/artbloom-thumb.webp" },
+      { source: "templates/film-reel/site/scenes/artbloom.webp", target: "public/film-reel/scenes/artbloom.webp" },
+      { source: "templates/film-reel/site/scenes/autogpt-thumb.webp", target: "public/film-reel/scenes/autogpt-thumb.webp" },
+      { source: "templates/film-reel/site/scenes/autogpt.webp", target: "public/film-reel/scenes/autogpt.webp" },
+      { source: "templates/film-reel/site/scenes/bloom-chat-thumb.webp", target: "public/film-reel/scenes/bloom-chat-thumb.webp" },
+      { source: "templates/film-reel/site/scenes/bloom-chat.webp", target: "public/film-reel/scenes/bloom-chat.webp" },
+      { source: "templates/film-reel/site/scenes/finale-thumb.webp", target: "public/film-reel/scenes/finale-thumb.webp" },
+      { source: "templates/film-reel/site/scenes/finale.webp", target: "public/film-reel/scenes/finale.webp" },
+      { source: "templates/film-reel/site/scenes/n8n-thumb.webp", target: "public/film-reel/scenes/n8n-thumb.webp" },
+      { source: "templates/film-reel/site/scenes/n8n.webp", target: "public/film-reel/scenes/n8n.webp" },
+      { source: "templates/film-reel/site/scenes/opening-thumb.webp", target: "public/film-reel/scenes/opening-thumb.webp" },
+      { source: "templates/film-reel/site/scenes/opening.webp", target: "public/film-reel/scenes/opening.webp" },
+      { source: "templates/film-reel/site/scenes/shreyash-code-thumb.webp", target: "public/film-reel/scenes/shreyash-code-thumb.webp" },
+      { source: "templates/film-reel/site/scenes/shreyash-code.webp", target: "public/film-reel/scenes/shreyash-code.webp" },
+    ],
+    createdAt: "2026-11-11",
+    isNew: true,
+    previewDark: true,
+    previewHeight: 420,
+  },
+  {
+    name: "writes-itself",
+    title: "Writes Itself",
+    kind: "templates",
+    description:
+      "A portfolio that starts as one prompt: ask a question and the page streams in token by token like an AI reply, then assembles into headings, cards and pictures that denoise into view.",
+    categories: ["portfolio","personal","landing"],
+    author: AUTHORS.artbloom,
+    files: [
+      { source: "templates/writes-itself/page.tsx", target: "app/writes-itself/page.tsx", type: "registry:page" },
+      { source: "templates/writes-itself/writes-itself.css", target: "app/writes-itself/writes-itself.css", type: "registry:style" },
+      { source: "templates/writes-itself/site/LICENSES.md", target: "public/writes-itself/LICENSES.md", type: "registry:file" },
+      { source: "templates/writes-itself/site/favicon.svg", target: "public/writes-itself/favicon.svg", type: "registry:file" },
+      { source: "templates/writes-itself/site/index.html", target: "public/writes-itself/index.html", type: "registry:file" },
+    ],
+    // About 0.9MB streamed by the CLI: the built bundle's images and media. The
+    // document loads them by relative path, so they land beside it.
+    assets: [
+      { source: "templates/writes-itself/site/assets/index-BC9UUazg.css", target: "public/writes-itself/assets/index-BC9UUazg.css" },
+      { source: "templates/writes-itself/site/assets/index-Ca22vDXp.js", target: "public/writes-itself/assets/index-Ca22vDXp.js" },
+      { source: "templates/writes-itself/site/img/artbloom.webp", target: "public/writes-itself/img/artbloom.webp" },
+      { source: "templates/writes-itself/site/img/autogpt.webp", target: "public/writes-itself/img/autogpt.webp" },
+      { source: "templates/writes-itself/site/img/bloom-chat.webp", target: "public/writes-itself/img/bloom-chat.webp" },
+      { source: "templates/writes-itself/site/img/n8n.webp", target: "public/writes-itself/img/n8n.webp" },
+      { source: "templates/writes-itself/site/img/portrait.webp", target: "public/writes-itself/img/portrait.webp" },
+      { source: "templates/writes-itself/site/img/shreyash-code.webp", target: "public/writes-itself/img/shreyash-code.webp" },
+    ],
+    createdAt: "2026-11-11",
+    isNew: true,
+    previewDark: false,
+    previewHeight: 420,
+  },
+  {
+    name: "ember-origin",
+    title: "Ember & Origin",
+    kind: "templates",
+    description:
+      "A specialty coffee roastery where scrolling pours the coffee: a WebGL cup fills with crema you can draw latte art in, three single origins with their own pour, a brew guide and a café.",
+    categories: ["restaurant","landing","experiences"],
+    author: AUTHORS.artbloom,
+    files: [
+      { source: "templates/ember-origin/page.tsx", target: "app/ember-origin/page.tsx", type: "registry:page" },
+      { source: "templates/ember-origin/ember-origin.css", target: "app/ember-origin/ember-origin.css", type: "registry:style" },
+      { source: "templates/ember-origin/site/LICENSES.md", target: "public/ember-origin/LICENSES.md", type: "registry:file" },
+      { source: "templates/ember-origin/site/favicon.svg", target: "public/ember-origin/favicon.svg", type: "registry:file" },
+      { source: "templates/ember-origin/site/index.html", target: "public/ember-origin/index.html", type: "registry:file" },
+    ],
+    // About 1.0MB streamed by the CLI: the built bundle's images and media. The
+    // document loads them by relative path, so they land beside it.
+    assets: [
+      { source: "templates/ember-origin/site/assets/index-BIptWM1W.js", target: "public/ember-origin/assets/index-BIptWM1W.js" },
+      { source: "templates/ember-origin/site/assets/index-Bc-qs-ID.css", target: "public/ember-origin/assets/index-Bc-qs-ID.css" },
+      { source: "templates/ember-origin/site/img/bloom.webp", target: "public/ember-origin/img/bloom.webp" },
+      { source: "templates/ember-origin/site/img/cafe.webp", target: "public/ember-origin/img/cafe.webp" },
+      { source: "templates/ember-origin/site/img/huila.webp", target: "public/ember-origin/img/huila.webp" },
+      { source: "templates/ember-origin/site/img/kettle.webp", target: "public/ember-origin/img/kettle.webp" },
+      { source: "templates/ember-origin/site/img/sumatra.webp", target: "public/ember-origin/img/sumatra.webp" },
+      { source: "templates/ember-origin/site/img/yirgacheffe.webp", target: "public/ember-origin/img/yirgacheffe.webp" },
+    ],
+    createdAt: "2026-11-11",
+    isNew: true,
+    previewDark: true,
+    previewHeight: 420,
+  },
+  {
+    name: "monolith-atelier",
+    title: "Monolith Atelier",
+    kind: "templates",
+    description:
+      "An architecture studio where the visitor moves the sun: a real-time concrete building casts live shadows from dawn to dusk, then turns into a self-drawing blueprint for each project.",
+    categories: ["agency","portfolio","experiences"],
+    author: AUTHORS.artbloom,
+    files: [
+      { source: "templates/monolith-atelier/page.tsx", target: "app/monolith-atelier/page.tsx", type: "registry:page" },
+      { source: "templates/monolith-atelier/monolith-atelier.css", target: "app/monolith-atelier/monolith-atelier.css", type: "registry:style" },
+      { source: "templates/monolith-atelier/site/LICENSES.md", target: "public/monolith-atelier/LICENSES.md", type: "registry:file" },
+      { source: "templates/monolith-atelier/site/favicon.svg", target: "public/monolith-atelier/favicon.svg", type: "registry:file" },
+      { source: "templates/monolith-atelier/site/index.html", target: "public/monolith-atelier/index.html", type: "registry:file" },
+    ],
+    // About 1.7MB streamed by the CLI: the built bundle's images and media. The
+    // document loads them by relative path, so they land beside it.
+    assets: [
+      { source: "templates/monolith-atelier/site/assets/index-0n3Su0h8.css", target: "public/monolith-atelier/assets/index-0n3Su0h8.css" },
+      { source: "templates/monolith-atelier/site/assets/index-CLvW_t9b.js", target: "public/monolith-atelier/assets/index-CLvW_t9b.js" },
+      { source: "templates/monolith-atelier/site/img/bathhouse.webp", target: "public/monolith-atelier/img/bathhouse.webp" },
+      { source: "templates/monolith-atelier/site/img/chapel.webp", target: "public/monolith-atelier/img/chapel.webp" },
+      { source: "templates/monolith-atelier/site/img/cliff.webp", target: "public/monolith-atelier/img/cliff.webp" },
+      { source: "templates/monolith-atelier/site/img/library.webp", target: "public/monolith-atelier/img/library.webp" },
+      { source: "templates/monolith-atelier/site/img/philosophy.webp", target: "public/monolith-atelier/img/philosophy.webp" },
+      { source: "templates/monolith-atelier/site/img/studio.webp", target: "public/monolith-atelier/img/studio.webp" },
+    ],
+    createdAt: "2026-11-11",
+    isNew: true,
+    previewDark: false,
+    previewHeight: 420,
+  },
+  {
+    name: "horologe",
+    title: "Horologe",
+    kind: "templates",
+    description:
+      "A luxury watchmaker: a live 3D watch keeps the visitor’s own time, winds as they scroll and opens into its movement, with craft, editions and a private-appointment form.",
+    categories: ["landing","experiences"],
+    author: AUTHORS.artbloom,
+    files: [
+      { source: "templates/horologe/page.tsx", target: "app/horologe/page.tsx", type: "registry:page" },
+      { source: "templates/horologe/horologe.css", target: "app/horologe/horologe.css", type: "registry:style" },
+      { source: "templates/horologe/site/LICENSES.md", target: "public/horologe/LICENSES.md", type: "registry:file" },
+      { source: "templates/horologe/site/favicon.svg", target: "public/horologe/favicon.svg", type: "registry:file" },
+      { source: "templates/horologe/site/icons.svg", target: "public/horologe/icons.svg", type: "registry:file" },
+      { source: "templates/horologe/site/index.html", target: "public/horologe/index.html", type: "registry:file" },
+    ],
+    // About 1.4MB streamed by the CLI: the built bundle's images and media. The
+    // document loads them by relative path, so they land beside it.
+    assets: [
+      { source: "templates/horologe/site/assets/index-D4JvAPF5.js", target: "public/horologe/assets/index-D4JvAPF5.js" },
+      { source: "templates/horologe/site/assets/index-oAi9i8ZL.css", target: "public/horologe/assets/index-oAi9i8ZL.css" },
+      { source: "templates/horologe/site/img/balance.webp", target: "public/horologe/img/balance.webp" },
+      { source: "templates/horologe/site/img/bench.webp", target: "public/horologe/img/bench.webp" },
+      { source: "templates/horologe/site/img/engraving.webp", target: "public/horologe/img/engraving.webp" },
+      { source: "templates/horologe/site/img/guilloche.webp", target: "public/horologe/img/guilloche.webp" },
+      { source: "templates/horologe/site/img/perlage.webp", target: "public/horologe/img/perlage.webp" },
+      { source: "templates/horologe/site/img/wrist.webp", target: "public/horologe/img/wrist.webp" },
+    ],
+    createdAt: "2026-11-11",
+    isNew: true,
+    previewDark: true,
+    previewHeight: 420,
+  },
+  {
+    name: "the-descent",
+    title: "The Descent",
+    kind: "templates",
+    description:
+      "An ocean-conservation nonprofit told as a dive: scroll from the surface to 10,935 m with live depth gauges, real animals at their real depths, a flashlight cursor in the dark and a donation at the trench floor.",
+    categories: ["landing","editorial","experiences"],
+    author: AUTHORS.artbloom,
+    files: [
+      { source: "templates/the-descent/page.tsx", target: "app/the-descent/page.tsx", type: "registry:page" },
+      { source: "templates/the-descent/the-descent.css", target: "app/the-descent/the-descent.css", type: "registry:style" },
+      { source: "templates/the-descent/site/LICENSES.md", target: "public/the-descent/LICENSES.md", type: "registry:file" },
+      { source: "templates/the-descent/site/favicon.svg", target: "public/the-descent/favicon.svg", type: "registry:file" },
+      { source: "templates/the-descent/site/index.html", target: "public/the-descent/index.html", type: "registry:file" },
+    ],
+    // About 1.2MB streamed by the CLI: the built bundle's images and media. The
+    // document loads them by relative path, so they land beside it.
+    assets: [
+      { source: "templates/the-descent/site/assets/index-CHTAkICv.js", target: "public/the-descent/assets/index-CHTAkICv.js" },
+      { source: "templates/the-descent/site/assets/index-DN58tnzh.css", target: "public/the-descent/assets/index-DN58tnzh.css" },
+      { source: "templates/the-descent/site/creatures/amphipod.webp", target: "public/the-descent/creatures/amphipod.webp" },
+      { source: "templates/the-descent/site/creatures/angler.webp", target: "public/the-descent/creatures/angler.webp" },
+      { source: "templates/the-descent/site/creatures/atolla.webp", target: "public/the-descent/creatures/atolla.webp" },
+      { source: "templates/the-descent/site/creatures/bag.webp", target: "public/the-descent/creatures/bag.webp" },
+      { source: "templates/the-descent/site/creatures/dumbo.webp", target: "public/the-descent/creatures/dumbo.webp" },
+      { source: "templates/the-descent/site/creatures/snailfish.webp", target: "public/the-descent/creatures/snailfish.webp" },
+      { source: "templates/the-descent/site/creatures/turtle.webp", target: "public/the-descent/creatures/turtle.webp" },
+      { source: "templates/the-descent/site/creatures/whale.webp", target: "public/the-descent/creatures/whale.webp" },
+    ],
+    createdAt: "2026-11-11",
+    isNew: true,
+    previewDark: false,
+    previewHeight: 420,
+  },
+  {
     name: "paper-portfolio",
     title: "Paper Portfolio",
     kind: "templates",
@@ -1335,144 +1621,6 @@ export const ITEMS: RegistryItem[] = [
     previewHeight: 420,
   },
   {
-    name: "graphite",
-    title: "Graphite",
-    kind: "templates",
-    description:
-      "A graphite-and-cream sketchbook portfolio for a design engineer: hand-drawn underlines and margin notes, an editorial about, a pinned selected-work grid and a pencil self-portrait. Every string on the site lives in one content file — swap the palette and the words and it is someone else's.",
-    categories: ["portfolio", "personal"],
-    author: AUTHORS.artbloom,
-    // A whole site, not a page. Everything lands under one folder so it cannot
-    // collide with the consumer's own routes; `BASE` in data/content.ts is the
-    // single string to change if they want it somewhere else.
-    files: [
-      {
-        source: "templates/graphite/layout.tsx",
-        target: "app/graphite/layout.tsx",
-        type: "registry:page",
-      },
-      {
-        source: "templates/graphite/graphite.css",
-        target: "app/graphite/graphite.css",
-        type: "registry:style",
-      },
-      {
-        source: "templates/graphite/page.tsx",
-        target: "app/graphite/page.tsx",
-        type: "registry:page",
-      },
-      {
-        source: "templates/graphite/data/content.ts",
-        target: "app/graphite/data/content.ts",
-        type: "registry:lib",
-      },
-      {
-        source: "templates/graphite/components/site-header.tsx",
-        target: "app/graphite/components/site-header.tsx",
-        type: "registry:component",
-      },
-      {
-        source: "templates/graphite/components/site-footer.tsx",
-        target: "app/graphite/components/site-footer.tsx",
-        type: "registry:component",
-      },
-      {
-        source: "templates/graphite/components/reveal.tsx",
-        target: "app/graphite/components/reveal.tsx",
-        type: "registry:component",
-      },
-      {
-        // The hand-drawn underlines, circles and margin scribbles, all SVG.
-        source: "templates/graphite/components/sketch-marks.tsx",
-        target: "app/graphite/components/sketch-marks.tsx",
-        type: "registry:component",
-      },
-    ],
-    // The pencil self-portrait. A PNG cannot be inlined as text in the payload,
-    // so it streams as bytes into `public/`, which is what makes the
-    // `/graphite/portrait.png` URL in the hero resolve.
-    assets: [
-      { source: "templates/graphite/assets/portrait.png", target: "public/graphite/portrait.png" },
-    ],
-    createdAt: "2026-09-18",
-    featured: true,
-    isNew: true,
-    previewHeight: 420,
-  },
-  {
-    name: "street-code",
-    title: "Street Code",
-    kind: "templates",
-    description:
-      "A loud, brutalist one-page developer portfolio: hard black edges, hand-drawn scribbles, a scrolling slogan marquee and a background-free portrait against the dark. Every word lives in one content file; swap the palette and the copy and it is someone else's site.",
-    categories: ["portfolio", "personal"],
-    author: AUTHORS.artbloom,
-    // A whole site, not a page. Everything lands under one folder so it cannot
-    // collide with the consumer's own routes; `BASE` in data/content.ts is the
-    // single string to change if they want it somewhere else.
-    files: [
-      {
-        source: "templates/street-code/layout.tsx",
-        target: "app/street-code/layout.tsx",
-        type: "registry:page",
-      },
-      {
-        source: "templates/street-code/street-code.css",
-        target: "app/street-code/street-code.css",
-        type: "registry:style",
-      },
-      {
-        source: "templates/street-code/page.tsx",
-        target: "app/street-code/page.tsx",
-        type: "registry:page",
-      },
-      {
-        // Every string on the site. Re-voicing it for another dev is this file
-        // and the palette at the top of the stylesheet, nothing else.
-        source: "templates/street-code/data/content.ts",
-        target: "app/street-code/data/content.ts",
-        type: "registry:lib",
-      },
-      {
-        source: "templates/street-code/components/site-header.tsx",
-        target: "app/street-code/components/site-header.tsx",
-        type: "registry:component",
-      },
-      {
-        source: "templates/street-code/components/site-footer.tsx",
-        target: "app/street-code/components/site-footer.tsx",
-        type: "registry:component",
-      },
-      {
-        source: "templates/street-code/components/reveal.tsx",
-        target: "app/street-code/components/reveal.tsx",
-        type: "registry:component",
-      },
-      {
-        source: "templates/street-code/components/ticker.tsx",
-        target: "app/street-code/components/ticker.tsx",
-        type: "registry:component",
-      },
-      {
-        // The hand-drawn scribble loops and arrows, all SVG.
-        source: "templates/street-code/components/doodles.tsx",
-        target: "app/street-code/components/doodles.tsx",
-        type: "registry:component",
-      },
-    ],
-    // The background-free portrait. A PNG cannot be inlined as text in the
-    // payload, so it streams as bytes into `public/`, which is what makes the
-    // `/street-code/portrait.png` URL in the hero resolve.
-    assets: [
-      { source: "templates/street-code/assets/portrait.png", target: "public/street-code/portrait.png" },
-    ],
-    createdAt: "2026-09-18",
-    featured: true,
-    isNew: true,
-    previewDark: true,
-    previewHeight: 420,
-  },
-  {
     name: "umbra",
     title: "Umbra",
     kind: "templates",
@@ -1575,47 +1723,6 @@ export const ITEMS: RegistryItem[] = [
     previewHeight: 420,
   },
   {
-    name: "riot",
-    title: "RIOT",
-    kind: "templates",
-    description:
-      "A type-first kinetic manifesto for a design festival where Geist's weight axis is the instrument: a per-character load reveal and weight-on-hover headline, marquee ribbons whose speed and skew couple to scroll velocity, scroll-reactive programme rows and a pausable testimonial carousel. A two-colour riso-poster palette; no image assets; reduced-motion respected.",
-    categories: ["agency", "events"],
-    author: AUTHORS.artbloom,
-    files: [
-      { source: "templates/riot/page.tsx", target: "app/riot/page.tsx", type: "registry:page" },
-    ],
-    createdAt: "2026-09-20",
-    featured: true,
-    isNew: true,
-    previewHeight: 420,
-  },
-  {
-    name: "flux",
-    title: "Flux",
-    kind: "templates",
-    description:
-      "A generative-AI creative showcase where the output is the hero: a full-bleed autoplaying render reel, a hover-to-scrub output gallery, prompt-to-result pairs and a style-explorer. Ships six art-directed generative stills; motion respects reduced-motion.",
-    categories: ["landing"],
-    author: AUTHORS.artbloom,
-    files: [
-      { source: "templates/flux/page.tsx", target: "app/flux/page.tsx", type: "registry:page" },
-    ],
-    assets: [
-      { source: "templates/flux/assets/g1.png", target: "public/flux/g1.png" },
-      { source: "templates/flux/assets/g2.png", target: "public/flux/g2.png" },
-      { source: "templates/flux/assets/g3.png", target: "public/flux/g3.png" },
-      { source: "templates/flux/assets/g4.png", target: "public/flux/g4.png" },
-      { source: "templates/flux/assets/g5.png", target: "public/flux/g5.png" },
-      { source: "templates/flux/assets/g6.png", target: "public/flux/g6.png" },
-    ],
-    createdAt: "2026-09-20",
-    featured: true,
-    isNew: true,
-    previewHeight: 420,
-    previewDark: true,
-  },
-  {
     name: "assembly",
     title: "Assembly",
     kind: "templates",
@@ -1675,37 +1782,6 @@ export const ITEMS: RegistryItem[] = [
       { source: "templates/folio/assets/a3.png", target: "public/folio/a3.png" },
       { source: "templates/folio/assets/a4.png", target: "public/folio/a4.png" },
       { source: "templates/folio/assets/a5.png", target: "public/folio/a5.png" },
-    ],
-    createdAt: "2026-09-20",
-    featured: true,
-    isNew: true,
-    previewHeight: 420,
-    previewDark: true,
-  },
-  {
-    name: "afterglow",
-    title: "Afterglow",
-    kind: "templates",
-    description:
-      "A prom-night invitation on a scroll-scrubbed film: a single 30s take runs dusk to a confetti finale as full-screen beats fade through the frame, then the film releases and loops at the bottom while a silver bloom crests on the RSVP. Below the fold, a midnight-and-moonlight invitation — a gold-threaded timeline of the evening, tickets and details. Ships the hero film and five graded stills; reduced-motion gets a static fallback.",
-    categories: ["experiences", "events"],
-    author: AUTHORS.artbloom,
-    // A whole page on one stylesheet scoped to `.pnRoot`. The scrub logic is the
-    // client view; the server page composes it and owns the route metadata.
-    files: [
-      { source: "templates/afterglow/page.tsx", target: "app/afterglow/page.tsx", type: "registry:page" },
-      { source: "templates/afterglow/afterglow-view.tsx", target: "app/afterglow/afterglow-view.tsx", type: "registry:component" },
-      { source: "templates/afterglow/afterglow.css", target: "app/afterglow/afterglow.css", type: "registry:style" },
-    ],
-    // The film and five stills. Bytes that cannot be inlined as text, so they
-    // stream into `public/`, which is what makes the `/afterglow/<file>` URLs resolve.
-    assets: [
-      { source: "templates/afterglow/assets/journey.mp4", target: "public/afterglow/journey.mp4" },
-      { source: "templates/afterglow/assets/poster.jpg", target: "public/afterglow/poster.jpg" },
-      { source: "templates/afterglow/assets/still-bluehour.jpg", target: "public/afterglow/still-bluehour.jpg" },
-      { source: "templates/afterglow/assets/still-dance.jpg", target: "public/afterglow/still-dance.jpg" },
-      { source: "templates/afterglow/assets/still-slow.jpg", target: "public/afterglow/still-slow.jpg" },
-      { source: "templates/afterglow/assets/still-confetti.jpg", target: "public/afterglow/still-confetti.jpg" },
     ],
     createdAt: "2026-09-20",
     featured: true,

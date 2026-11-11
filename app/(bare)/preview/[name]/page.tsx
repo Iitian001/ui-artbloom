@@ -2,27 +2,28 @@ import { notFound } from "next/navigation"
 
 import CinematicSupercar from "@/registry/templates/cinematic-supercar/page"
 import DeveloperRoom from "@/registry/templates/developer-room/page"
+import TheDescent from "@/registry/templates/the-descent/page"
+import Horologe from "@/registry/templates/horologe/page"
+import MonolithAtelier from "@/registry/templates/monolith-atelier/page"
+import EmberOrigin from "@/registry/templates/ember-origin/page"
+import WritesItself from "@/registry/templates/writes-itself/page"
+import FilmReel from "@/registry/templates/film-reel/page"
+import GardenWalk from "@/registry/templates/garden-walk/page"
+import Sketchbook from "@/registry/templates/sketchbook/page"
 import DaylightLayout from "@/registry/templates/daylight/layout"
 import DaylightHome from "@/registry/templates/daylight/page"
-import GraphiteLayout from "@/registry/templates/graphite/layout"
-import GraphiteHome from "@/registry/templates/graphite/page"
 import MonolithLaunchLayout from "@/registry/templates/monolith-launch/layout"
 import MonolithLaunchHome from "@/registry/templates/monolith-launch/page"
 import PaperPortfolioLayout from "@/registry/templates/paper-portfolio/layout"
 import PaperPortfolioHome from "@/registry/templates/paper-portfolio/page"
-import StreetCodeLayout from "@/registry/templates/street-code/layout"
-import StreetCodeHome from "@/registry/templates/street-code/page"
 import Umbra from "@/registry/templates/umbra/page"
 import Slate from "@/registry/templates/slate/page"
 import Solstice from "@/registry/templates/solstice/page"
 import Momentum from "@/registry/templates/momentum/page"
 import Sprig from "@/registry/templates/sprig/page"
-import Riot from "@/registry/templates/riot/page"
-import Flux from "@/registry/templates/flux/page"
 import Assembly from "@/registry/templates/assembly/page"
 import Endpoint from "@/registry/templates/endpoint/page"
 import Folio from "@/registry/templates/folio/page"
-import Afterglow from "@/registry/templates/afterglow/page"
 import Sillage from "@/registry/templates/sillage/page"
 
 import ContactForm from "@/registry/blocks/contact-form/contact-form"
@@ -62,22 +63,6 @@ function Daylight() {
   )
 }
 
-function Graphite() {
-  return (
-    <GraphiteLayout>
-      <GraphiteHome />
-    </GraphiteLayout>
-  )
-}
-
-function StreetCode() {
-  return (
-    <StreetCodeLayout>
-      <StreetCodeHome />
-    </StreetCodeLayout>
-  )
-}
-
 /**
  * Preview name -> the real component that ships to a consumer. One entry per
  * framed item in `lib/registry/items.ts` — every `kind: "templates"` and every
@@ -94,22 +79,25 @@ function StreetCode() {
 const TEMPLATE_PAGES = new Map<string, () => React.ReactNode>([
   ["cinematic-supercar", CinematicSupercar],
   ["developer-room", DeveloperRoom],
+  ["the-descent", TheDescent],
+  ["horologe", Horologe],
+  ["monolith-atelier", MonolithAtelier],
+  ["ember-origin", EmberOrigin],
+  ["writes-itself", WritesItself],
+  ["film-reel", FilmReel],
+  ["garden-walk", GardenWalk],
+  ["sketchbook", Sketchbook],
   ["daylight", Daylight],
-  ["graphite", Graphite],
   ["monolith-launch", MonolithLaunch],
   ["paper-portfolio", PaperPortfolio],
-  ["street-code", StreetCode],
   ["umbra", Umbra],
   ["slate", Slate],
   ["solstice", Solstice],
   ["momentum", Momentum],
   ["sprig", Sprig],
-  ["riot", Riot],
-  ["flux", Flux],
   ["assembly", Assembly],
   ["endpoint", Endpoint],
   ["folio", Folio],
-  ["afterglow", Afterglow],
   ["sillage", Sillage],
   // Blocks — each a single self-contained section component.
   ["contact-form", ContactForm],

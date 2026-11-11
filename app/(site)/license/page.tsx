@@ -136,6 +136,14 @@ export default function LicensePage() {
             <code>public/developer-room/LICENSES.md</code>.
           </p>
           <p>
+            Eight templates ship as built, self-contained sites: Sketchbook Portfolio, Garden Walk, Film
+            Reel, Writes Itself, Ember &amp; Origin, Monolith Atelier, Horologe and The Descent. Their
+            bundles include GSAP (GreenSock&apos;s standard no-charge licence) and, depending on the
+            template, Lenis, three.js and matter-js (all MIT). Their fonts load from Google Fonts under the
+            SIL Open Font License, and every illustration and photograph in them was generated for the
+            template. Each lists exactly what it bundles in <code>public/&lt;template&gt;/LICENSES.md</code>.
+          </p>
+          <p>
             No other item bundles third-party assets, so everywhere else the MIT grant above is the
             entire story.
           </p>

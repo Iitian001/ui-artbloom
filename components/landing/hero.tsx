@@ -68,7 +68,7 @@ export function Hero() {
           </div>
 
           {/* The real product action, inline: one command lands a whole template. */}
-          <InstallTabs itemName="afterglow" className="mt-6 max-w-md" />
+          <InstallTabs itemName="monolith-atelier" className="mt-6 max-w-md" />
 
           <div className="mt-10 flex items-center gap-6 border-t border-border pt-6">
             <Stat value={templates} label="Templates" />

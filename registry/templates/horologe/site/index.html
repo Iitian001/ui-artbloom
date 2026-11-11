@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Horologe, an independent watchmaker in the Vallée de Joux. Calibre 01 Perpetual: a hand-wound movement of 247 parts, finished entirely by hand." />
+    <meta name="theme-color" content="#0a0e17" />
+    <title>Horologe | Calibre 01 Perpetual</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..700;1,6..96,400..600&family=Hanken+Grotesk:wght@300..600&display=swap" rel="stylesheet" />
+    <script type="module" crossorigin src="./assets/index-D4JvAPF5.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-oAi9i8ZL.css">
+  </head>
+  <body class="is-loading">
+    <a class="skip" href="#main">Skip to content</a>
+
+    <div class="loader" id="loader" aria-hidden="true">
+      <div class="loader__mark">
+        <svg viewBox="0 0 120 120" class="loader__ring">
+          <circle cx="60" cy="60" r="56" class="loader__track" />
+          <circle cx="60" cy="60" r="56" class="loader__arc" pathLength="1" />
+          <g class="loader__ticks"></g>
+          <line x1="60" y1="60" x2="60" y2="14" class="loader__hand" />
+        </svg>
+        <p class="loader__word"><span>H</span><span>o</span><span>r</span><span>o</span><span>l</span><span>o</span><span>g</span><span>e</span></p>
+        <p class="loader__note">Setting the hands</p>
+      </div>
+    </div>
+
+    <div class="studio" aria-hidden="true"></div>
+    <canvas id="gl" aria-hidden="true"></canvas>
+    <svg id="annot" aria-hidden="true"></svg>
+    <div id="labels" aria-hidden="true"></div>
+    <div class="cursor" aria-hidden="true"><span></span></div>
+
+    <header class="nav" id="nav">
+      <a class="nav__brand" href="#top" aria-label="Horologe, back to top">Horologe</a>
+      <nav aria-label="Primary">
+        <ul class="nav__links">
+          <li><a href="#story" class="ulink">The calibre</a></li>
+          <li><a href="#craft" class="ulink">Craft</a></li>
+          <li><a href="#materials" class="ulink">Editions</a></li>
+          <li><a href="#maison" class="ulink">Atelier</a></li>
+        </ul>
+      </nav>
+      <a class="btn btn--ghost nav__cta" href="#appointment"><span>Private appointment</span></a>
+    </header>
+
+    <main id="main">
+      <section class="hero" id="top" aria-labelledby="hero-title">
+        <div class="hero__copy">
+          <p class="hero__kicker reveal-line"><span><em>Calibre 01 Perpetual,</em> an edition of eighty-eight</span></p>
+          <h1 id="hero-title" class="hero__title">
+            <span class="line"><span>The second,</span></span>
+            <span class="line"><span><em>made by hand.</em></span></span>
+          </h1>
+          <p class="hero__lede reveal-line"><span>A hand-wound watch of 247 parts, each one finished, assembled and regulated by a single watchmaker above Le Sentier, in the Vallée de Joux.</span></p>
+          <div class="hero__actions reveal-line">
+            <span>
+              <a class="btn btn--solid" href="#appointment"><span>Request a private viewing</span></a>
+              <a class="ulink hero__link" href="#story">Watch it beat</a>
+            </span>
+          </div>
+        </div>
+        <p class="hero__time reveal-line" aria-live="off"><span>Showing your time, <time id="localtime">--:--:--</time>. The seconds hand beats eight times a second.</span></p>
+        <div class="hero__cue" aria-hidden="true">
+          <svg viewBox="0 0 24 24" class="hero__crown"><circle cx="12" cy="12" r="7"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M5 19l2-2M17 7l2-2"/></svg>
+          <span>Scroll to wind</span>
+        </div>
+      </section>
+
+      <section class="story" id="story" aria-label="The movement, wound and opened">
+        <div class="story__panels">
+          <article class="panel" data-panel="0">
+            <p class="panel__num">I</p>
+            <h2 class="panel__title">Turn it over.</h2>
+            <p class="panel__body">Behind the sapphire caseback the Calibre H-01 beats at 28,800 vibrations an hour. The balance swings four times a second, and the pallet fork lets the escape wheel advance half a tooth at a time.</p>
+          </article>
+          <article class="panel" data-panel="1">
+            <p class="panel__num">II</p>
+            <h2 class="panel__title">Wind it.</h2>
+            <p class="panel__body">Forty turns of the crown coil the mainspring tight inside its open barrel. Fully wound, it keeps seventy-two hours: three days off the wrist before the balance comes to rest.</p>
+            <div class="gauge" role="img" aria-label="Power reserve gauge">
+              <svg viewBox="0 0 120 70">
+                <path class="gauge__track" d="M10 64 A50 50 0 0 1 110 64" pathLength="1" />
+                <path class="gauge__fill" d="M10 64 A50 50 0 0 1 110 64" pathLength="1" />
+                <g class="gauge__ticks"></g>
+              </svg>
+              <p class="gauge__val"><span id="reserve">12</span><small>h</small></p>
+              <p class="gauge__cap">Power reserve, of 72 hours</p>
+            </div>
+          </article>
+          <article class="panel" data-panel="2">
+            <p class="panel__num">III</p>
+            <h2 class="panel__title">Open it.</h2>
+            <p class="panel__body">Two hundred and forty-seven components and thirty-one jewels. Every one is bevelled, grained or polished by hand, including the parts no owner will ever see.</p>
+          </article>
+          <article class="panel" data-panel="3">
+            <p class="panel__num">IV</p>
+            <h2 class="panel__title">Close it.</h2>
+            <p class="panel__body">Re-cased, then regulated in five positions and observed for twenty-one days before it leaves the atelier, keeping within minus two and plus four seconds a day.</p>
+          </article>
+        </div>
+        <ol class="rail" aria-hidden="true">
+          <li>I</li><li>II</li><li>III</li><li>IV</li>
+          <span class="rail__fill"></span>
+        </ol>
+      </section>
+
+      <section class="wrist" id="wrist" aria-labelledby="wrist-title">
+        <figure class="wrist__media media">
+          <img src="img/wrist.webp" width="1024" height="1536" alt="The Calibre 01 Perpetual in red gold with a midnight guilloché dial, worn beneath a white shirt cuff" loading="lazy" decoding="async" />
+        </figure>
+        <div class="wrist__copy">
+          <h2 id="wrist-title" class="h2 reveal-line"><span>Then it is <em>yours.</em></span></h2>
+          <p class="reveal-line"><span>Thirty-nine and a half millimetres across and 10.4 thin, cut to slip beneath a shirt cuff. Wound each morning with forty turns of the crown, a small ritual that takes less than a minute.</span></p>
+        </div>
+      </section>
+
+      <section class="maison" id="maison" aria-labelledby="maison-title">
+        <div class="maison__grid">
+          <figure class="maison__media media">
+            <img src="img/bench.webp" width="1536" height="1024" alt="A watchmaker's bench by a frosted window in the Vallée de Joux at blue hour" loading="lazy" decoding="async" />
+          </figure>
+          <div class="maison__copy">
+            <p class="chapter"><em>The maison</em></p>
+            <h2 id="maison-title" class="h2 reveal-line"><span>Eleven watchmakers, <em>one calibre.</em></span></h2>
+            <p class="reveal-line"><span>Aurèle Vautier left a career restoring museum clocks in 2009 and took the lease on a farmhouse above Le Sentier, where winter lasts long enough to finish a balance cock properly. Fifteen years on, the maison is eleven people, a 1920s rose engine and a single calibre we keep refining rather than replacing.</span></p>
+            <p class="reveal-line"><span>Each watch is assembled start to finish by one watchmaker, whose initials are engraved beneath the balance cock, where only the next person to service it will find them.</span></p>
+          </div>
+        </div>
+        <dl class="facts">
+          <div><dt>Founded</dt><dd>2009</dd></div>
+          <div><dt>Watchmakers at the bench</dt><dd>11</dd></div>
+          <div><dt>Watches a year, at most</dt><dd>280</dd></div>
+          <div><dt>Hours to finish one movement</dt><dd>310</dd></div>
+        </dl>
+      </section>
+
+      <section class="craft" id="craft" aria-labelledby="craft-title">
+        <header class="craft__head">
+          <p class="chapter"><em>The craft</em></p>
+          <h2 id="craft-title" class="h2 reveal-line"><span>The hours <em>no one sees.</em></span></h2>
+          <p class="craft__intro reveal-line"><span>Most of the time in a Horologe goes into surfaces hidden behind the dial or under a bridge. We finish them anyway, because the watchmaker knows they are there.</span></p>
+        </header>
+        <div class="craft__grid">
+          <article class="craft__item craft__item--a">
+            <figure class="media"><img src="img/engraving.webp" width="1536" height="1024" alt="A burin engraving scrolling foliage into a balance cock under a loupe" loading="lazy" decoding="async" /></figure>
+            <div class="craft__text"><p class="craft__n">01</p><h3>Hand-engraving</h3><p>Each balance cock is engraved freehand with a burin under a ten-times loupe. Forty hours of work, and no two patterns are alike.</p></div>
+          </article>
+          <article class="craft__item craft__item--b">
+            <figure class="media"><img src="img/perlage.webp" width="1536" height="1024" alt="Perlage being grained onto a mainplate with a pegwood stick, rubies set in the plate" loading="lazy" decoding="async" /></figure>
+            <div class="craft__text"><p class="craft__n">02</p><h3>Perlage</h3><p>Two thousand four hundred overlapping circles, grained one at a time with a turning pegwood stick, so the mainplate catches the light even where it is hidden.</p></div>
+          </article>
+          <article class="craft__item craft__item--c">
+            <figure class="media"><img src="img/guilloche.webp" width="1024" height="1536" alt="A silver dial blank being cut on a hand-cranked rose engine" loading="lazy" decoding="async" /></figure>
+            <div class="craft__text"><p class="craft__n">03</p><h3>Guilloché</h3><p>Our dials are cut on a 1920s rose engine turned by hand. A dial takes a day; a slip of a hundredth of a millimetre and it goes back to the melt.</p></div>
+          </article>
+          <article class="craft__item craft__item--d">
+            <figure class="media"><img src="img/balance.webp" width="1024" height="1024" alt="A gold balance wheel and blued hairspring in motion" loading="lazy" decoding="async" /></figure>
+            <div class="craft__text"><p class="craft__n">04</p><h3>Regulation</h3><p>Twenty-one days on the timing bench in five positions. Only then is the caseback closed and the number engraved.</p></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="materials" id="materials" aria-labelledby="materials-title">
+        <div class="materials__copy">
+          <p class="chapter"><em>The editions</em></p>
+          <h2 id="materials-title" class="h2 reveal-line"><span>Three metals, <em>three dials.</em></span></h2>
+          <div class="variants" role="radiogroup" aria-label="Choose an edition">
+            <button class="variant is-active" role="radio" aria-checked="true" data-variant="nuit">
+              <span class="variant__sw" style="--a:#d4d8de;--b:#20315f"></span>
+              <span class="variant__name">Nuit</span>
+              <span class="variant__desc">18k white gold, midnight guilloché</span>
+            </button>
+            <button class="variant" role="radio" aria-checked="false" data-variant="aube">
+              <span class="variant__sw" style="--a:#e8a98a;--b:#ddd8cf"></span>
+              <span class="variant__name">Aube</span>
+              <span class="variant__desc">18k red gold, silver opaline</span>
+            </button>
+            <button class="variant" role="radio" aria-checked="false" data-variant="brume">
+              <span class="variant__sw" style="--a:#c4c9d2;--b:#d99c80"></span>
+              <span class="variant__name">Brume</span>
+              <span class="variant__desc">950 platinum, salmon guilloché</span>
+            </button>
+          </div>
+          <dl class="specs">
+            <div><dt>Movement</dt><dd>Calibre H-01, hand-wound</dd></div>
+            <div><dt>Frequency</dt><dd>28,800 vph (4 Hz)</dd></div>
+            <div><dt>Power reserve</dt><dd>72 hours</dd></div>
+            <div><dt>Jewels</dt><dd>31</dd></div>
+            <div><dt>Case</dt><dd id="spec-case">18k white gold, 39.5 × 10.4 mm</dd></div>
+            <div><dt>Dial</dt><dd id="spec-dial">Midnight blue, hand-cut guilloché</dd></div>
+            <div><dt>Strap</dt><dd id="spec-strap">Navy alligator, hand-stitched</dd></div>
+            <div><dt>Price</dt><dd>On application</dd></div>
+          </dl>
+        </div>
+      </section>
+
+      <section class="edition" id="edition" aria-labelledby="edition-title">
+        <div class="edition__dial" aria-hidden="true">
+          <svg viewBox="0 0 400 400" id="edition-ring"></svg>
+          <div class="edition__count">
+            <p class="odo" id="odo" aria-hidden="true"></p>
+            <p class="edition__of">of <span id="ed-total">88</span></p>
+          </div>
+        </div>
+        <div class="edition__copy">
+          <p class="chapter"><em>The numbering</em></p>
+          <h2 id="edition-title" class="h2 reveal-line"><span>Numbered <em>by hand.</em></span></h2>
+          <p class="reveal-line" aria-live="polite"><span><span id="ed-name">Nuit</span> pieces placed with collectors so far: <strong id="ed-placed">47</strong>. The next to be engraved on its caseback is <strong id="ed-next">No. 048</strong>, and it is still unassigned.</span></p>
+          <p class="reveal-line edition__note"><span>We never produce more than an edition promises, and we do not hold a waiting list. When a number is gone, it is gone.</span></p>
+        </div>
+      </section>
+
+      <section class="appt" id="appointment" aria-labelledby="appt-title">
+        <div class="appt__copy">
+          <p class="chapter"><em>By appointment</em></p>
+          <h2 id="appt-title" class="h2 reveal-line"><span>Sit with <em>the watch.</em></span></h2>
+          <p class="reveal-line"><span>Viewings are private and unhurried: at the atelier in Le Sentier, in our Geneva salon, or by video with the watchmaker at the bench. Élise Vautier replies to every request personally, usually within a day.</span></p>
+        </div>
+        <form class="form" id="form" novalidate>
+          <div class="field">
+            <input id="f-name" name="name" type="text" autocomplete="name" required placeholder=" " />
+            <label for="f-name">Your name</label>
+            <p class="field__err" id="e-name">Please tell us your name.</p>
+          </div>
+          <div class="field">
+            <input id="f-email" name="email" type="email" autocomplete="email" required placeholder=" " />
+            <label for="f-email">Email</label>
+            <p class="field__err" id="e-email">An email address we can reply to, please.</p>
+          </div>
+          <fieldset class="chips">
+            <legend>Where</legend>
+            <label><input type="radio" name="where" value="Le Sentier atelier" checked /><span>Atelier, Le Sentier</span></label>
+            <label><input type="radio" name="where" value="Geneva salon" /><span>Salon, Geneva</span></label>
+            <label><input type="radio" name="where" value="Video" /><span>By video</span></label>
+          </fieldset>
+          <fieldset class="chips">
+            <legend>Edition</legend>
+            <label><input type="radio" name="variant" value="Nuit" checked /><span>Nuit</span></label>
+            <label><input type="radio" name="variant" value="Aube" /><span>Aube</span></label>
+            <label><input type="radio" name="variant" value="Brume" /><span>Brume</span></label>
+          </fieldset>
+          <div class="field field--date">
+            <input id="f-date" name="date" type="date" required />
+            <label for="f-date" class="is-static">Preferred date</label>
+            <p class="field__err" id="e-date">Choose a date from tomorrow onwards.</p>
+          </div>
+          <div class="field field--wide">
+            <textarea id="f-note" name="note" rows="3" placeholder=" "></textarea>
+            <label for="f-note">Anything we should know (optional)</label>
+          </div>
+          <button class="btn btn--solid form__submit" type="submit"><span>Request the appointment</span></button>
+          <div class="form__done" id="form-done" role="status" aria-live="polite" tabindex="-1"></div>
+        </form>
+      </section>
+    </main>
+
+    <footer class="foot">
+      <p class="foot__brand">Horologe</p>
+      <address>Chemin des Esserts 4<br />1347 Le Sentier, Vallée de Joux<br />Switzerland</address>
+      <p class="foot__small">© 2026 Horologe SA. Each watch is made to order and delivered by hand.</p>
+    </footer>
+
+  </body>
+</html>
